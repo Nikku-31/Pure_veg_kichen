@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pure_veg/core/constants/app_colors.dart';
+import 'login.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,31 +15,93 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Stack(
         children: [
+          /// Background Image
           Positioned.fill(
             child: Image.asset(
-              "assets/food.jpg",
+              "assets/image/splash.png",
               fit: BoxFit.cover,
             ),
           ),
+
+          /// Dark Overlay
           Container(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withOpacity(0.45),
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Pretty\nYummy",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 42,
-                    color: Colors.tealAccent,
-                    fontWeight: FontWeight.bold,
+
+          /// Content
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 30,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Spacer(),
+                  //
+                  // /// App Name
+                  // const Text(
+                  //   "Pretty\nYummy",
+                  //   textAlign: TextAlign.center,
+                  //   style: TextStyle(
+                  //     fontSize: 48,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Colors.tealAccent,
+                  //     height: 1.1,
+                  //   ),
+                  // ),
+
+                  // const SizedBox(height: 20),
+                  //
+                  // const Text(
+                  //   "Fresh & Delicious Vegetarian Food\nDelivered To Your Doorstep",
+                  //   textAlign: TextAlign.center,
+                  //   style: TextStyle(
+                  //     color: Colors.white,
+                  //     fontSize: 16,
+                  //     height: 1.5,
+                  //   ),
+                  // ),
+
+                  const SizedBox(height: 80),
+
+                  /// Get Started Button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 58,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Login(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Text(
+                        "Get Started",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
