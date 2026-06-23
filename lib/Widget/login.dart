@@ -9,22 +9,17 @@ class Login extends StatefulWidget {
   @override
   State<Login> createState() => _LoginState();
 }
-
 class _LoginState extends State<Login> {
   bool obscurePassword = true;
-
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -74,9 +69,7 @@ class _LoginState extends State<Login> {
                           color: Colors.black87,
                         ),
                       ),
-
                       const SizedBox(height: 8),
-
                       Text(
                         "Login to your account",
                         style: GoogleFonts.poppins(
@@ -84,9 +77,7 @@ class _LoginState extends State<Login> {
                           color: Colors.grey.shade500,
                         ),
                       ),
-
                       const SizedBox(height: 35),
-
                       /// Email
                       TextFormField(
                         controller: emailController,
@@ -121,28 +112,24 @@ class _LoginState extends State<Login> {
                               color: Colors.black,
                             ),
                           ),
-
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
@@ -151,9 +138,7 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
                       /// Password
                       TextFormField(
                         controller: passwordController,
@@ -178,7 +163,6 @@ class _LoginState extends State<Login> {
                             horizontal: width * 0.05,
                             vertical: height * 0.019,
                           ),
-
                           suffixIcon: IconButton(
                             icon: Icon(
                               obscurePassword
@@ -192,28 +176,24 @@ class _LoginState extends State<Login> {
                               });
                             },
                           ),
-
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(width * 0.05),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
@@ -229,9 +209,7 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 15),
-
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
@@ -245,9 +223,7 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 10),
-
                       /// Login Button
                       SizedBox(
                         width: double.infinity,
@@ -279,9 +255,7 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

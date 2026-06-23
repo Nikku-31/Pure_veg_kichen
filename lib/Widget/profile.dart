@@ -6,7 +6,6 @@ class Profile extends StatefulWidget {
   @override
   State<Profile> createState() => _ProfileState();
 }
-
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
@@ -41,9 +40,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 20),
-
                 /// Profile Card
                 Container(
                   width: double.infinity,
@@ -71,9 +68,7 @@ class _ProfileState extends State<Profile> {
                               style: TextStyle(fontSize: 40),
                             ),
                           ),
-
                           const SizedBox(width: 15),
-
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +100,6 @@ class _ProfileState extends State<Profile> {
                               ],
                             ),
                           ),
-
                           CircleAvatar(
                             backgroundColor: Colors.white,
                             child: Icon(
@@ -115,9 +109,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 25),
-
                       const Text(
                         "Passionate about healthy vegetarian cooking and exploring new recipes! 🍲",
                         style: TextStyle(
@@ -129,9 +121,7 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 30),
-
                 /// Quick Actions
                 const Text(
                   "Quick Actions",
@@ -141,9 +131,7 @@ class _ProfileState extends State<Profile> {
                     color: Color(0xff0B1B4D),
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
@@ -170,9 +158,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 30),
-
                 /// Recent Activity
                 const Row(
                   children: [
@@ -192,32 +178,25 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 16),
-
                 activityCard(
                   title: "Paneer Tikka Masala",
                   subtitle: "Cooked 2 days ago",
                   trailing: "⭐ 4.8",
                 ),
-
                 const SizedBox(height: 14),
-
                 activityCard(
                   title: "Buddha Bowl",
                   subtitle: "Liked 5 days ago",
                   trailing: "💗",
                 ),
-
                 const SizedBox(height: 14),
-
                 activityCard(
                   title: "Veg Pasta Primavera",
                   subtitle: "Viewed 1 week ago",
                   trailing: "⭐ 4.7",
                 ),
                 const SizedBox(height: 30),
-
                 /// Preferences
                 const Row(
                   children: [
@@ -236,9 +215,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 16),
-
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -251,9 +228,7 @@ class _ProfileState extends State<Profile> {
                         title: "Notifications",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
-
                       Divider(height: 1),
-
                       preferenceTile(
                         title: "Dark Mode",
                         trailing: Switch(
@@ -261,9 +236,7 @@ class _ProfileState extends State<Profile> {
                           onChanged: (value) {},
                         ),
                       ),
-
                       Divider(height: 1),
-
                       preferenceTile(
                         title: "Language",
                         trailing: const Text(
@@ -274,9 +247,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                       ),
-
                       Divider(height: 1),
-
                       preferenceTile(
                         title: "Help & Support",
                         trailing: const Icon(Icons.arrow_forward),
@@ -284,9 +255,7 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 30),
-
                 /// Account
                 const Text(
                   "Account",
@@ -296,9 +265,7 @@ class _ProfileState extends State<Profile> {
                     color: Color(0xff0B1B4D),
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -311,16 +278,12 @@ class _ProfileState extends State<Profile> {
                         title: "Email & Password",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
-
                       const Divider(height: 1),
-
                       preferenceTile(
                         title: "Privacy Policy",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
-
                       const Divider(height: 1),
-
                       preferenceTile(
                         title: "Logout",
                         textColor: Colors.red,
@@ -336,7 +299,6 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
   Widget quickActionCard({
     required String icon,
     required String title,
@@ -369,7 +331,6 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
   Widget activityCard({
     required String title,
     required String subtitle,
@@ -389,7 +350,6 @@ class _ProfileState extends State<Profile> {
       ),
       child: Row(
         children: [
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,7 +373,6 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-
           Text(
             trailing,
             style: const TextStyle(
@@ -425,7 +384,6 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
   Widget preferenceTile({
     required String title,
     required Widget trailing,

@@ -1,27 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pure_veg/Widget/profile.dart';
-
 import '../core/constants/app_colors.dart';
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
-
   @override
   State<Dashboard> createState() => _DashboardState(
   );
 }
-
 class _DashboardState extends State<Dashboard> {
-
   int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:Colors.white,
       body: Stack(
         children: [
-
           // MAIN UI
           SizedBox.expand(
             child: _selectedIndex == 0
@@ -31,7 +25,6 @@ class _DashboardState extends State<Dashboard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     // Header
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,7 +49,6 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           ],
                         ),
-
                         GestureDetector(
                           onTap: () {
                             setState(() {
@@ -78,9 +70,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 25),
-
                     /// Search
                     TextField(
                       decoration: InputDecoration(
@@ -114,29 +104,21 @@ class _DashboardState extends State<Dashboard> {
                           const SizedBox(width: 12),
                           categoryCard("🥗", "Salads"),
                           const SizedBox(width: 12),
-
                           categoryCard("🍝", "Pasta"),
                           const SizedBox(width: 12),
-
                           categoryCard("🍔", "Burger"),
                           const SizedBox(width: 12),
-
                           categoryCard("🍕", "Pizza"),
                           const SizedBox(width: 12),
-
                           categoryCard("🍜", "Noodles"),
                           const SizedBox(width: 12),
-
                           categoryCard("🥪", "Sandwich"),
                           const SizedBox(width: 12),
-
                           categoryCard("🍟", "Fries"),
                         ],
                       ),
                     ),
-
                     const SizedBox(height: 30),
-
                     /// Trending
                     Row(
                       mainAxisAlignment:
@@ -158,7 +140,6 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 15),
                     Column(
                       children: [
@@ -168,14 +149,12 @@ class _DashboardState extends State<Dashboard> {
                           rating: 4.8,
                           emoji: "🍛",
                         ),
-
                         trendingCard(
                           title: "Veg Wrap",
                           time: "30 min",
                           rating: 4.5,
                           emoji: "🌯",
                         ),
-
                         trendingCard(
                           title: "Green Salad",
                           time: "15 min",
@@ -215,7 +194,6 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-
   Widget categoryCard(
       String emoji,
       String title) {
@@ -244,7 +222,6 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-
   Widget trendingCard({
     required String title,
     required String time,
@@ -264,9 +241,7 @@ class _DashboardState extends State<Dashboard> {
             emoji,
             style: const TextStyle(fontSize: 45),
           ),
-
           const SizedBox(width: 15),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,18 +253,14 @@ class _DashboardState extends State<Dashboard> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 const SizedBox(height: 5),
-
                 Text(
                   "⏱ $time",
                   style: const TextStyle(
                     color: Colors.grey,
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 const Text(
                   "View Recipe",
                   style: TextStyle(
@@ -323,4 +294,3 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 }
-

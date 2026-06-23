@@ -9,10 +9,8 @@ class Signup extends StatefulWidget {
   @override
   State<Signup> createState() => _SignupState();
 }
-
 class _SignupState extends State<Signup> {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -27,7 +25,6 @@ class _SignupState extends State<Signup> {
     confirmPasswordController.dispose();
     super.dispose();
   }
-
   Widget buildTextField({
     required String label,
     required String hint,
@@ -98,14 +95,12 @@ class _SignupState extends State<Signup> {
       ],
     );
   }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final height = size.height;
     final width = size.width;
     return Scaffold(
-
       backgroundColor: AppColors.background,
       body: SafeArea(
         top: false,
@@ -163,7 +158,6 @@ class _SignupState extends State<Signup> {
                   ],
                 ),
               ),
-
         Transform.translate(
           offset: const Offset(0, -10),
           child: Container(
@@ -260,28 +254,24 @@ class _SignupState extends State<Signup> {
                               color: Colors.black,
                             ),
                           ),
-
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
@@ -291,7 +281,6 @@ class _SignupState extends State<Signup> {
                         ),
                       ),
                       const SizedBox(height: 18),
-
                       TextFormField(
                         controller: passwordController,
                         obscureText: obscurePassword,
@@ -315,7 +304,6 @@ class _SignupState extends State<Signup> {
                             horizontal: width * 0.05,
                             vertical: height *0.019
                           ),
-
                           suffixIcon: IconButton(
                             icon: Icon(
                               obscurePassword
@@ -329,35 +317,30 @@ class _SignupState extends State<Signup> {
                               });
                             },
                           ),
-
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(width * 0.05),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
-
                           focusedErrorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
@@ -367,7 +350,6 @@ class _SignupState extends State<Signup> {
                         ),
                       ),
                       const SizedBox(height: 18),
-
                       TextFormField(
                         controller: confirmPasswordController,
                         obscureText: obscureConfirmPassword,
@@ -430,15 +412,12 @@ class _SignupState extends State<Signup> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 25),
-                  
                       Container(
                         width: double.infinity,
                         height: 55,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-
                         ),
                         child: ElevatedButton(
                           onPressed: () {
@@ -452,7 +431,6 @@ class _SignupState extends State<Signup> {
                                   ),
                                 ),
                               );
-
                             print("Name: ${nameController.text}");
                             print("Email: ${emailController.text}");
                             print("Password: ${passwordController.text}");
@@ -514,7 +492,6 @@ class _SignupState extends State<Signup> {
                     ],
                   ),
                 ),
-
           ),
           )
           ]
