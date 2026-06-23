@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:pure_veg/Widget/signup.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -64,12 +64,13 @@ class _LoginState extends State<Login> {
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                        Text(
                         "Welcome",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: width * 0.09,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                           color: Colors.black87,
                         ),
                       ),
@@ -78,7 +79,7 @@ class _LoginState extends State<Login> {
 
                       Text(
                         "Login to your account",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: width * 0.04,
                           color: Colors.grey.shade500,
                         ),
@@ -90,7 +91,7 @@ class _LoginState extends State<Login> {
                       TextFormField(
                         controller: emailController,
                         cursorColor: Colors.black,
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -107,22 +108,22 @@ class _LoginState extends State<Login> {
                         },
                         decoration: InputDecoration(
                           labelText: "Email",
-                          labelStyle: const TextStyle(
+                          labelStyle:GoogleFonts.poppins(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: width * 0.05,
-                            vertical: height * 0.022,
+                            vertical: height * 0.019,
                           ),
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(width * 0.05),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
                           ),
 
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(width * 0.05),
+                            borderRadius: BorderRadius.circular(20),
                             borderSide: const BorderSide(
                               color: Colors.black,
                             ),
@@ -158,7 +159,7 @@ class _LoginState extends State<Login> {
                         controller: passwordController,
                         obscureText: obscurePassword,
                         cursorColor: Colors.black,
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -170,12 +171,12 @@ class _LoginState extends State<Login> {
                         },
                         decoration: InputDecoration(
                           labelText: "Password",
-                          labelStyle: const TextStyle(
+                          labelStyle:GoogleFonts.poppins(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: width * 0.05,
-                            vertical: height * 0.022,
+                            vertical: height * 0.019,
                           ),
 
                           suffixIcon: IconButton(
@@ -235,10 +236,10 @@ class _LoginState extends State<Login> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {},
-                          child: const Text(
+                          child: Text(
                             "Forgot your password?",
-                            style: TextStyle(
-                              color: Color(0xff0D6E63),
+                            style:GoogleFonts.poppins(
+                              color: const Color(0xff0D6E63),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -270,7 +271,7 @@ class _LoginState extends State<Login> {
                           },
                           child: Text(
                             "Login",
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               fontSize: width * 0.05,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -286,7 +287,7 @@ class _LoginState extends State<Login> {
                         children: [
                           Text(
                             "Don't have an account? ",
-                            style: TextStyle(
+                            style:GoogleFonts.poppins(
                               color: Colors.grey.shade500,
                               fontSize: width * 0.04,
                             ),
@@ -300,10 +301,10 @@ class _LoginState extends State<Login> {
                                 ),
                               );
                             },
-                            child: const Text(
+                            child: Text(
                               "Sign up",
-                              style: TextStyle(
-                                color: Color(0xff0D6E63),
+                              style:GoogleFonts.poppins(
+                                color: const Color(0xff0D6E63),
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                               ),

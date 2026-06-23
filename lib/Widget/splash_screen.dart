@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'login.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -12,6 +12,9 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
     return Scaffold(
       body: Stack(
         children: [
@@ -44,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   // const Text(
                   //   "Pretty\nYummy",
                   //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
+                  //   style: GoogleFonts.poppins(
                   //     fontSize: 48,
                   //     fontWeight: FontWeight.bold,
                   //     color: Colors.tealAccent,
@@ -57,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   // const Text(
                   //   "Fresh & Delicious Vegetarian Food\nDelivered To Your Doorstep",
                   //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
+                  //   style: GoogleFonts.poppins(
                   //     color: Colors.white,
                   //     fontSize: 16,
                   //     height: 1.5,
@@ -83,14 +86,14 @@ class _SplashScreenState extends State<SplashScreen> {
                         backgroundColor: AppColors.primary,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(width * 0.05),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         "Get Started",
-                        style: TextStyle(
+                        style: GoogleFonts.poppins(
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                           color: Colors.white,
                         ),
                       ),
