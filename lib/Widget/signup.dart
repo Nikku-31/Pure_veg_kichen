@@ -42,7 +42,7 @@ class _SignupState extends State<Signup> {
       children: [
         Text(
           label,
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.playfairDisplay(
             color: Colors.white70,
             fontSize: 13,
           ),
@@ -52,13 +52,13 @@ class _SignupState extends State<Signup> {
           controller: controller,
           validator: validator,
           obscureText: obscureText,
-          style: GoogleFonts.poppins(color: Colors.white),
+          style: GoogleFonts.playfairDisplay(color: Colors.white),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.poppins(color: Colors.grey),
+            hintStyle: GoogleFonts.playfairDisplay(color: Colors.grey),
             filled: true,
             fillColor: const Color(0xff2A2A2A),
-            errorStyle:GoogleFonts.poppins(color: Colors.red),
+            errorStyle:GoogleFonts.playfairDisplay(color: Colors.red),
             suffixIcon: isPassword
                 ? IconButton(
               onPressed: onToggle,
@@ -143,7 +143,7 @@ class _SignupState extends State<Signup> {
                         children: [
                           Text(
                             "Register",
-                            style:GoogleFonts.poppins(
+                            style:GoogleFonts.playfairDisplay(
                               color: Colors.deepOrange,
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
@@ -184,7 +184,7 @@ class _SignupState extends State<Signup> {
                       TextFormField(
                         controller: nameController,
                         cursorColor: Colors.black,
-                        style:GoogleFonts.poppins(
+                        style:GoogleFonts.playfairDisplay(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -196,7 +196,7 @@ class _SignupState extends State<Signup> {
                         },
                         decoration: InputDecoration(
                           labelText: "Full Name",
-                          labelStyle: GoogleFonts.poppins(
+                          labelStyle: GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
@@ -230,7 +230,7 @@ class _SignupState extends State<Signup> {
                       TextFormField(
                         controller: emailController,
                         cursorColor: Colors.black,
-                        style:GoogleFonts.poppins(
+                        style:GoogleFonts.playfairDisplay(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -247,7 +247,7 @@ class _SignupState extends State<Signup> {
                         },
                         decoration: InputDecoration(
                           labelText: "Email",
-                          labelStyle: GoogleFonts.poppins(
+                          labelStyle: GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
@@ -296,7 +296,7 @@ class _SignupState extends State<Signup> {
                         controller: passwordController,
                         obscureText: obscurePassword,
                         cursorColor: Colors.black,
-                        style:GoogleFonts.poppins(
+                        style:GoogleFonts.playfairDisplay(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -308,7 +308,7 @@ class _SignupState extends State<Signup> {
                         },
                         decoration: InputDecoration(
                           labelText: "Password",
-                          labelStyle: GoogleFonts.poppins(
+                          labelStyle: GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
@@ -372,7 +372,7 @@ class _SignupState extends State<Signup> {
                         controller: confirmPasswordController,
                         obscureText: obscureConfirmPassword,
                         cursorColor: Colors.black,
-                        style:GoogleFonts.poppins(
+                        style:GoogleFonts.playfairDisplay(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -388,7 +388,7 @@ class _SignupState extends State<Signup> {
                         },
                         decoration: InputDecoration(
                           labelText: "Confirm Password",
-                          labelStyle: GoogleFonts.poppins(
+                          labelStyle: GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
@@ -473,7 +473,7 @@ class _SignupState extends State<Signup> {
                             ),
                           child: Text(
                             "Register",
-                            style:GoogleFonts.poppins(
+                            style:GoogleFonts.playfairDisplay(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                               color: Colors.white,
@@ -503,7 +503,7 @@ class _SignupState extends State<Signup> {
                             },
                             child: Text(
                               "Login",
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.playfairDisplay(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),

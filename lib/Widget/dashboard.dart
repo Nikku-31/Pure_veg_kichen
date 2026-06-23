@@ -94,9 +94,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 20),
-
                     /// Categories
                     const Text(
                       "Categories",
@@ -105,7 +103,6 @@ class _DashboardState extends State<Dashboard> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-
                     const SizedBox(height: 20),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -113,10 +110,8 @@ class _DashboardState extends State<Dashboard> {
                         children: [
                           categoryCard("🍛", "Curries"),
                           const SizedBox(width: 12),
-
                           categoryCard("🌯", "Wraps"),
                           const SizedBox(width: 12),
-
                           categoryCard("🥗", "Salads"),
                           const SizedBox(width: 12),
 
@@ -221,7 +216,9 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Widget categoryCard(String emoji, String title) {
+  Widget categoryCard(
+      String emoji,
+      String title) {
     return Container(
       width: 80,
       height: 90,

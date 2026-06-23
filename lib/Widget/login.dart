@@ -38,7 +38,7 @@ class _LoginState extends State<Login> {
           children: [
             /// Top Image
             SizedBox(
-              height: height * 0.42,
+              height: height * 0.35,
               width: double.infinity,
               child: Image.asset(
                 "assets/image/login.png",
@@ -68,7 +68,7 @@ class _LoginState extends State<Login> {
                     children: [
                        Text(
                         "Welcome",
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.playfairDisplay(
                           fontSize: width * 0.09,
                           fontWeight: FontWeight.w500,
                           color: Colors.black87,
@@ -91,7 +91,7 @@ class _LoginState extends State<Login> {
                       TextFormField(
                         controller: emailController,
                         cursorColor: Colors.black,
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.playfairDisplay(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -108,7 +108,7 @@ class _LoginState extends State<Login> {
                         },
                         decoration: InputDecoration(
                           labelText: "Email",
-                          labelStyle:GoogleFonts.poppins(
+                          labelStyle:GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
@@ -159,7 +159,7 @@ class _LoginState extends State<Login> {
                         controller: passwordController,
                         obscureText: obscurePassword,
                         cursorColor: Colors.black,
-                        style: GoogleFonts.poppins(
+                        style: GoogleFonts.playfairDisplay(
                           color: Colors.black,
                           fontSize: 16,
                         ),
@@ -171,7 +171,7 @@ class _LoginState extends State<Login> {
                         },
                         decoration: InputDecoration(
                           labelText: "Password",
-                          labelStyle:GoogleFonts.poppins(
+                          labelStyle:GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
                           contentPadding: EdgeInsets.symmetric(
@@ -271,7 +271,7 @@ class _LoginState extends State<Login> {
                           },
                           child: Text(
                             "Login",
-                            style: GoogleFonts.poppins(
+                            style: GoogleFonts.playfairDisplay(
                               fontSize: width * 0.05,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -303,7 +303,7 @@ class _LoginState extends State<Login> {
                             },
                             child: Text(
                               "Sign up",
-                              style:GoogleFonts.poppins(
+                              style:GoogleFonts.playfairDisplay(
                                 color: const Color(0xff0D6E63),
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
