@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
+import 'package:pure_veg/Widget/signup.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 
 class Login extends StatefulWidget {
@@ -290,12 +291,22 @@ class _LoginState extends State<Login> {
                               fontSize: width * 0.04,
                             ),
                           ),
-                          const Text(
-                            "Sign up",
-                            style: TextStyle(
-                              color: Color(0xff0D6E63),
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const Signup(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              "Sign up",
+                              style: TextStyle(
+                                color: Color(0xff0D6E63),
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],

@@ -196,7 +196,6 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 16),
 
                 activityCard(
-                  emoji: "🍲",
                   title: "Paneer Tikka Masala",
                   subtitle: "Cooked 2 days ago",
                   trailing: "⭐ 4.8",
@@ -205,7 +204,6 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 14),
 
                 activityCard(
-                  emoji: "🥗",
                   title: "Buddha Bowl",
                   subtitle: "Liked 5 days ago",
                   trailing: "💗",
@@ -214,7 +212,6 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 14),
 
                 activityCard(
-                  emoji: "🍝",
                   title: "Veg Pasta Primavera",
                   subtitle: "Viewed 1 week ago",
                   trailing: "⭐ 4.7",
@@ -374,7 +371,6 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget activityCard({
-    required String emoji,
     required String title,
     required String subtitle,
     required String trailing,
@@ -393,16 +389,6 @@ class _ProfileState extends State<Profile> {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.deepPurple.shade100,
-            child: Text(
-              emoji,
-              style: const TextStyle(fontSize: 22),
-            ),
-          ),
-
-          const SizedBox(width: 14),
 
           Expanded(
             child: Column(
