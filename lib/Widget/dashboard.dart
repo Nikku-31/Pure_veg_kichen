@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import '../core/constants/app_colors.dart';
 class Dashboard extends StatefulWidget {
@@ -170,7 +171,7 @@ class _DashboardState extends State<Dashboard> {
                 : _selectedIndex == 1
                 ? const Center(child: Text("Search Screen"))
                 : _selectedIndex == 2
-                ? const Center(child: Text("Saved Screen"))
+                ? const WishlistScreen()
                 : const Profile(),
           ),
       ],
