@@ -18,33 +18,10 @@ class _ProfileState extends State<Profile> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "My Profile",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff0B1B4D),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.settings,
-                        color: Colors.deepPurple,
-                        size: 30,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
                 /// Profile Card
                 Container(
                   width: double.infinity,
@@ -136,7 +113,7 @@ class _ProfileState extends State<Profile> {
 
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 /// Quick Actions
                 const Text(
                   "Quick Actions",
@@ -146,7 +123,7 @@ class _ProfileState extends State<Profile> {
                     color: Color(0xff0B1B4D),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
                 GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
@@ -215,10 +192,6 @@ class _ProfileState extends State<Profile> {
                 /// Preferences
                 const Row(
                   children: [
-                    Text(
-                      "⚙️",
-                      style: TextStyle(fontSize: 20),
-                    ),
                     SizedBox(width: 8),
                     Text(
                       "Preferences",
