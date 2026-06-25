@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pure_veg/Screen/edit_profile.dart';
+import 'package:pure_veg/Widget/login.dart';
+import 'package:pure_veg/core/constants/app_colors.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -102,9 +106,19 @@ class _ProfileState extends State<Profile> {
                           ),
                           CircleAvatar(
                             backgroundColor: Colors.white,
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.teal,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const EditProfile()
+                                  ),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                color: AppColors.primary,
+                              ),
                             ),
                           ),
                         ],
@@ -119,6 +133,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ],
+
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -141,61 +156,61 @@ class _ProfileState extends State<Profile> {
                   childAspectRatio: 1.6,
                   children: [
                     quickActionCard(
-                      icon: "📋",
-                      title: "My Plans",
+                      icon: CupertinoIcons.cube_box_fill,
+                      title: "My Order",
                     ),
                     quickActionCard(
-                      icon: "🛒",
-                      title: "Groceries",
+                      icon: CupertinoIcons.location_solid,
+                      title: "Save Address",
                     ),
                     quickActionCard(
-                      icon: "👨‍🍳",
-                      title: "My Recipes",
+                      icon: CupertinoIcons.arrow_counterclockwise_circle_fill,
+                      title: "My Refund",
                     ),
                     quickActionCard(
-                      icon: "🏆",
+                      icon: CupertinoIcons.star_circle_fill,
                       title: "Badges",
                     ),
                   ],
                 ),
-                const SizedBox(height: 30),
-                /// Recent Activity
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.menu_book_outlined,
-                      color: Colors.blueGrey,
-                      size: 22,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      "Recent Activity",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff0B1B4D),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                activityCard(
-                  title: "Paneer Tikka Masala",
-                  subtitle: "Cooked 2 days ago",
-                  trailing: "⭐ 4.8",
-                ),
-                const SizedBox(height: 14),
-                activityCard(
-                  title: "Buddha Bowl",
-                  subtitle: "Liked 5 days ago",
-                  trailing: "💗",
-                ),
-                const SizedBox(height: 14),
-                activityCard(
-                  title: "Veg Pasta Primavera",
-                  subtitle: "Viewed 1 week ago",
-                  trailing: "⭐ 4.7",
-                ),
+                // const SizedBox(height: 30),
+                // /// Recent Activity
+                // const Row(
+                //   children: [
+                //     Icon(
+                //       Icons.menu_book_outlined,
+                //       color: Colors.blueGrey,
+                //       size: 22,
+                //     ),
+                //     SizedBox(width: 8),
+                //     Text(
+                //       "Recent Activity",
+                //       style: TextStyle(
+                //         fontSize: 24,
+                //         fontWeight: FontWeight.bold,
+                //         color: Color(0xff0B1B4D),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // const SizedBox(height: 16),
+                // activityCard(
+                //   title: "Paneer Tikka Masala",
+                //   subtitle: "Cooked 2 days ago",
+                //   trailing: "⭐ 4.8",
+                // ),
+                // const SizedBox(height: 14),
+                // activityCard(
+                //   title: "Buddha Bowl",
+                //   subtitle: "Liked 5 days ago",
+                //   trailing: "💗",
+                // ),
+                // const SizedBox(height: 14),
+                // activityCard(
+                //   title: "Veg Pasta Primavera",
+                //   subtitle: "Viewed 1 week ago",
+                //   trailing: "⭐ 4.7",
+                // ),
                 const SizedBox(height: 30),
                 /// Preferences
                 const Row(
@@ -225,17 +240,22 @@ class _ProfileState extends State<Profile> {
                   child: Column(
                     children: [
                       preferenceTile(
-                        title: "Notifications",
+                        title: "About us",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
                       Divider(height: 1),
                       preferenceTile(
-                        title: "Dark Mode",
-                        trailing: Switch(
-                          value: false,
-                          onChanged: (value) {},
-                        ),
+                        title: "Notifications",
+                        trailing: const Icon(Icons.arrow_forward),
                       ),
+                      // Divider(height: 1),
+                      // preferenceTile(
+                      //   title: "Dark Mode",
+                      //   trailing: Switch(
+                      //     value: false,
+                      //     onChanged: (value) {},
+                      //   ),
+                      // ),
                       Divider(height: 1),
                       preferenceTile(
                         title: "Language",
@@ -288,6 +308,51 @@ class _ProfileState extends State<Profile> {
                         title: "Logout",
                         textColor: Colors.red,
                         trailing: const Icon(Icons.arrow_forward),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                title: const Text("Logout"),
+                                content: const Text(
+                                  "Are you sure you want to logout?",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text("Cancel"),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => const Login(),
+                                        ),
+                                            (route) => false,
+                                      );
+                                    },
+                                    child: const Text(
+                                      "Logout",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -300,7 +365,7 @@ class _ProfileState extends State<Profile> {
     );
   }
   Widget quickActionCard({
-    required String icon,
+    required IconData icon,
     required String title,
   }) {
     return Container(
@@ -314,9 +379,10 @@ class _ProfileState extends State<Profile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          Icon(
             icon,
-            style: const TextStyle(fontSize: 34),
+            size: 34,
+            color: AppColors.primary,
           ),
           const SizedBox(height: 10),
           Text(
@@ -388,26 +454,31 @@ class _ProfileState extends State<Profile> {
     required String title,
     required Widget trailing,
     Color textColor = const Color(0xff0B1B4D),
+    VoidCallback? onTap,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 18,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: textColor,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 18,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: textColor,
+                ),
               ),
             ),
-          ),
-          trailing,
-        ],
+            trailing,
+          ],
+        ),
       ),
     );
   }

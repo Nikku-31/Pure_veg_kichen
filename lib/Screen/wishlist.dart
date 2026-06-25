@@ -140,7 +140,6 @@ Widget propertyCard({
                   ],
                 ),
               ),
-
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
