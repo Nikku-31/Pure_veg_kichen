@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/profile.dart';
+import '../AppManager/ViewModel/CategoriesVM/categories_vm.dart';
 import '../core/constants/app_colors.dart';
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -95,29 +97,34 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          categoryCard("🍛", "Curries"),
-                          const SizedBox(width: 12),
-                          categoryCard("🌯", "Wraps"),
-                          const SizedBox(width: 12),
-                          categoryCard("🥗", "Salads"),
-                          const SizedBox(width: 12),
-                          categoryCard("🍝", "Pasta"),
-                          const SizedBox(width: 12),
-                          categoryCard("🍔", "Burger"),
-                          const SizedBox(width: 12),
-                          categoryCard("🍕", "Pizza"),
-                          const SizedBox(width: 12),
-                          categoryCard("🍜", "Noodles"),
-                          const SizedBox(width: 12),
-                          categoryCard("🥪", "Sandwich"),
-                          const SizedBox(width: 12),
-                          categoryCard("🍟", "Fries"),
-                        ],
-                      ),
+                    Consumer<CategoriesVM>(
+                      builder: (context, vm, child) {
+                        if (vm.isLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: List.generate(
+                              vm.categories.length,
+                                  (index) {
+                                final category = vm.categories[index];
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 12),
+                                  child: categoryCard(
+                                    category.icon.isEmpty ? "🍽️" : category.icon,
+                                    category.name,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 30),
                     /// Trending
@@ -197,26 +204,35 @@ class _DashboardState extends State<Dashboard> {
   }
   Widget categoryCard(
       String emoji,
-      String title) {
+      String title,
+      ) {
     return Container(
-      width: 80,
-      height: 90,
+      width: 90,
+      height: 100,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(15),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             emoji,
             style: const TextStyle(fontSize: 28),
           ),
           const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
             ),
           ),
         ],
