@@ -75,15 +75,25 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     const SizedBox(height: 25),
                     /// Search
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: "Search recipes...",
-                        suffixIcon: const Icon(
-                          CupertinoIcons.search,
-                          color: AppColors.primary,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100, // ya Colors.grey.shade100
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          hintText: "Search recipes...",
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                          suffixIcon: Icon(
+                            CupertinoIcons.search,
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
                     ),
@@ -93,7 +103,7 @@ class _DashboardState extends State<Dashboard> {
                       "Categories",
                       style: TextStyle(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(height: 20),

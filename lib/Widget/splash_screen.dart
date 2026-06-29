@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
+import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 class SplashScreen extends StatefulWidget {
@@ -78,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Dashboard(),
+                            builder: (context) => const Login(),
                           ),
                         );
                       },
