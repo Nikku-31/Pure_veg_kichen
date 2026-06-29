@@ -74,6 +74,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ),
                       ],
+
                     ),
                     const SizedBox(height: 15),
                     /// Search
@@ -321,15 +322,18 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
 
-                const SizedBox(height: 5),
-                Text(
-                  description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.grey,
+                if (description.trim().isNotEmpty) ...[
+                  const SizedBox(height: 5),
+                  Text(
+                    description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 5),
+                ],
 
                 const SizedBox(height: 5),
                 const Text(

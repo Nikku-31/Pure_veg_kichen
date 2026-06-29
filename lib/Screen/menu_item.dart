@@ -63,15 +63,16 @@ class _MenuItemState extends State<MenuItem> {
                     ),
         
                     title: Text(item.name),
-        
+
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-        
-                        Text(item.description),
-        
-                        const SizedBox(height: 5),
-        
+
+                        if (item.description.trim().isNotEmpty) ...[
+                          Text(item.description),
+                          const SizedBox(height: 5),
+                        ],
+
                         Text(
                           "₹ ${item.price}",
                           style: const TextStyle(
