@@ -229,9 +229,36 @@ class _DashboardState extends State<Dashboard> {
       String emoji,
       String title,
       ) {
-    return Container(
-      width: 90,
-      height: 100,
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned(
+          right: 7,
+          top: 8,   // bottom ki jagah top
+          child: Container(
+            height: 28,
+            width: 28,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 3,
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.add,
+              color: AppColors.primary,
+              size: 18,
+            ),
+          ),
+        ),
+      Container(
+      width: 110,
+      height: 110,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(15),
@@ -260,6 +287,8 @@ class _DashboardState extends State<Dashboard> {
           ),
         ],
       ),
+      ),
+      ],
     );
   }
   Widget trendingCard({
@@ -282,8 +311,8 @@ class _DashboardState extends State<Dashboard> {
             borderRadius: BorderRadius.circular(10),
             child: Image.network(
               "https://purevegkitchenindia.com/$image",
-              width: 60,
-              height: 60,
+              width: 95,
+              height: 110,
               fit: BoxFit.cover,
             ),
           )
@@ -335,7 +364,6 @@ class _DashboardState extends State<Dashboard> {
                   const SizedBox(height: 5),
                 ],
 
-                const SizedBox(height: 5),
                 const Text(
                   "View Recipe",
                   style: TextStyle(
