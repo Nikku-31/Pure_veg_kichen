@@ -11,19 +11,19 @@ class WishlistScreen extends StatelessWidget {
     final List<Map<String, dynamic>> favList = [
       {
         "id": 1,
-        "price": "₹ 250000",
-        "title": "Residential Plot",
+        "price": "₹ 250",
+        "title": "....",
         "subtitle": "Lucknow",
-        "details": "1200 sqft · Available",
+        "details": "..."
       },
       {
         "id": 2,
-        "price": "₹ 350000",
-        "title": "Commercial Plot",
+        "price": "₹ 350",
+        "title": "....",
         "subtitle": "Kanpur",
-        "details": "1500 sqft · Available",
+        "details": "..",
       },
-    ];
+    ]; 
 
     return Scaffold(
       backgroundColor: AppColors.background,
