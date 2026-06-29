@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:pure_veg/Widget/signup.dart';
-import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -98,49 +97,45 @@ class _LoginState extends State<Login> {
                           return null;
                         },
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+
                           labelText: "Email",
-                          labelStyle:GoogleFonts.playfairDisplay(
+                          labelStyle: GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
+
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: width * 0.05,
-                            vertical: height * 0.019,
+                            vertical: height * 0.018,
                           ),
+
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(width * 0.05),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
                           ),
                           errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
                           ),
                           focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
                           ),
                         ),
                       ),
                       const SizedBox(height: 20),
                       /// Password
                       TextFormField(
+
                         controller: passwordController,
                         obscureText: obscurePassword,
                         cursorColor: Colors.black,
@@ -155,57 +150,38 @@ class _LoginState extends State<Login> {
                           return null;
                         },
                         decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.grey.shade100,
+
                           labelText: "Password",
-                          labelStyle:GoogleFonts.playfairDisplay(
+                          labelStyle: GoogleFonts.playfairDisplay(
                             color: Colors.black,
                           ),
+
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: width * 0.05,
-                            vertical: height * 0.019,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              obscurePassword
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                obscurePassword = !obscurePassword;
-                              });
-                            },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(width * 0.05),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
+                            vertical: height * 0.018,
                           ),
 
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
+                          ),
                           focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide.none,
                           ),
                         ),
                       ),

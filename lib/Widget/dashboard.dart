@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_veg/Screen/menu_item.dart';
 import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/profile.dart';
-import '../AppManager/ViewModel/CategoriesVM/categories_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import '../core/constants/app_colors.dart';
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -73,7 +75,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 15),
                     /// Search
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -97,7 +99,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     /// Categories
                     const Text(
                       "Categories",
@@ -106,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     Consumer<CategoriesVM>(
                       builder: (context, vm, child) {
                         if (vm.isLoading) {
@@ -136,50 +138,60 @@ class _DashboardState extends State<Dashboard> {
                         );
                       },
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
                     /// Trending
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
+                      children: [
+                        const Text(
                           " Trending",
                           style: TextStyle(
                             fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                        Text(
-                          "View All",
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const MenuItem(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "View All",
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 15),
-                    Column(
-                      children: [
-                        trendingCard(
-                          title: "Paneer Tikka",
-                          time: "45 min",
-                          rating: 4.8,
-                          emoji: "🍛",
-                        ),
-                        trendingCard(
-                          title: "Veg Wrap",
-                          time: "30 min",
-                          rating: 4.5,
-                          emoji: "🌯",
-                        ),
-                        trendingCard(
-                          title: "Green Salad",
-                          time: "15 min",
-                          rating: 4.9,
-                          emoji: "🥗",
-                        ),
-                      ],
+                    const SizedBox(height: 10),
+                    Consumer<MenuItemVM>(
+                      builder: (context, vm, child) {
+                        print("Loading : ${vm.isLoading}");
+                        print("Items : ${vm.menuItems.length}");
+                        if (vm.isLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return Column(
+                          children: vm.menuItems.take(4).map((item) {
+                            return trendingCard(
+                              title: item.name,
+                              description: item.description,
+                              price: item.price,
+                              image: item.image,
+                            );
+                          }).toList(),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -251,9 +263,9 @@ class _DashboardState extends State<Dashboard> {
   }
   Widget trendingCard({
     required String title,
-    required String time,
-    required double rating,
-    required String emoji,
+    required String description,
+    required String price,
+    required String image,
   }) {
     return Container(
       padding: const EdgeInsets.all(15),
@@ -264,57 +276,71 @@ class _DashboardState extends State<Dashboard> {
       ),
       child: Row(
         children: [
-          Text(
-            emoji,
-            style: const TextStyle(fontSize: 45),
+          image.isNotEmpty
+              ? ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.network(
+              "https://purevegkitchenindia.com/$image",
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+            ),
+          )
+              : const Icon(
+            Icons.fastfood,
+            size: 45,
           ),
-          const SizedBox(width: 15),
+          const SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "₹ $price",
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
+
                 const SizedBox(height: 5),
                 Text(
-                  "⏱ $time",
+                  description,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.grey,
                   ),
                 ),
-                const SizedBox(height: 8),
+
+                const SizedBox(height: 5),
                 const Text(
                   "View Recipe",
                   style: TextStyle(
-                    color: Colors.green,
+                    color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-          ),
-
-          Row(
-            children: [
-              const Icon(
-                Icons.star,
-                color: Colors.amber,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                rating.toString(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                  fontSize: 18,
-                ),
-              ),
-            ],
           ),
         ],
       ),

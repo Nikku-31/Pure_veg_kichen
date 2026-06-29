@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../Model/CategoriesM/cotegories_model.dart';
+import '../../Model/DashboardM/cotegories_model.dart';
 
 class CategoriesService {
   static const String url =

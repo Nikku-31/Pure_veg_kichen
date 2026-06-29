@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../Model/CategoriesM/cotegories_model.dart';
-import '../../Service/CategoriesS/categories_service.dart';
+import '../../Model/DashboardM/cotegories_model.dart';
+import '../../Service/DashboardS/categories_service.dart';
 
 class CategoriesVM extends ChangeNotifier {
   final CategoriesService _service = CategoriesService();
