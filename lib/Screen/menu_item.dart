@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_veg/Screen/variant_Bottom_sheet.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 
 class MenuItem extends StatefulWidget {
   const MenuItem({super.key});
-
   @override
   State<MenuItem> createState() => _MenuItemState();
 }
-
 class _MenuItemState extends State<MenuItem> {
   @override
   Widget build(BuildContext context) {
@@ -29,19 +28,16 @@ class _MenuItemState extends State<MenuItem> {
       body: SafeArea(
         child: Consumer<MenuItemVM>(
           builder: (context, vm, child) {
-        
             if (vm.isLoading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
-        
             return ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: vm.menuItems.length,
                 itemBuilder: (context, index) {
                   final item = vm.menuItems[index];
-
                   return Card(
                     margin: const EdgeInsets.only(bottom: 12),
                     child: IntrinsicHeight(
@@ -70,15 +66,34 @@ class _MenuItemState extends State<MenuItem> {
                                     ),
                                   ),
                                 ),
-
-                                /// + Icon
-                                Positioned(
-                                  top: 6,
-                                  right: 6,
+                                Positioned(top: 6, right: 6,
                                   child: GestureDetector(
-                                    onTap: () {
-                                      // Yaha add to cart ya add item ka code likhna hai
-                                      print("${item.name} Added");
+                                    onTap: () async {
+                                      final variantVM =
+                                      Provider.of<GetVariantsVM>(context, listen: false);
+
+                                      final itemId = int.tryParse(item.id);
+
+                                      if (itemId == null) return;
+
+                                      await variantVM.getVariants(itemId);
+
+                                      if (!mounted) return;
+
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
+                                          ),
+                                        ),
+                                        builder: (_) {
+                                          return VariantBottomSheet(
+                                            itemName: item.name,
+                                          );
+                                        },
+                                      );
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -104,8 +119,7 @@ class _MenuItemState extends State<MenuItem> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    item.name,
+                                  Text(item.name,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -116,11 +130,8 @@ class _MenuItemState extends State<MenuItem> {
                                     const SizedBox(height: 5),
                                     Text(item.description),
                                   ],
-
                                   const SizedBox(height: 8),
-
-                                  Text(
-                                    "₹ ${item.price}",
+                                  Text("₹ ${item.price}",
                                     style: const TextStyle(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.bold,
@@ -139,7 +150,6 @@ class _MenuItemState extends State<MenuItem> {
           },
         ),
       ),
-
     );
   }
 }

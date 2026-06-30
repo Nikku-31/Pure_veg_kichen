@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/Widget/splash_screen.dart';
 import 'AppManager/ViewModel/DashboardVM/categories_vm.dart';
+import 'AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 
 void main() {
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => CategoriesVM()..fetchCategories(),),
         ChangeNotifierProvider(create: (_) => MenuItemVM()..fetchMenuItems(),),
+        ChangeNotifierProvider(create: (_) => GetVariantsVM(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
