@@ -6,6 +6,7 @@ import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
+import '../Screen/menu_item_cart.dart';
 import '../core/constants/app_colors.dart';
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -183,14 +184,10 @@ class _DashboardState extends State<Dashboard> {
                         }
 
                         return Column(
-                          children: vm.menuItems.take(4).map((item) {
-                            return trendingCard(
-                              title: item.name,
-                              description: item.description,
-                              price: item.price,
-                              image: item.image,
-                            );
-                          }).toList(),
+                          children: vm.menuItems
+                              .take(4)
+                              .map((item) => MenuItemCard(item: item))
+                              .toList(),
                         );
                       },
                     ),

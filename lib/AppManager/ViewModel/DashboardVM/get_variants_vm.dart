@@ -20,6 +20,9 @@ class GetVariantsVM extends ChangeNotifier {
       variants = [];
     }
 
+    print("Item Id : $itemId");
+    print("Variant Count : ${variants.length}");
+
     isLoading = false;
     notifyListeners();
   }
