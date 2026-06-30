@@ -39,51 +39,102 @@ class _MenuItemState extends State<MenuItem> {
             return ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: vm.menuItems.length,
-              itemBuilder: (context, index) {
-        
-                final item = vm.menuItems[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: ListTile(
-                    leading: SizedBox(
-                      width: 70,
-                      height: 110,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: item.image.isNotEmpty
-                            ? Image.network(
-                          "https://purevegkitchenindia.com/${item.image}",
-                          fit: BoxFit.cover,
-                        )
-                            : const Icon(
-                          Icons.fastfood,
-                          size: 50,
-                        ),
+                itemBuilder: (context, index) {
+                  final item = vm.menuItems[index];
+
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    child: IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(
+                            width: 110,
+                            height: 110,
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: SizedBox(
+                                    width: 120,
+                                    height: 150,
+                                    child: item.image.isNotEmpty
+                                        ? Image.network(
+                                      "https://purevegkitchenindia.com/${item.image}",
+                                      fit: BoxFit.cover,
+                                      alignment: Alignment.center,
+                                    )
+                                        : Container(
+                                      color: Colors.grey.shade200,
+                                      child: const Icon(Icons.fastfood, size: 40),
+                                    ),
+                                  ),
+                                ),
+
+                                /// + Icon
+                                Positioned(
+                                  top: 6,
+                                  right: 6,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      // Yaha add to cart ya add item ka code likhna hai
+                                      print("${item.name} Added");
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color:Colors.grey.shade300,
+                                        borderRadius: BorderRadius.circular(8), // Square with rounded corners
+                                      ),
+                                      padding: const EdgeInsets.all(4),
+                                      child: const Icon(
+                                        Icons.add,
+                                        color: Colors.black,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    item.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+
+                                  if (item.description.trim().isNotEmpty) ...[
+                                    const SizedBox(height: 5),
+                                    Text(item.description),
+                                  ],
+
+                                  const SizedBox(height: 8),
+
+                                  Text(
+                                    "₹ ${item.price}",
+                                    style: const TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-        
-                    title: Text(item.name),
-
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        if (item.description.trim().isNotEmpty) ...[
-                          Text(item.description),
-                          const SizedBox(height: 5),
-                        ],
-                        Text(
-                          "₹ ${item.price}",
-                          style: const TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+                  );
+                },
             );
           },
         ),
