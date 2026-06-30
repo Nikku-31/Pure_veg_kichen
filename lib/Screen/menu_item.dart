@@ -72,7 +72,6 @@ class _MenuItemState extends State<MenuItem> {
                           Text(item.description),
                           const SizedBox(height: 5),
                         ],
-
                         Text(
                           "₹ ${item.price}",
                           style: const TextStyle(

@@ -232,30 +232,6 @@ class _DashboardState extends State<Dashboard> {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Positioned(
-          right: 7,
-          top: 8,   // bottom ki jagah top
-          child: Container(
-            height: 28,
-            width: 28,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.shade300),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 3,
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.add,
-              color: AppColors.primary,
-              size: 18,
-            ),
-          ),
-        ),
       Container(
       width: 110,
       height: 110,

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pure_veg/Screen/edit_profile.dart';
+import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 
@@ -139,6 +140,10 @@ class _ProfileState extends State<Profile> {
                     quickActionCard(
                       icon: CupertinoIcons.location_solid,
                       title: "Save Address",
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                        const SaveAddress()));
+                      }
                     ),
                     quickActionCard(
                       icon: CupertinoIcons.arrow_counterclockwise_circle_fill,
@@ -340,33 +345,38 @@ class _ProfileState extends State<Profile> {
   Widget quickActionCard({
     required IconData icon,
     required String title,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.grey.shade300,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: Colors.grey.shade300,
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 34,
-            color: AppColors.primary,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Color(0xff0B1B4D),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 34,
+              color: AppColors.primary,
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Color(0xff0B1B4D),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
