@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
+import 'package:pure_veg/Widget/profile.dart';
 import 'package:pure_veg/Widget/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 class Login extends StatefulWidget {
@@ -216,7 +217,7 @@ class _LoginState extends State<Login> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const Dashboard(),
+                                  builder: (_) => const Profile(),
                                 ),
                               );
                             }

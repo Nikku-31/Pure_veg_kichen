@@ -225,7 +225,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             )
                 : _selectedIndex == 1
-                ? const Center(child: Text("Search Screen"))
+                ? const Center(child: Text("Bulk order"))
                 : _selectedIndex == 2
                 ? const WishlistScreen()
                 : const Profile(),
@@ -244,7 +244,7 @@ class _DashboardState extends State<Dashboard> {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "Home"),
-          BottomNavigationBarItem( icon: Icon(CupertinoIcons.search), label: "Search"),
+          BottomNavigationBarItem( icon: Icon(CupertinoIcons.cart_fill), label: "Bulk order"),
           BottomNavigationBarItem(  icon: Icon(CupertinoIcons.heart_fill), label: "Saved"),
           BottomNavigationBarItem(icon: Icon(CupertinoIcons.person), label: "Profile"),
         ],
