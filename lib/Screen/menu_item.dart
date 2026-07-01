@@ -36,9 +36,9 @@ class _MenuItemState extends State<MenuItem> {
             }
             return ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: vm.menuItems.length,
+              itemCount: vm.allMenuItems.length,
                 itemBuilder: (context, index) {
-                  final item = vm.menuItems[index];
+                  final item = vm.allMenuItems[index];
 
                   return MenuItemCard(
                     item: item,

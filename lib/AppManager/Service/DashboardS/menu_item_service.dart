@@ -3,11 +3,17 @@ import 'package:http/http.dart' as http;
 import '../../Model/DashboardM/menu_item_model.dart';
 
 class MenuItemService {
-  Future<List<MenuItemModel>> getMenuItems() async {
-    final response = await http.get(
-      Uri.parse("https://purevegkitchenindia.com/Api/menu_items_Api.php"),
-    );
+  Future<List<MenuItemModel>> getMenuItems({String? categoryId}) async {
 
+    String url = "https://purevegkitchenindia.com/Api/menu_items_Api.php";
+
+    if (categoryId != null && categoryId.isNotEmpty) {
+      url += "?category_id=$categoryId";
+    }
+
+    final response = await http.get(Uri.parse(url));
+
+    print(url);
     print(response.statusCode);
     print(response.body);
 

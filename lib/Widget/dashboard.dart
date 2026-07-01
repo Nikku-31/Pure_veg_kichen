@@ -15,6 +15,17 @@ class Dashboard extends StatefulWidget {
   );
 }
 class _DashboardState extends State<Dashboard> {
+  bool isCategorySelected = false;
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      context.read<CategoriesVM>().fetchCategories(); // ya jo tumhara method hai
+
+      context.read<MenuItemVM>().fetchMenuItems();
+    });
+  }
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -129,9 +140,20 @@ class _DashboardState extends State<Dashboard> {
 
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 12),
-                                  child: categoryCard(
-                                    category.icon.isEmpty ? "🍽️" : category.icon,
-                                    category.name,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        isCategorySelected = true;
+                                      });
+
+                                      context.read<MenuItemVM>().fetchMenuItems(
+                                        categoryId: category.id.toString(),
+                                      );
+                                    },
+                                    child: categoryCard(
+                                      category.icon.isEmpty ? "🍽️" : category.icon,
+                                      category.name,
+                                    ),
                                   ),
                                 );
                               },
@@ -184,8 +206,9 @@ class _DashboardState extends State<Dashboard> {
                         }
 
                         return Column(
-                          children: vm.menuItems
-                              .take(4)
+                          children: (isCategorySelected
+                              ? vm.filteredMenuItems
+                              : vm.filteredMenuItems.take(4))
                               .map((item) => MenuItemCard(item: item))
                               .toList(),
                         );

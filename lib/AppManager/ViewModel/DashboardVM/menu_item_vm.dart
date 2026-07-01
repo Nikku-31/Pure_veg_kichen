@@ -10,13 +10,36 @@ class MenuItemVM extends ChangeNotifier {
 
   List<MenuItemModel> menuItems = [];
 
-  Future<void> fetchMenuItems() async {
+// All items
+  List<MenuItemModel> allMenuItems = [];
+
+// Dashboard ke liye
+  List<MenuItemModel> filteredMenuItems = [];
+
+  Future<void> fetchMenuItems({String? categoryId}) async {
+
     isLoading = true;
     notifyListeners();
 
     try {
-      menuItems = await _service.getMenuItems();
-      print(menuItems.length);
+
+      if (categoryId == null || categoryId.isEmpty) {
+
+        // All Items API
+        allMenuItems = await _service.getMenuItems();
+
+        // Dashboard ke liye bhi same list
+        filteredMenuItems = allMenuItems;
+
+      } else {
+
+        // Category Wise API
+        filteredMenuItems = await _service.getMenuItems(
+          categoryId: categoryId,
+        );
+
+      }
+
     } catch (e) {
       debugPrint(e.toString());
     }
