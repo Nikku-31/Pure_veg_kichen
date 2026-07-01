@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pure_veg/Screen/otp.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import 'package:pure_veg/Widget/signup.dart';
@@ -217,7 +218,7 @@ class _LoginState extends State<Login> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const Profile(),
+                                  builder: (_) => const Otp(),
                                 ),
                               );
                             }
