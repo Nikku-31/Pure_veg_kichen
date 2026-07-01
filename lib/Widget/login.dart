@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/otp.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import 'package:pure_veg/Widget/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
+
+import '../AppManager/ViewModel/AccountVM/login_vm.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -214,14 +217,29 @@ class _LoginState extends State<Login> {
                               borderRadius: BorderRadius.circular(width * 0.05),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const Otp(),
+
+                              final vm = context.read<LoginVM>();
+
+                              bool success = await vm.login(emailController.text.trim());
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(vm.loginResponse?.message ?? ""),
                                 ),
                               );
+
+                              if (success) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => Otp(
+                                       email: emailController.text.trim(),
+                                    ),
+                                  ),
+                                );
+                              }
                             }
                           },
                           child: Text(

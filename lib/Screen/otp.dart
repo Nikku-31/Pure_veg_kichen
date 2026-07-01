@@ -1,9 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pure_veg/Widget/profile.dart';
 
+import '../AppManager/ViewModel/AccountVM/otp_vm.dart';
+
 class Otp extends StatefulWidget {
-  const Otp({super.key});
+  final String email;
+  const Otp({super.key,
+    required this.email,
+  });
 
   @override
   State<Otp> createState() => _OtpState();
@@ -139,10 +145,10 @@ class _OtpState extends State<Otp> {
 
                 const SizedBox(height: 10),
 
-                const Text(
-                  "Enter the OTP sent to nikku6306@gmail.com",
+                Text(
+                  "Enter the OTP sent to ${widget.email}",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
                   ),
@@ -202,14 +208,43 @@ class _OtpState extends State<Otp> {
                   width: double.infinity,
                   height: 58,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Profile(),
-                        ),
-                      );
-                    },
+                      onPressed: () async {
+
+                        String otp = controllers
+                            .map((e) => e.text)
+                            .join();
+
+                        if (otp.length != 6) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please enter valid OTP"),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final vm = context.read<OtpVM>();
+
+                        bool success = await vm.verifyOtp(
+                          email: widget.email,
+                          otp: otp,
+                        );
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(vm.responseModel?.message ?? ""),
+                          ),
+                        );
+
+                        if (success) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const Profile(),
+                            ),
+                          );
+                        }
+                      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff2D6773),
                       shape: RoundedRectangleBorder(
