@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/menu_item.dart';
 import 'package:pure_veg/Screen/wishlist.dart';
+import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
@@ -68,9 +69,8 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            setState(() {
-                              _selectedIndex = 3; // Profile tab index
-                            });
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                            const Login()));
                           },
                           child: const CircleAvatar(
                             radius: 24,
@@ -182,7 +182,13 @@ class _DashboardState extends State<Dashboard> {
                               MaterialPageRoute(
                                 builder: (_) => const MenuItem(),
                               ),
-                            );
+                            ).then((_) {
+                              setState(() {
+                                isCategorySelected = false;
+                              });
+
+                              context.read<MenuItemVM>().fetchMenuItems();
+                            });
                           },
                           child: const Text(
                             "View All",
