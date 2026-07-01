@@ -4,6 +4,7 @@ import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import 'package:pure_veg/Widget/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pure_veg/core/constants/app_colors.dart';
 class Login extends StatefulWidget {
   const Login({super.key});
 
@@ -134,66 +135,66 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      /// Password
-                      TextFormField(
-
-                        controller: passwordController,
-                        obscureText: obscurePassword,
-                        cursorColor: Colors.black,
-                        style: GoogleFonts.playfairDisplay(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Please enter password";
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.grey.shade100,
-
-                          labelText: "Password",
-                          labelStyle: GoogleFonts.playfairDisplay(
-                            color: Colors.black,
-                          ),
-
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: width * 0.05,
-                            vertical: height * 0.018,
-                          ),
-
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none,
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-                      ),
+                      // const SizedBox(height: 20),
+                      // /// Password
+                      // TextFormField(
+                      //
+                      //   controller: passwordController,
+                      //   obscureText: obscurePassword,
+                      //   cursorColor: Colors.black,
+                      //   style: GoogleFonts.playfairDisplay(
+                      //     color: Colors.black,
+                      //     fontSize: 16,
+                      //   ),
+                      //   validator: (value) {
+                      //     if (value == null || value.isEmpty) {
+                      //       return "Please enter password";
+                      //     }
+                      //     return null;
+                      //   },
+                      //   decoration: InputDecoration(
+                      //     filled: true,
+                      //     fillColor: Colors.grey.shade100,
+                      //
+                      //     labelText: "Password",
+                      //     labelStyle: GoogleFonts.playfairDisplay(
+                      //       color: Colors.black,
+                      //     ),
+                      //
+                      //     contentPadding: EdgeInsets.symmetric(
+                      //       horizontal: width * 0.05,
+                      //       vertical: height * 0.018,
+                      //     ),
+                      //
+                      //     border: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //       borderSide: BorderSide.none,
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //       borderSide: BorderSide.none,
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //       borderSide: BorderSide.none,
+                      //     ),
+                      //     errorBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //       borderSide: BorderSide.none,
+                      //     ),
+                      //     focusedErrorBorder: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //       borderSide: BorderSide.none,
+                      //     ),
+                      //   ),
+                      // ),
                       const SizedBox(height: 15),
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {},
                           child: Text(
-                            "Forgot your password?",
+                            "Forgot your Email?",
                             style:GoogleFonts.poppins(
                               color: const Color(0xff0D6E63),
                               fontWeight: FontWeight.w600,
@@ -233,17 +234,17 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 50),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            "Don't have an account? ",
-                            style:GoogleFonts.poppins(
-                              color: Colors.grey.shade500,
-                              fontSize: width * 0.04,
-                            ),
-                          ),
+                          // Text(
+                          //   "Don't have an account? ",
+                          //   style:GoogleFonts.poppins(
+                          //     color: Colors.grey.shade500,
+                          //     fontSize: width * 0.04,
+                          //   ),
+                          // ),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -254,11 +255,14 @@ class _LoginState extends State<Login> {
                               );
                             },
                             child: Text(
-                              "Sign up",
+                              "Terms and condition",
                               style:GoogleFonts.playfairDisplay(
                                 color: const Color(0xff0D6E63),
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                                decorationColor: AppColors.primary,
+
                               ),
                             ),
                           ),
