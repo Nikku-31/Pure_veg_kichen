@@ -108,12 +108,26 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       child: TextField(
                         controller: _searchController,
-                        onChanged: (value) {
-                          context.read<MenuItemVM>().searchMenuItems(value);
+                        onChanged: (value) async {
+                          final vm = context.read<MenuItemVM>();
 
-                          setState(() {
-                            isCategorySelected = value.trim().isNotEmpty;
-                          });
+                          if (value.trim().isNotEmpty) {
+                            // Search hamesha all items par hoga
+                            await vm.fetchMenuItems();
+                            vm.searchMenuItems(value);
+                            setState(() {
+                              isCategorySelected = true;
+                              selectedCategoryIndex = -1; // Category highlight hata do
+                            });
+                          } else {
+                            // Search clear hone par normal state
+                            await vm.fetchMenuItems();
+
+                            setState(() {
+                              isCategorySelected = false;
+                              selectedCategoryIndex = -1;
+                            });
+                          }
                         },
                         decoration: const InputDecoration(
                           hintText: "Search recipes...",
@@ -244,10 +258,28 @@ class _DashboardState extends State<Dashboard> {
                           );
                         }
 
+                        final items = isCategorySelected
+                            ? vm.filteredMenuItems
+                            : vm.filteredMenuItems.take(4).toList();
+
+                        if (items.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 30),
+                              child: Text(
+                                "No Item Found",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
                         return Column(
-                          children: (isCategorySelected
-                              ? vm.filteredMenuItems
-                              : vm.filteredMenuItems.take(4))
+                          children: items
                               .map((item) => MenuItemCard(item: item))
                               .toList(),
                         );
