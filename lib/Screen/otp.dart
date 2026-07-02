@@ -253,19 +253,18 @@ class _OtpState extends State<Otp> {
                               "userEmail",
                               vm.responseModel?.user?.email ?? "",
                             );
-
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => EditProfile(
-                                  id: vm.responseModel?.user?.id ?? 0,
-                                  name: "User",
-                                  email: vm.responseModel?.user?.email ?? "",
-                                  phone: "",
-                                  address: "",
-                                ),
-                              ),
-                            );
+                            final result = await Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                            builder: (_) => EditProfile(
+                              id: vm.responseModel?.user?.id ?? 0,
+                              name: "",
+                              email: vm.responseModel?.user?.email ?? "",
+                              phone: "",
+                              address: "",
+                            ),
+                          ),
+                          );
                           }
                         },
                         style: ElevatedButton.styleFrom(

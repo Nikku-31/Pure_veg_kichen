@@ -230,7 +230,7 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         );
 
-                        Navigator.pop(context, vm.responseModel!.data);
+                        Navigator.pop(context, true);
 
                       } else {
 

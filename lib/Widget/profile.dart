@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/edit_profile.dart';
 import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
@@ -7,6 +8,8 @@ import 'package:pure_veg/core/constants/app_colors.dart';
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../AppManager/ViewModel/AccountVM/user_profile_vm.dart';
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -19,10 +22,38 @@ class _ProfileState extends State<Profile> {
   String phone = "";
   String address = "";
   int id = 0;
-
   File? profileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfile();
+  }
+
+  Future<void> loadProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final id = prefs.getInt("userId") ?? 0;
+
+    if (id != 0) {
+      Provider.of<UserProfileVM>(
+        context,
+        listen: false,
+      ).getProfile(id);
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<UserProfileVM>(context);
+    final user = vm.user;
+    if (vm.isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F5),
       body: SafeArea(
@@ -69,7 +100,7 @@ class _ProfileState extends State<Profile> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  name,
+                                  user?.name ?? "",
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
@@ -78,7 +109,7 @@ class _ProfileState extends State<Profile> {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  email,
+                                  user?.email ?? "",
                                   style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
@@ -104,10 +135,10 @@ class _ProfileState extends State<Profile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (_) => EditProfile(
-                                      id:id,
-                                      name: name,
-                                      email: email,
-                                      phone: phone,
+                                      id: user?.id ?? 0,
+                                      name: user?.name ?? "",
+                                      email: user?.email ?? "",
+                                      phone: user?.phone ?? "",
                                       address: address,
                                     ),
                                   ),

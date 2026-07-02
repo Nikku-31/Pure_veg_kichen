@@ -5,6 +5,7 @@ import 'package:pure_veg/Widget/splash_screen.dart';
 import 'AppManager/ViewModel/AccountVM/edit_profile_vm.dart';
 import 'AppManager/ViewModel/AccountVM/login_vm.dart';
 import 'AppManager/ViewModel/AccountVM/otp_vm.dart';
+import 'AppManager/ViewModel/AccountVM/user_profile_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginVM()),
         ChangeNotifierProvider(create: (_) => OtpVM()),
         ChangeNotifierProvider(create: (_) => EditProfileVM(),),
+        ChangeNotifierProvider(create: (_) => UserProfileVM(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
