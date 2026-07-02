@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:string_similarity/string_similarity.dart';
 
 import '../../Model/DashboardM/menu_item_model.dart';
 import '../../Service/DashboardS/menu_item_service.dart';
@@ -52,15 +53,24 @@ class MenuItemVM extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
-
   void searchMenuItems(String keyword) {
-    if (keyword.trim().isEmpty) {
+    final search = keyword.trim().toLowerCase();
+
+    if (search.isEmpty) {
       filteredMenuItems = List.from(menuItems);
     } else {
       filteredMenuItems = menuItems.where((item) {
-        return item.name
-            .toLowerCase()
-            .contains(keyword.toLowerCase());
+        final name = item.name.toLowerCase();
+
+        if (name.contains(search)) return true;
+
+        for (final word in name.split(' ')) {
+          if (word.similarityTo(search) >= 0.7) {
+            return true;
+          }
+        }
+
+        return false;
       }).toList();
     }
 
