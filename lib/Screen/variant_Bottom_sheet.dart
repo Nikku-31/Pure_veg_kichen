@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 
@@ -329,13 +331,32 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+
+                          bool isLogin = prefs.getBool("isLogin") ?? false;
+
+                          if (!isLogin) {
+                            Navigator.pop(context);
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const Login(),
+                              ),
+                            );
+                            return;
+                          }
+
+                          // User login hai
                           final selected = vm.variants[selectedIndex];
 
                           print(selected.label);
                           print(selected.price);
+
                           Navigator.pop(context);
-                          /// Cart API yaha call hogi
+
+                          /// Yahi tumhari Cart API call hogi
                         },
                         child: Text(
                           "Add Item | ₹${vm.variants[selectedIndex].price}",
