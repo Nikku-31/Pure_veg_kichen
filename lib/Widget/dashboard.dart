@@ -5,6 +5,7 @@ import 'package:pure_veg/Screen/menu_item.dart';
 import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/Widget/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import '../Screen/menu_item_cart.dart';
@@ -35,6 +36,28 @@ class _DashboardState extends State<Dashboard> {
       context.read<MenuItemVM>().fetchMenuItems();
     });
 
+  }
+
+  Future<void> _openProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    bool isLogin = prefs.getBool("isLogin") ?? false;
+
+    if (isLogin) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const Profile(),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const Login(),
+        ),
+      );
+    }
   }
 
   int _selectedIndex = 0;
@@ -79,8 +102,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                            const Login()));
+                            _openProfile();
                           },
                           child: const CircleAvatar(
                             radius: 24,
@@ -291,9 +313,7 @@ class _DashboardState extends State<Dashboard> {
             )
                 : _selectedIndex == 1
                 ? const Center(child: Text("Bulk order"))
-                : _selectedIndex == 2
-                ? const WishlistScreen()
-                : const Profile(),
+                : const WishlistScreen(),
           ),
       ],
       ),
@@ -311,7 +331,7 @@ class _DashboardState extends State<Dashboard> {
           BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "Home"),
           BottomNavigationBarItem( icon: Icon(CupertinoIcons.cart_fill), label: "Bulk order"),
           BottomNavigationBarItem(  icon: Icon(CupertinoIcons.heart_fill), label: "Saved"),
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.person), label: "Profile"),
+          //BottomNavigationBarItem(icon: Icon(CupertinoIcons.person), label: "Profile"),
         ],
       ),
     );

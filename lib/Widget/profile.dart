@@ -5,6 +5,8 @@ import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'dart:io';
+
+import 'package:shared_preferences/shared_preferences.dart';
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -338,7 +340,13 @@ class _ProfileState extends State<Profile> {
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.red,
                                     ),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      final prefs = await SharedPreferences.getInstance();
+
+                                      await prefs.remove("isLogin");
+                                      await prefs.remove("userId");
+                                      await prefs.remove("userEmail");
+
                                       Navigator.pop(context);
 
                                       Navigator.pushAndRemoveUntil(

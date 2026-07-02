@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/edit_profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/otp_vm.dart';
 
 class Otp extends StatefulWidget {
@@ -237,12 +238,28 @@ class _OtpState extends State<Otp> {
                           );
 
                           if (success) {
+                            final prefs = await SharedPreferences.getInstance();
+
+                            // Login Status Save
+                            await prefs.setBool("isLogin", true);
+
+                            // User Data Save
+                            await prefs.setInt(
+                              "userId",
+                              vm.responseModel?.user?.id ?? 0,
+                            );
+
+                            await prefs.setString(
+                              "userEmail",
+                              vm.responseModel?.user?.email ?? "",
+                            );
+
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => EditProfile(
                                   id: vm.responseModel?.user?.id ?? 0,
-                                  name:"User",
+                                  name: "User",
                                   email: vm.responseModel?.user?.email ?? "",
                                   phone: "",
                                   address: "",
