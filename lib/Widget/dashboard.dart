@@ -16,7 +16,15 @@ class Dashboard extends StatefulWidget {
   );
 }
 class _DashboardState extends State<Dashboard> {
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
   bool isCategorySelected = false;
+  int selectedCategoryIndex = -1;
   @override
   void initState() {
     super.initState();
@@ -26,7 +34,9 @@ class _DashboardState extends State<Dashboard> {
 
       context.read<MenuItemVM>().fetchMenuItems();
     });
+
   }
+
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -96,8 +106,16 @@ class _DashboardState extends State<Dashboard> {
                         color: Colors.grey.shade100, // ya Colors.grey.shade100
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        controller: _searchController,
+                        onChanged: (value) {
+                          context.read<MenuItemVM>().searchMenuItems(value);
+
+                          setState(() {
+                            isCategorySelected = value.trim().isNotEmpty;
+                          });
+                        },
+                        decoration: const InputDecoration(
                           hintText: "Search recipes...",
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -142,17 +160,32 @@ class _DashboardState extends State<Dashboard> {
                                   padding: const EdgeInsets.only(right: 12),
                                   child: GestureDetector(
                                     onTap: () {
-                                      setState(() {
-                                        isCategorySelected = true;
-                                      });
+                                      if (selectedCategoryIndex == index) {
+                                        // Same category dubara click hui -> Unselect
+                                        setState(() {
+                                          selectedCategoryIndex = -1;
+                                          isCategorySelected = false;
+                                          _searchController.clear();
+                                        });
 
-                                      context.read<MenuItemVM>().fetchMenuItems(
-                                        categoryId: category.id.toString(),
-                                      );
+                                        context.read<MenuItemVM>().fetchMenuItems();
+                                      } else {
+                                        // Nayi category select hui
+                                        setState(() {
+                                          selectedCategoryIndex = index;
+                                          isCategorySelected = true;
+                                          _searchController.clear();
+                                        });
+
+                                        context.read<MenuItemVM>().fetchMenuItems(
+                                          categoryId: category.id.toString(),
+                                        );
+                                      }
                                     },
                                     child: categoryCard(
                                       category.icon.isEmpty ? "🍽️" : category.icon,
                                       category.name,
+                                      selectedCategoryIndex == index,
                                     ),
                                   ),
                                 );
@@ -254,6 +287,7 @@ class _DashboardState extends State<Dashboard> {
   Widget categoryCard(
       String emoji,
       String title,
+      bool isSelected,
       ) {
     return Stack(
       clipBehavior: Clip.none,
@@ -261,10 +295,16 @@ class _DashboardState extends State<Dashboard> {
       Container(
       width: 110,
       height: 110,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(15),
-      ),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.grey.shade300 : Colors.white,
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary
+                : Colors.grey.shade300,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(15),
+        ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

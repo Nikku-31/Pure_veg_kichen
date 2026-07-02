@@ -28,15 +28,20 @@ class MenuItemVM extends ChangeNotifier {
         // All Items API
         allMenuItems = await _service.getMenuItems();
 
-        // Dashboard ke liye bhi same list
-        filteredMenuItems = allMenuItems;
+        // Search ke liye
+        menuItems = List.from(allMenuItems);
+
+        // Dashboard ke liye
+        filteredMenuItems = List.from(allMenuItems);
 
       } else {
 
         // Category Wise API
-        filteredMenuItems = await _service.getMenuItems(
+        menuItems = await _service.getMenuItems(
           categoryId: categoryId,
         );
+
+        filteredMenuItems = List.from(menuItems);
 
       }
 
@@ -45,6 +50,20 @@ class MenuItemVM extends ChangeNotifier {
     }
 
     isLoading = false;
+    notifyListeners();
+  }
+
+  void searchMenuItems(String keyword) {
+    if (keyword.trim().isEmpty) {
+      filteredMenuItems = List.from(menuItems);
+    } else {
+      filteredMenuItems = menuItems.where((item) {
+        return item.name
+            .toLowerCase()
+            .contains(keyword.toLowerCase());
+      }).toList();
+    }
+
     notifyListeners();
   }
 }

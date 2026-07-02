@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/otp.dart';
-import 'package:pure_veg/Widget/dashboard.dart';
-import 'package:pure_veg/Widget/profile.dart';
 import 'package:pure_veg/Widget/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
