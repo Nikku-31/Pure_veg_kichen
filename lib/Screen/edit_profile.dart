@@ -1,10 +1,24 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 
+import '../AppManager/ViewModel/AccountVM/edit_profile_vm.dart';
+
 class EditProfile extends StatefulWidget {
-  const EditProfile({super.key});
+  final int id;
+  final String name;
+  final String email;
+  final String phone;
+  final String address;
+  const EditProfile({super.key,
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.address,
+  });
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -14,12 +28,10 @@ class _EditProfileState extends State<EditProfile> {
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
 
-  final nameController = TextEditingController(text: "Rajesh Kumar");
-  final emailController = TextEditingController(text: "rajesh@gmail.com");
-  final phoneController = TextEditingController(text: "+91 9876543210");
-  final addressController =
-  TextEditingController(text: "Lucknow, Uttar Pradesh");
-
+  late TextEditingController nameController;
+  late TextEditingController emailController;
+  late TextEditingController phoneController;
+  late TextEditingController addressController;
   Future<void> _pickImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(
       source: source,
@@ -31,6 +43,23 @@ class _EditProfileState extends State<EditProfile> {
         _profileImage = File(image.path);
       });
     }
+  }
+  @override
+  void initState() {
+    super.initState();
+
+    nameController = TextEditingController(text: widget.name);
+    emailController = TextEditingController(text: widget.email);
+    phoneController = TextEditingController(text: widget.phone);
+    addressController = TextEditingController(text: widget.address);
+  }
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    super.dispose();
   }
 
   void _showImagePicker() {
@@ -151,6 +180,7 @@ class _EditProfileState extends State<EditProfile> {
               "Email",
               Icons.email,
               emailController,
+              readOnly: true,
             ),
 
             const SizedBox(height: 20),
@@ -170,27 +200,63 @@ class _EditProfileState extends State<EditProfile> {
             ),
             const SizedBox(height: 35),
 
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff18B88A),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+            Consumer<EditProfileVM>(
+              builder: (context, vm, child) {
+                return SizedBox(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff18B88A),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: vm.isLoading
+                        ? null
+                        : () async {
+
+                      bool success = await vm.updateProfile(
+                        id: widget.id,
+                        name: nameController.text.trim(),
+                        phone: phoneController.text.trim(),
+                      );
+
+                      if (success) {
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(vm.responseModel!.message),
+                          ),
+                        );
+
+                        Navigator.pop(context, vm.responseModel!.data);
+
+                      } else {
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Profile Update Failed"),
+                          ),
+                        );
+
+                      }
+
+                    },
+                    child: vm.isLoading
+                        ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                        : const Text(
+                      "Save Changes",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Save Changes",
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ),
@@ -201,10 +267,12 @@ class _EditProfileState extends State<EditProfile> {
   Widget buildField(
       String hint,
       IconData icon,
-      TextEditingController controller,
-      ) {
+      TextEditingController controller, {
+        bool readOnly = false,
+      }) {
     return TextField(
       controller: controller,
+      readOnly: readOnly,
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         labelText: hint,

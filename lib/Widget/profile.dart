@@ -4,7 +4,7 @@ import 'package:pure_veg/Screen/edit_profile.dart';
 import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
-
+import 'dart:io';
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -12,6 +12,13 @@ class Profile extends StatefulWidget {
   State<Profile> createState() => _ProfileState();
 }
 class _ProfileState extends State<Profile> {
+  String name = "";
+  String email = "";
+  String phone = "";
+  String address = "";
+  int id = 0;
+
+  File? profileImage;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,34 +52,39 @@ class _ProfileState extends State<Profile> {
                           CircleAvatar(
                             radius: 40,
                             backgroundColor: Colors.white,
-                            child: Text(
+                            backgroundImage:
+                            profileImage != null ? FileImage(profileImage!) : null,
+                            child: profileImage == null
+                                ? const Text(
                               "👨‍🍳",
                               style: TextStyle(fontSize: 40),
-                            ),
+                            )
+                                : null,
                           ),
                           const SizedBox(width: 15),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
+                              children: [
                                 Text(
-                                  "Rajesh Kumar",
-                                  style: TextStyle(
+                                  name,
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 5),
+                                const SizedBox(height: 5),
                                 Text(
-                                  "@rajesh.veg",
-                                  style: TextStyle(
+                                  email,
+                                  style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(height: 5),
-                                Text(
+                                const SizedBox(height: 5),
+
+                                const Text(
                                   "Member since Jan 2024",
                                   style: TextStyle(
                                     color: Colors.white70,
@@ -85,13 +97,29 @@ class _ProfileState extends State<Profile> {
                           CircleAvatar(
                             backgroundColor: Colors.white,
                             child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
+                              onPressed: () async {
+                                final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const EditProfile()
+                                    builder: (_) => EditProfile(
+                                      id:id,
+                                      name: name,
+                                      email: email,
+                                      phone: phone,
+                                      address: address,
+                                    ),
                                   ),
                                 );
+
+                                if (result != null) {
+                                  setState(() {
+                                    name = result["name"];
+                                    email = result["email"];
+                                    phone = result["phone"];
+                                    address = result["address"];
+                                    profileImage = result["image"];
+                                  });
+                                }
                               },
                               icon: const Icon(
                                 Icons.edit,

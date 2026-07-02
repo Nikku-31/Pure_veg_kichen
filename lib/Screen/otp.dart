@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pure_veg/Widget/profile.dart';
-
+import 'package:pure_veg/Screen/edit_profile.dart';
 import '../AppManager/ViewModel/AccountVM/otp_vm.dart';
 
 class Otp extends StatefulWidget {
@@ -241,7 +240,13 @@ class _OtpState extends State<Otp> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const Profile(),
+                                builder: (_) => EditProfile(
+                                  id: vm.responseModel?.user?.id ?? 0,
+                                  name:"User",
+                                  email: vm.responseModel?.user?.email ?? "",
+                                  phone: "",
+                                  address: "",
+                                ),
                               ),
                             );
                           }

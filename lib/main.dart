@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/Widget/splash_screen.dart';
+import 'AppManager/ViewModel/AccountVM/edit_profile_vm.dart';
 import 'AppManager/ViewModel/AccountVM/login_vm.dart';
 import 'AppManager/ViewModel/AccountVM/otp_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/categories_vm.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => GetVariantsVM(),),
         ChangeNotifierProvider(create: (_) => LoginVM()),
         ChangeNotifierProvider(create: (_) => OtpVM()),
+        ChangeNotifierProvider(create: (_) => EditProfileVM(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
