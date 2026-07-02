@@ -16,11 +16,11 @@ class _LoginState extends State<Login> {
   bool obscurePassword = true;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+ // final TextEditingController passwordController = TextEditingController();
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
+   // passwordController.dispose();
     super.dispose();
   }
   @override
@@ -205,50 +205,63 @@ class _LoginState extends State<Login> {
                       ),
                       const SizedBox(height: 10),
                       /// Login Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: height * 0.06,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xff0D6E63),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(width * 0.05),
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-
-                              final vm = context.read<LoginVM>();
-
-                              bool success = await vm.login(emailController.text.trim());
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(vm.loginResponse?.message ?? ""),
+                      Consumer<LoginVM>(
+                        builder: (context, vm, child) {
+                          return SizedBox(
+                            width: double.infinity,
+                            height: height * 0.06,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xff0D6E63),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(width * 0.05),
                                 ),
-                              );
+                              ),
+                              onPressed: vm.isLoading
+                                  ? null
+                                  : () async {
+                                if (_formKey.currentState!.validate()) {
+                                  bool success =
+                                  await vm.login(emailController.text.trim());
 
-                              if (success) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => Otp(
-                                       email: emailController.text.trim(),
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(vm.loginResponse?.message ?? ""),
                                     ),
-                                  ),
-                                );
-                              }
-                            }
-                          },
-                          child: Text(
-                            "Login",
-                            style: GoogleFonts.playfairDisplay(
-                              fontSize: width * 0.05,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                                  );
+
+                                  if (success) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => Otp(
+                                          email: emailController.text.trim(),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
+                              child: vm.isLoading
+                                  ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              )
+                                  : Text(
+                                "Login",
+                                style: GoogleFonts.playfairDisplay(
+                                  fontSize: width * 0.05,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 50),
                       Row(

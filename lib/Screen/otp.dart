@@ -204,62 +204,74 @@ class _OtpState extends State<Otp> {
 
                 const SizedBox(height: 35),
 
-                SizedBox(
-                  width: double.infinity,
-                  height: 58,
-                  child: ElevatedButton(
-                      onPressed: () async {
+                Consumer<OtpVM>(
+                  builder: (context, vm, child) {
+                    return SizedBox(
+                      width: double.infinity,
+                      height: 58,
+                      child: ElevatedButton(
+                        onPressed: vm.isLoading
+                            ? null
+                            : () async {
+                          String otp = controllers
+                              .map((e) => e.text)
+                              .join();
 
-                        String otp = controllers
-                            .map((e) => e.text)
-                            .join();
+                          if (otp.length != 6) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Please enter valid OTP"),
+                              ),
+                            );
+                            return;
+                          }
 
-                        if (otp.length != 6) {
+                          bool success = await vm.verifyOtp(
+                            email: widget.email,
+                            otp: otp,
+                          );
+
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Please enter valid OTP"),
+                            SnackBar(
+                              content: Text(vm.responseModel?.message ?? ""),
                             ),
                           );
-                          return;
-                        }
 
-                        final vm = context.read<OtpVM>();
-
-                        bool success = await vm.verifyOtp(
-                          email: widget.email,
-                          otp: otp,
-                        );
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(vm.responseModel?.message ?? ""),
+                          if (success) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const Profile(),
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xff2D6773),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                        );
-
-                        if (success) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const Profile(),
-                            ),
-                          );
-                        }
-                      },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xff2D6773),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: vm.isLoading
+                            ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                            : const Text(
+                          "Verify & Proceed",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      "Verify & Proceed",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             ),
