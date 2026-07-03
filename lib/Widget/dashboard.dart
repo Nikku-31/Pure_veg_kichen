@@ -6,8 +6,10 @@ import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
+import '../Screen/add_view_item.dart';
 import '../Screen/menu_item_cart.dart';
 import '../core/constants/app_colors.dart';
 class Dashboard extends StatefulWidget {
@@ -72,7 +74,7 @@ class _DashboardState extends State<Dashboard> {
             child: _selectedIndex == 0
                 ? SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -314,6 +316,72 @@ class _DashboardState extends State<Dashboard> {
                 : _selectedIndex == 1
                 ? const Center(child: Text("Bulk order"))
                 : const WishlistScreen(),
+          ),
+
+          //view button
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 16,
+            child: Consumer<AddItemVM>(
+              builder: (context, cartVM, child) {
+
+                if (cartVM.items.isEmpty) {
+                  return const SizedBox();
+                }
+
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AddViewItem(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    height: 60,
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+
+                        Expanded(
+                          child: Text(
+                            "${cartVM.totalItem} Item | ₹${cartVM.totalPrice}",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+
+                        const Text(
+                          "View Item",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(width: 8),
+
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
       ],
       ),

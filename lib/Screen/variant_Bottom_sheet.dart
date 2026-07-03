@@ -4,6 +4,8 @@ import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../AppManager/Model/DashboardM/cart_item_model.dart';
+import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 
 class VariantBottomSheet extends StatefulWidget {
@@ -351,8 +353,15 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                           // User login hai
                           final selected = vm.variants[selectedIndex];
 
-                          print(selected.label);
-                          print(selected.price);
+                          context.read<AddItemVM>().addItem(
+                            CartItemModel(
+                              itemId: selected.id,
+                              itemName: widget.itemName,
+                              variantName: selected.label,
+                              price: double.parse(selected.price),
+                              quantity: quantity,
+                            ),
+                          );
 
                           Navigator.pop(context);
 
