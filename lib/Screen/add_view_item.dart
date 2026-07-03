@@ -251,25 +251,23 @@ class AddViewItem extends StatelessWidget {
               height: 80,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff25D366),
+                  backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onPressed: () async {
-                  String message = "🛒 *New Order*%0A%0A";
+                  String message = "New Order";
         
                   for (var item in cartVM.items) {
                     message +=
-                    "• ${item.itemName} (${item.variantName})%0A"
-                        "Qty : ${item.quantity}%0A"
-                        "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}%0A%0A";
+                    "• ${item.itemName} (${item.variantName})\n"
+                        "Qty : ${item.quantity}\n"
+                        "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n";
                   }
         
                   message += "💰 *Total :* ₹${cartVM.totalPrice.toStringAsFixed(0)}";
-        
-                  // Apna WhatsApp Number (Country Code ke sath)
-                  const phone = "919876543210"; // <-- Isko apne number se replace karo
+                  const phone = "918765098423"; // <-- Isko apne number se replace karo
         
                   final Uri url = Uri.parse(
                     "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
