@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/edit_profile.dart';
+import 'package:pure_veg/Widget/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/otp_vm.dart';
 
@@ -253,17 +254,39 @@ class _OtpState extends State<Otp> {
                               "userEmail",
                               vm.responseModel?.user?.email ?? "",
                             );
-                            final result = await Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                            builder: (_) => EditProfile(
-                              id: vm.responseModel?.user?.id ?? 0,
-                              name: "",
-                              email: vm.responseModel?.user?.email ?? "",
-                              phone: "",
-                            ),
-                          ),
-                          );
+                            await prefs.setString(
+                              "userName",
+                              vm.responseModel?.user?.name ?? "",
+                            );
+
+                            await prefs.setString(
+                              "userPhone",
+                              vm.responseModel?.user?.phone ?? "",
+                            );
+                            final user = vm.responseModel!.user!;
+
+                            if ((user.name).trim().isEmpty || (user.phone).trim().isEmpty) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EditProfile(
+                                    id: user.id,
+                                    name: user.name,
+                                    email: user.email,
+                                    phone: user.phone,
+                                    fromOtp: true,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const Profile(),
+                                ),
+                                    (route) => false,
+                              );
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

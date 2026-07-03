@@ -4,17 +4,20 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import '../AppManager/ViewModel/AccountVM/edit_profile_vm.dart';
+import '../Widget/profile.dart';
 
 class EditProfile extends StatefulWidget {
   final int id;
   final String name;
   final String email;
   final String phone;
+  final bool fromOtp;
   const EditProfile({super.key,
     required this.id,
     required this.name,
     required this.email,
     required this.phone,
+    this.fromOtp = false,
   });
 
   @override
@@ -216,8 +219,17 @@ class _EditProfileState extends State<EditProfile> {
                             content: Text(vm.responseModel!.message),
                           ),
                         );
-
-                        Navigator.pop(context, true);
+                        if (widget.fromOtp) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const Profile(),
+                            ),
+                                (route) => false,
+                          );
+                        } else {
+                          Navigator.pop(context, true);
+                        }
 
                       } else {
 

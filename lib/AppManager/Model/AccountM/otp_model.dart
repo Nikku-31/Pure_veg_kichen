@@ -1,11 +1,16 @@
 class UserModel {
   final int id;
   final String email;
+  final String name;
+  final String phone;
   final int isValid;
+
 
   UserModel({
     required this.id,
     required this.email,
+    required this.name,
+    required this.phone,
     required this.isValid,
   });
 
@@ -13,6 +18,8 @@ class UserModel {
     return UserModel(
       id: json["id"] ?? 0,
       email: json["email"] ?? "",
+      name: json["name"] ?? "",
+      phone: json["phone"] ?? "",
       isValid: json["is_valid"] ?? 0,
     );
   }
