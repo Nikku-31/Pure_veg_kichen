@@ -36,10 +36,14 @@ class _ProfileState extends State<Profile> {
     final id = prefs.getInt("userId") ?? 0;
 
     if (id != 0) {
-      Provider.of<UserProfileVM>(
+      await Provider.of<UserProfileVM>(
         context,
         listen: false,
       ).getProfile(id);
+
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
   @override
@@ -115,15 +119,6 @@ class _ProfileState extends State<Profile> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                const SizedBox(height: 5),
-
-                                const Text(
-                                  "Member since Jan 2024",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
-                                  ),
-                                ),
                               ],
                             ),
                           ),
@@ -139,19 +134,12 @@ class _ProfileState extends State<Profile> {
                                       name: user?.name ?? "",
                                       email: user?.email ?? "",
                                       phone: user?.phone ?? "",
-                                      address: address,
                                     ),
                                   ),
                                 );
 
-                                if (result != null) {
-                                  setState(() {
-                                    name = result["name"];
-                                    email = result["email"];
-                                    phone = result["phone"];
-                                    address = result["address"];
-                                    profileImage = result["image"];
-                                  });
+                                if (result == true) {
+                                  await loadProfile();
                                 }
                               },
                               icon: const Icon(

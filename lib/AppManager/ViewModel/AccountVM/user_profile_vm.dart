@@ -20,6 +20,8 @@ class UserProfileVM extends ChangeNotifier {
       if (response.success) {
         user = response.data;
       }
+      isLoading = false;
+      notifyListeners();
     } catch (e) {
       print(e);
     } finally {

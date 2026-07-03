@@ -261,7 +261,6 @@ class _OtpState extends State<Otp> {
                               name: "",
                               email: vm.responseModel?.user?.email ?? "",
                               phone: "",
-                              address: "",
                             ),
                           ),
                           );
