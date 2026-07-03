@@ -33,6 +33,7 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
 
     Future.microtask(() {
+      context.read<AddItemVM>().loadCart();
       context.read<CategoriesVM>().fetchCategories(); // ya jo tumhara method hai
 
       context.read<MenuItemVM>().fetchMenuItems();

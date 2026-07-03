@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/edit_profile.dart';
+import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/otp_vm.dart';
@@ -308,7 +309,7 @@ class _OtpState extends State<Otp> {
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const Profile(),
+                                    builder: (_) => const Dashboard(),
                                   ),
                                       (route) => false,
                                 );

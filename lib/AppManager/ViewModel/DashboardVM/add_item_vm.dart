@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Model/DashboardM/cart_item_model.dart';
+import 'dart:convert';
 
 class AddItemVM extends ChangeNotifier {
   final List<CartItemModel> _items = [];
@@ -18,6 +20,35 @@ class AddItemVM extends ChangeNotifier {
     } else {
       _items.add(item);
     }
+    saveCart();
+    notifyListeners();
+  }
+
+  Future<void> saveCart() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final data = _items.map((e) => e.toJson()).toList();
+
+    await prefs.setString(
+      "cart_items",
+      jsonEncode(data),
+    );
+  }
+
+  Future<void> loadCart() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final data = prefs.getString("cart_items");
+
+    if (data == null) return;
+
+    final List decoded = jsonDecode(data);
+
+    _items.clear();
+
+    _items.addAll(
+      decoded.map((e) => CartItemModel.fromJson(e)),
+    );
 
     notifyListeners();
   }
@@ -25,6 +56,7 @@ class AddItemVM extends ChangeNotifier {
   // Quantity Increase
   void increase(int index) {
     _items[index].quantity++;
+    saveCart();
     notifyListeners();
   }
 
@@ -35,12 +67,14 @@ class AddItemVM extends ChangeNotifier {
     } else {
       _items.removeAt(index);
     }
+    saveCart();
     notifyListeners();
   }
 
   // Delete Item
   void removeItem(int index) {
     _items.removeAt(index);
+    saveCart();
     notifyListeners();
   }
 
@@ -63,8 +97,12 @@ class AddItemVM extends ChangeNotifier {
   }
 
   // Clear Cart
-  void clearCart() {
+  Future<void> clearCart() async {
     _items.clear();
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("cart_items");
+
     notifyListeners();
   }
 }

@@ -8,6 +8,7 @@ import 'package:pure_veg/core/constants/app_colors.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/user_profile_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -84,6 +85,15 @@ class _ProfileState extends State<Profile> {
                       /// Top Row
                       Row(
                         children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                          ),
                           CircleAvatar(
                             radius: 40,
                             backgroundColor: Colors.white,
@@ -358,9 +368,11 @@ class _ProfileState extends State<Profile> {
                                       backgroundColor: Colors.red,
                                     ),
                                     onPressed: () async {
-                                      final prefs = await SharedPreferences.getInstance();
+                                      // Cart Clear
+                                     await context.read<AddItemVM>().clearCart();
+                                     final prefs = await SharedPreferences.getInstance();
 
-                                      await prefs.remove("isLogin");
+                                     await prefs.remove("isLogin");
                                       await prefs.remove("userId");
                                       await prefs.remove("userEmail");
 
