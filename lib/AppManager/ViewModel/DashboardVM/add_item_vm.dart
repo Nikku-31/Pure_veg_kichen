@@ -22,23 +22,49 @@ class AddItemVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  double get totalPrice {
-    double total = 0;
+  // Quantity Increase
+  void increase(int index) {
+    _items[index].quantity++;
+    notifyListeners();
+  }
 
-    for (var e in _items) {
-      total += e.price * e.quantity;
+  // Quantity Decrease
+  void decrease(int index) {
+    if (_items[index].quantity > 1) {
+      _items[index].quantity--;
+    } else {
+      _items.removeAt(index);
     }
+    notifyListeners();
+  }
 
+  // Delete Item
+  void removeItem(int index) {
+    _items.removeAt(index);
+    notifyListeners();
+  }
+
+  // Total Items
+  int get totalItem {
+    int total = 0;
+    for (var item in _items) {
+      total += item.quantity;
+    }
     return total;
   }
 
-  int get totalItem {
-    int total = 0;
-
-    for (var e in _items) {
-      total += e.quantity;
+  // Total Price
+  double get totalPrice {
+    double total = 0;
+    for (var item in _items) {
+      total += item.price * item.quantity;
     }
-
     return total;
+  }
+
+  // Clear Cart
+  void clearCart() {
+    _items.clear();
+    notifyListeners();
   }
 }

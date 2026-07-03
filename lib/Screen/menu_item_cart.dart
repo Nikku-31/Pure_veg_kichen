@@ -74,8 +74,10 @@ class MenuItemCard extends StatelessWidget {
                             ),
                           ),
                           builder: (_) => VariantBottomSheet(
+                            itemId: item.id,
                             itemName: item.name,
-                          ),
+                            image: item.image,
+                          )
                         );
                       },
                       child: Container(

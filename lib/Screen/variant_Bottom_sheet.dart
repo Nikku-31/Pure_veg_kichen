@@ -9,11 +9,14 @@ import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 
 class VariantBottomSheet extends StatefulWidget {
+  final String itemId;
   final String itemName;
-
+  final String image;
   const VariantBottomSheet({
     super.key,
+    required this.itemId,
     required this.itemName,
+    required this.image,
   });
 
   @override
@@ -349,7 +352,6 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                             );
                             return;
                           }
-
                           // User login hai
                           final selected = vm.variants[selectedIndex];
 
@@ -359,6 +361,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                               itemName: widget.itemName,
                               variantName: selected.label,
                               price: double.parse(selected.price),
+                              image: widget.image,
                               quantity: quantity,
                             ),
                           );
