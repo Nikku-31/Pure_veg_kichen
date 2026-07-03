@@ -6,9 +6,7 @@ import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'dart:io';
-
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../AppManager/ViewModel/AccountVM/user_profile_vm.dart';
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -60,25 +58,25 @@ class _ProfileState extends State<Profile> {
 
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F5),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(15),
+      body: SingleChildScrollView(
+        child: SafeArea(
+          top: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 /// Profile Card
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(
+                    20, // left
+                    50, // top)
+                    16, // right
+                    16, // bottom
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(22),
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xff18B88A),
-                        Color(0xff1DBFA8),
-                      ],
-                    ),
+                   color: AppColors.primary
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +392,6 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ),
-      ),
     );
   }
   Widget quickActionCard({
