@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OrderItem {
   String category;
@@ -73,21 +77,27 @@ class _BulkOrderState extends State<BulkOrder> {
   List<OrderItem> orderItems = [];
 
   double members = 20;
+  Position? currentPosition;
+
+  LatLng? selectedLocation;
+
+  GoogleMapController? mapController;
+
+  bool isLoadingLocation = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF7FAF8),
-
       appBar: AppBar(
-        backgroundColor: const Color(0xff1B4332),
+        backgroundColor:AppColors.primary,
         elevation: 0,
         centerTitle: true,
         title: const Text(
           "Bulk Order",
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ),
@@ -119,8 +129,8 @@ class _BulkOrderState extends State<BulkOrder> {
 
                       ClipRRect(
                         borderRadius: BorderRadius.circular(80),
-                        child: Image.network(
-                          "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=400",
+                        child: Image.asset(
+                          "assets/image/bulk.png",
                           width: 120,
                           height: 120,
                           fit: BoxFit.cover,
@@ -291,9 +301,43 @@ class _BulkOrderState extends State<BulkOrder> {
                         label: "Delivery Area",
                         icon: Icons.location_city,
                       ),
-
                       const SizedBox(height: 15),
 
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+
+                          onPressed: isLoadingLocation
+                              ? null
+                              : getCurrentLocation,
+
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            padding:
+                            const EdgeInsets.symmetric(
+                                vertical: 15),
+                          ),
+
+                          icon: const Icon(
+                            Icons.my_location,
+                            color: Colors.white,
+                          ),
+
+                          label: Text(
+
+                            isLoadingLocation
+                                ? "Getting Location..."
+                                : "Pin My Location",
+
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+
+                          ),
+
+                        ),
+                      ),
+                      const SizedBox(height: 20,),
                       buildTextField(
                         controller: addressController,
                         label: "Address",
@@ -302,6 +346,56 @@ class _BulkOrderState extends State<BulkOrder> {
                       ),
 
                       const SizedBox(height: 25),
+
+                      if (selectedLocation != null)
+
+                        Padding(
+
+                          padding: const EdgeInsets.only(
+                            top: 15,
+                          ),
+
+                          child: SizedBox(
+
+                            height: 220,
+
+                            child: GoogleMap(
+
+                              initialCameraPosition:
+
+                              CameraPosition(
+
+                                target: selectedLocation!,
+
+                                zoom: 16,
+
+                              ),
+
+                              markers: {
+
+                                Marker(
+
+                                  markerId:
+                                  const MarkerId("location"),
+
+                                  position:
+                                  selectedLocation!,
+
+                                ),
+
+                              },
+
+                              onMapCreated: (controller) {
+
+                                mapController = controller;
+
+                              },
+
+                            ),
+
+                          ),
+
+                        ),
 
                       Row(
                         children: [
@@ -483,7 +577,7 @@ class _BulkOrderState extends State<BulkOrder> {
                         width: double.infinity,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
+                            backgroundColor:Colors.orange,
                             padding: const EdgeInsets.symmetric(vertical: 15),
                           ),
                           onPressed: () {
@@ -541,7 +635,7 @@ class _BulkOrderState extends State<BulkOrder> {
                             final item=orderItems[index];
 
                             return Card(
-
+                              color: AppColors.background,
                               child: ListTile(
 
                                 title: Text(item.item),
@@ -553,75 +647,61 @@ class _BulkOrderState extends State<BulkOrder> {
                                   child: const Icon(Icons.restaurant),
                                 ),
 
-                                trailing: SizedBox(
-                                  width: 140,
+                                trailing: FittedBox(
+                                  fit: BoxFit.scaleDown,
                                   child: Row(
-
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
 
                                       IconButton(
-
-                                        onPressed: (){
-
-                                          if(item.qty>1){
-
+                                        constraints: const BoxConstraints(),
+                                        padding: const EdgeInsets.all(4),
+                                        visualDensity: VisualDensity.compact,
+                                        onPressed: () {
+                                          if (item.qty > 1) {
                                             setState(() {
-
                                               item.qty--;
-
                                             });
-
                                           }
-
                                         },
-
                                         icon: const Icon(Icons.remove_circle),
-
                                       ),
 
-                                      Text(
-                                        item.qty.toString(),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                                        child: Text(
+                                          item.qty.toString(),
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
                                       ),
 
                                       IconButton(
-
-                                        onPressed: (){
-
+                                        constraints: const BoxConstraints(),
+                                        padding: const EdgeInsets.all(4),
+                                        visualDensity: VisualDensity.compact,
+                                        onPressed: () {
                                           setState(() {
-
                                             item.qty++;
-
                                           });
-
                                         },
-
                                         icon: const Icon(Icons.add_circle),
-
                                       ),
 
                                       IconButton(
-
-                                        onPressed: (){
-
+                                        constraints: const BoxConstraints(),
+                                        padding: const EdgeInsets.all(4),
+                                        visualDensity: VisualDensity.compact,
+                                        onPressed: () {
                                           setState(() {
-
                                             orderItems.removeAt(index);
-
                                           });
-
                                         },
-
                                         icon: const Icon(
                                           Icons.delete,
                                           color: Colors.red,
                                         ),
-
                                       ),
-
                                     ],
-
                                   ),
                                 ),
 
@@ -794,7 +874,7 @@ class _BulkOrderState extends State<BulkOrder> {
                         child: ElevatedButton.icon(
 
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: AppColors.primary,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
 
@@ -836,6 +916,9 @@ class _BulkOrderState extends State<BulkOrder> {
   }) {
     return TextFormField(
       controller: controller,
+      onChanged: (_) {
+        setState(() {});
+      },
       keyboardType: keyboard,
       maxLines: maxLines,
       validator: (value) {
@@ -872,6 +955,63 @@ class _BulkOrderState extends State<BulkOrder> {
     );
 
 }
+  Future<void> getCurrentLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      if (!serviceEnabled) return;
+
+      LocationPermission permission =
+      await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        return;
+      }
+
+      setState(() {
+        isLoadingLocation = true;
+      });
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      List<Placemark> placeMarks =
+      await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      Placemark place = placeMarks.first;
+
+      addressController.text =
+      "${place.street}, ${place.locality}, ${place.postalCode}";
+
+      areaController.text = place.locality ?? "";
+
+      pinController.text = place.postalCode ?? "";
+
+      currentPosition = position;
+
+      selectedLocation = LatLng(
+        position.latitude,
+        position.longitude,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      setState(() {
+        isLoadingLocation = false;
+      });
+    }
+  }
   Future<void> sendWhatsApp() async {
 
     if(!_formKey.currentState!.validate()){
@@ -903,6 +1043,12 @@ class _BulkOrderState extends State<BulkOrder> {
     message += "Area : ${areaController.text}\n";
 
     message += "Address : ${addressController.text}\n";
+    if(currentPosition!=null){
+
+      message +=
+      "Google Map : https://maps.google.com/?q=${currentPosition!.latitude},${currentPosition!.longitude}\n";
+
+    }
 
     message += "Members : ${members.toInt()}\n\n";
 
