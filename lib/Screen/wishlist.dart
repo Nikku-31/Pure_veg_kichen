@@ -28,12 +28,57 @@ class WishlistScreen extends StatelessWidget {
           final items = wishlistVM.wishlist;
 
           if (items.isEmpty) {
-            return const Center(
-              child: Text(
-                "Wishlist is Empty",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    SizedBox(
+                      height: 350,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/image/wishlist.png",
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                          ),
+
+                          Positioned(
+                            bottom: 15,
+                            left: 20,
+                            right: 20,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "No items in wishlist",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                const Text(
+                                  "Save your favorite food here",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  ],
                 ),
               ),
             );
