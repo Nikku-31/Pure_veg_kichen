@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
@@ -115,149 +116,155 @@ class _EditProfileState extends State<EditProfile> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xffF5F5F5),
-      appBar: AppBar(
-        iconTheme: const IconThemeData(
-            color:AppColors.background),
-
-        elevation: 0,
-        backgroundColor:AppColors.primary,
-        title: const Text(
-          "Edit Profile",
-          style: TextStyle(color: AppColors.background),
+    return PopScope(
+      canPop: !widget.fromOtp,
+      child: Scaffold(
+        backgroundColor: const Color(0xffF5F5F5),
+        appBar: AppBar(
+          automaticallyImplyLeading: !widget.fromOtp,
+          iconTheme: const IconThemeData(
+            color: AppColors.background,
+          ),
+          elevation: 0,
+          backgroundColor: AppColors.primary,
+          title: Center(
+            child: const Text(
+              "Edit Profile",
+              style: TextStyle(color: AppColors.background),
+            ),
+          ),
         ),
-       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                CircleAvatar(
-                  radius: 55,
-                  backgroundColor: Colors.white,
-                  backgroundImage:
-                  _profileImage != null ? FileImage(_profileImage!) : null,
-                  child: _profileImage == null
-                      ? const Icon(
-                    Icons.person,
-                    size: 55,
-                    color: Colors.grey,
-                  )
-                      : null,
-                ),
-                Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    onPressed: _showImagePicker,
-                    icon: const Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-
-            buildField(
-              "Full Name",
-              Icons.person,
-              nameController,
-            ),
-
-            const SizedBox(height: 20),
-
-            buildField(
-              "Email",
-              Icons.email,
-              emailController,
-              readOnly: true,
-            ),
-
-            const SizedBox(height: 20),
-
-            buildField(
-              "Phone",
-              Icons.phone,
-              phoneController,
-            ),
-
-            const SizedBox(height: 35),
-
-            Consumer<EditProfileVM>(
-              builder: (context, vm, child) {
-                return SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onPressed: vm.isLoading
-                        ? null
-                        : () async {
-
-                      bool success = await vm.updateProfile(
-                        id: widget.id,
-                        name: nameController.text.trim(),
-                        phone: phoneController.text.trim(),
-                      );
-
-                      if (success) {
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(vm.responseModel!.message),
-                          ),
-                        );
-                        if (widget.fromOtp) {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const Profile(),
-                            ),
-                                (route) => false,
-                          );
-                        } else {
-                          Navigator.pop(context, true);
-                        }
-
-                      } else {
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Profile Update Failed"),
-                          ),
-                        );
-
-                      }
-
-                    },
-                    child: vm.isLoading
-                        ? const CircularProgressIndicator(
-                      color: Colors.white,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  CircleAvatar(
+                    radius: 55,
+                    backgroundColor: Colors.white,
+                    backgroundImage:
+                    _profileImage != null ? FileImage(_profileImage!) : null,
+                    child: _profileImage == null
+                        ? const Icon(
+                      Icons.person,
+                      size: 55,
+                      color: Colors.grey,
                     )
-                        : const Text(
-                      "Save Changes",
-                      style: TextStyle(
+                        : null,
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: AppColors.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: _showImagePicker,
+                      icon: const Icon(
+                        Icons.camera_alt,
                         color: Colors.white,
-                        fontSize: 18,
                       ),
                     ),
                   ),
-                );
-              },
-            ),
-          ],
+                ],
+              ),
+              const SizedBox(height: 30),
+      
+              buildField(
+                "Full Name",
+                Icons.person,
+                nameController,
+              ),
+      
+              const SizedBox(height: 20),
+      
+              buildField(
+                "Email",
+                Icons.email,
+                emailController,
+                readOnly: true,
+              ),
+      
+              const SizedBox(height: 20),
+      
+              buildField(
+                "Phone",
+                Icons.phone,
+                phoneController,
+              ),
+      
+              const SizedBox(height: 35),
+      
+              Consumer<EditProfileVM>(
+                builder: (context, vm, child) {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      onPressed: vm.isLoading
+                          ? null
+                          : () async {
+      
+                        bool success = await vm.updateProfile(
+                          id: widget.id,
+                          name: nameController.text.trim(),
+                          phone: phoneController.text.trim(),
+                        );
+      
+                        if (success) {
+      
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(vm.responseModel!.message),
+                            ),
+                          );
+                          if (widget.fromOtp) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const Profile(),
+                              ),
+                                  (route) => false,
+                            );
+                          } else {
+                            Navigator.pop(context, true);
+                          }
+      
+                        } else {
+      
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Enter 10 digit number "),
+                            ),
+                          );
+      
+                        }
+      
+                      },
+                      child: vm.isLoading
+                          ? const CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                          : const Text(
+                        "Save Changes",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -272,6 +279,18 @@ class _EditProfileState extends State<EditProfile> {
     return TextField(
       controller: controller,
       readOnly: readOnly,
+
+      keyboardType: hint == "Phone"
+          ? TextInputType.number
+          : TextInputType.text,
+
+      inputFormatters: hint == "Phone"
+          ? [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(10),
+      ]
+          : null,
+
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         labelText: hint,

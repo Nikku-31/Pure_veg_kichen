@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_veg/Screen/bulk_order.dart';
 import 'package:pure_veg/Screen/menu_item.dart';
 import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/login.dart';
@@ -315,7 +316,7 @@ class _DashboardState extends State<Dashboard> {
               ),
             )
                 : _selectedIndex == 1
-                ? const Center(child: Text("Bulk order"))
+                ? const BulkOrder()
                 : const WishlistScreen(),
           ),
 
