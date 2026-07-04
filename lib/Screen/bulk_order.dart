@@ -4,7 +4,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:provider/provider.dart';
+import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
+import '../AppManager/ViewModel/LocationVM/get_area_vm.dart';
 class OrderItem {
   String category;
   String item;
@@ -34,14 +36,6 @@ class _BulkOrderState extends State<BulkOrder> {
   final TextEditingController pinController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-
-  List<String> categories = [
-    "Starter",
-    "Main Course",
-    "Rice",
-    "Bread",
-    "Dessert",
-  ];
   Map<String, List<String>> items = {
     "Starter": [
       "Paneer Tikka",
@@ -73,18 +67,21 @@ class _BulkOrderState extends State<BulkOrder> {
   String? selectedCategory;
   String? selectedItem;
   String? selectedVariant;
-
   List<OrderItem> orderItems = [];
-
   double members = 20;
   Position? currentPosition;
-
   LatLng? selectedLocation;
-
   GoogleMapController? mapController;
-
   bool isLoadingLocation = false;
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CategoriesVM>().fetchCategories();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +98,6 @@ class _BulkOrderState extends State<BulkOrder> {
           ),
         ),
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(18),
@@ -109,8 +105,6 @@ class _BulkOrderState extends State<BulkOrder> {
             key: _formKey,
             child: Column(
               children: [
-
-                /// HERO SECTION
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(22),
@@ -126,7 +120,6 @@ class _BulkOrderState extends State<BulkOrder> {
                   ),
                   child: Column(
                     children: [
-
                       ClipRRect(
                         borderRadius: BorderRadius.circular(80),
                         child: Image.asset(
@@ -136,9 +129,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           fit: BoxFit.cover,
                         ),
                       ),
-
                       const SizedBox(height: 18),
-
                       const Text(
                         "Bulk & Party Orders",
                         style: TextStyle(
@@ -147,9 +138,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           fontSize: 15,
                         ),
                       ),
-
                       const SizedBox(height: 10),
-
                       const Text(
                         "Feeding a crowd?\nOrder a full Veg Thali Spread",
                         textAlign: TextAlign.center,
@@ -159,9 +148,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           fontSize: 24,
                         ),
                       ),
-
                       const SizedBox(height: 12),
-
                       const Text(
                         "Fresh home-style food for birthdays,\nparties and office events.",
                         textAlign: TextAlign.center,
@@ -173,10 +160,7 @@ class _BulkOrderState extends State<BulkOrder> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 30),
-
-
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -188,9 +172,7 @@ class _BulkOrderState extends State<BulkOrder> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 8),
-
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -200,10 +182,7 @@ class _BulkOrderState extends State<BulkOrder> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 25),
-
-                /// STEP 1 CARD
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
@@ -218,10 +197,8 @@ class _BulkOrderState extends State<BulkOrder> {
                   ),
                   child: Column(
                     children: [
-
                       Row(
                         children: [
-
                           Container(
                             height: 38,
                             width: 38,
@@ -230,8 +207,7 @@ class _BulkOrderState extends State<BulkOrder> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Center(
-                              child: Text(
-                                "1",
+                              child: Text("1",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -239,13 +215,10 @@ class _BulkOrderState extends State<BulkOrder> {
                               ),
                             ),
                           ),
-
                           const SizedBox(width: 15),
-
                           const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               Text(
                                 "Your Details",
                                 style: TextStyle(
@@ -253,9 +226,7 @@ class _BulkOrderState extends State<BulkOrder> {
                                   fontSize: 17,
                                 ),
                               ),
-
                               SizedBox(height: 3),
-
                               Text(
                                 "Enter your information",
                                 style: TextStyle(
@@ -267,74 +238,100 @@ class _BulkOrderState extends State<BulkOrder> {
                           )
                         ],
                       ),
-
                       const SizedBox(height: 25),
-
                       buildTextField(
                         controller: nameController,
                         label: "Full Name",
                         icon: Icons.person,
                       ),
-
                       const SizedBox(height: 15),
-
                       buildTextField(
                         controller: phoneController,
                         label: "Mobile Number",
                         icon: Icons.phone,
                         keyboard: TextInputType.number,
                       ),
-
                       const SizedBox(height: 15),
-
                       buildTextField(
                         controller: pinController,
                         label: "PIN Code",
                         icon: Icons.pin_drop,
                         keyboard: TextInputType.number,
+                        onChanged: (value) async {
+                          if (value.length < 6) {
+                            areaController.clear();
+                            context.read<GetAreaVM>().clearArea();
+                            return;
+                          }
+                          if (value.length == 6 &&
+                              value != (context.read<GetAreaVM>().areaData?.pincode ?? "")) {
+                            final vm = context.read<GetAreaVM>();
+                            bool success = await vm.getAreaByPincode(value);
+                            if (success) {
+                              areaController.text = vm.areaData?.area ?? "";
+                            } else {
+                              areaController.clear();
+                            }
+                          }
+                        },
                       ),
-
                       const SizedBox(height: 15),
-
                       buildTextField(
                         controller: areaController,
                         label: "Delivery Area",
                         icon: Icons.location_city,
+                        readOnly: true,
+                      ),
+                      Consumer<GetAreaVM>(
+                        builder: (context, vm, child) {
+                          if(!vm.isLoading){
+                            return const SizedBox();
+                          }
+                          return const Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Fetching delivery area...",
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 15),
-
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-
                           onPressed: isLoadingLocation
                               ? null
                               : getCurrentLocation,
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             padding:
                             const EdgeInsets.symmetric(
                                 vertical: 15),
                           ),
-
                           icon: const Icon(
                             Icons.my_location,
                             color: Colors.white,
                           ),
-
                           label: Text(
-
                             isLoadingLocation
                                 ? "Getting Location..."
                                 : "Pin My Location",
-
                             style: const TextStyle(
                               color: Colors.white,
                             ),
-
                           ),
-
                         ),
                       ),
                       const SizedBox(height: 20,),
@@ -344,78 +341,45 @@ class _BulkOrderState extends State<BulkOrder> {
                         icon: Icons.home,
                         maxLines: 3,
                       ),
-
                       const SizedBox(height: 25),
-
                       if (selectedLocation != null)
-
                         Padding(
-
-                          padding: const EdgeInsets.only(
-                            top: 15,
-                          ),
-
-                          child: SizedBox(
-
-                            height: 220,
-
+                          padding: const EdgeInsets.only(top: 15,),
+                          child: SizedBox(height: 220,
                             child: GoogleMap(
-
                               initialCameraPosition:
-
                               CameraPosition(
-
                                 target: selectedLocation!,
-
                                 zoom: 16,
-
                               ),
-
                               markers: {
-
                                 Marker(
-
                                   markerId:
                                   const MarkerId("location"),
-
                                   position:
                                   selectedLocation!,
-
                                 ),
-
                               },
-
                               onMapCreated: (controller) {
-
                                 mapController = controller;
-
                               },
-
                             ),
-
                           ),
-
                         ),
-
                       Row(
                         children: [
-
                           const Icon(
                             Icons.groups,
                             color: Colors.green,
                           ),
-
                           const SizedBox(width: 10),
-
                           const Text(
                             "Number of Members",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
                           const Spacer(),
-
                           Text(
                             members.toInt().toString(),
                             style: const TextStyle(
@@ -426,7 +390,6 @@ class _BulkOrderState extends State<BulkOrder> {
                           )
                         ],
                       ),
-
                       Slider(
                         value: members,
                         min: 20,
@@ -442,9 +405,7 @@ class _BulkOrderState extends State<BulkOrder> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 30),
-
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
@@ -459,10 +420,8 @@ class _BulkOrderState extends State<BulkOrder> {
                   ),
                   child: Column(
                     children: [
-
                       Row(
                         children: [
-
                           Container(
                             height: 38,
                             width: 38,
@@ -479,22 +438,17 @@ class _BulkOrderState extends State<BulkOrder> {
                               ),
                             ),
                           ),
-
                           const SizedBox(width: 15),
-
                           const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               Text(
                                 "Pick Your Dishes",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 17),
                               ),
-
                               SizedBox(height: 3),
-
                               Text(
                                 "Select category, item & variant",
                                 style: TextStyle(
@@ -505,32 +459,41 @@ class _BulkOrderState extends State<BulkOrder> {
                           )
                         ],
                       ),
-
                       const SizedBox(height: 25),
+                      Consumer<CategoriesVM>(
+                        builder: (context, vm, child) {
 
-                      DropdownButtonFormField<String>(
-                        value: selectedCategory,
-                        decoration: inputDecoration(
-                          "Category",
-                          Icons.restaurant_menu,
-                        ),
-                        items: categories.map((e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: Text(e),
+                          if (vm.isLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          return DropdownButtonFormField<String>(
+                            value: selectedCategory,
+                            decoration: inputDecoration(
+                              "Category",
+                              Icons.restaurant_menu,
+                            ),
+                            items: vm.categories.map((category) {
+                              return DropdownMenuItem<String>(
+                                value: category.name,
+                                child: Text(category.name),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedCategory = value;
+                                selectedItem = null;
+                                selectedVariant = null;
+                              });
+
+                              // 👇 Yahin se Item API call hogi
+                            },
                           );
-                        }).toList(),
-                        onChanged: (v) {
-                          setState(() {
-                            selectedCategory = v;
-                            selectedItem = null;
-                            selectedVariant = null;
-                          });
                         },
                       ),
-
                       const SizedBox(height: 15),
-
                       DropdownButtonFormField<String>(
                         value: selectedItem,
                         decoration: inputDecoration(
@@ -549,9 +512,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           });
                         },
                       ),
-
                       const SizedBox(height: 15),
-
                       DropdownButtonFormField<String>(
                         value: selectedVariant,
                         decoration: inputDecoration(
@@ -570,9 +531,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           });
                         },
                       ),
-
                       const SizedBox(height: 20),
-
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
@@ -581,13 +540,11 @@ class _BulkOrderState extends State<BulkOrder> {
                             padding: const EdgeInsets.symmetric(vertical: 15),
                           ),
                           onPressed: () {
-
                             if (selectedCategory == null ||
                                 selectedItem == null ||
                                 selectedVariant == null) {
                               return;
                             }
-
                             setState(() {
                               orderItems.add(
                                 OrderItem(
@@ -609,11 +566,8 @@ class _BulkOrderState extends State<BulkOrder> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
                       if(orderItems.isEmpty)
-
                         const Center(
                           child: Padding(
                             padding: EdgeInsets.all(20),
@@ -623,36 +577,27 @@ class _BulkOrderState extends State<BulkOrder> {
                             ),
                           ),
                         ),
-
                       if(orderItems.isNotEmpty)
-
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: orderItems.length,
                           itemBuilder: (context,index){
-
                             final item=orderItems[index];
-
                             return Card(
                               color: AppColors.background,
                               child: ListTile(
-
                                 title: Text(item.item),
-
                                 subtitle: Text(item.variant),
-
                                 leading: CircleAvatar(
                                   backgroundColor: Colors.orange.shade100,
                                   child: const Icon(Icons.restaurant),
                                 ),
-
                                 trailing: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-
                                       IconButton(
                                         constraints: const BoxConstraints(),
                                         padding: const EdgeInsets.all(4),
@@ -666,7 +611,6 @@ class _BulkOrderState extends State<BulkOrder> {
                                         },
                                         icon: const Icon(Icons.remove_circle),
                                       ),
-
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 4),
                                         child: Text(
@@ -674,7 +618,6 @@ class _BulkOrderState extends State<BulkOrder> {
                                           style: const TextStyle(fontWeight: FontWeight.bold),
                                         ),
                                       ),
-
                                       IconButton(
                                         constraints: const BoxConstraints(),
                                         padding: const EdgeInsets.all(4),
@@ -686,7 +629,6 @@ class _BulkOrderState extends State<BulkOrder> {
                                         },
                                         icon: const Icon(Icons.add_circle),
                                       ),
-
                                       IconButton(
                                         constraints: const BoxConstraints(),
                                         padding: const EdgeInsets.all(4),
@@ -704,11 +646,8 @@ class _BulkOrderState extends State<BulkOrder> {
                                     ],
                                   ),
                                 ),
-
                               ),
-
                             );
-
                           },
                         ),
                     ],
@@ -730,10 +669,8 @@ class _BulkOrderState extends State<BulkOrder> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       Row(
                         children: [
-
                           Container(
                             height: 38,
                             width: 38,
@@ -750,22 +687,17 @@ class _BulkOrderState extends State<BulkOrder> {
                               ),
                             ),
                           ),
-
                           const SizedBox(width: 15),
-
                           const Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
                               Text(
                                 "Order Preview",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 17),
                               ),
-
                               SizedBox(height: 3),
-
                               Text(
                                 "Review your order",
                                 style: TextStyle(
@@ -774,44 +706,34 @@ class _BulkOrderState extends State<BulkOrder> {
                               )
                             ],
                           )
-
                         ],
                       ),
-
                       const SizedBox(height: 25),
-
                       Text(
                         "Name : ${nameController.text}",
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       Text(
                         "Phone : ${phoneController.text}",
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       Text(
                         "PIN : ${pinController.text}",
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       Text(
                         "Area : ${areaController.text}",
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       Text(
                         "Address : ${addressController.text}",
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       Text(
                         "Members : ${members.toInt()}",
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
-
                       const Divider(height: 35),
-
                       const Text(
                         "Selected Items",
                         style: TextStyle(
@@ -819,72 +741,52 @@ class _BulkOrderState extends State<BulkOrder> {
                           fontSize: 16,
                         ),
                       ),
-
                       const SizedBox(height: 10),
-
                       if(orderItems.isEmpty)
-
                         const Text(
                           "No Item Selected",
                           style: TextStyle(color: Colors.grey),
                         ),
-
                       if(orderItems.isNotEmpty)
-
                         ...orderItems.map((e){
-
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Row(
-
                               children: [
-
                                 const Icon(
                                   Icons.restaurant,
                                   size: 18,
                                   color: Colors.orange,
                                 ),
-
                                 const SizedBox(width: 8),
-
                                 Expanded(
                                   child: Text(
                                     "${e.item} (${e.variant})",
                                   ),
                                 ),
-
                                 Text(
                                   "x${e.qty}",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 )
-
                               ],
-
                             ),
                           );
-
                         }),
-
                       const SizedBox(height: 30),
-
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                           ),
-
                           onPressed: sendWhatsApp,
-
                           icon: const Icon(
                             Icons.message,
                             color: Colors.white,
                           ),
-
                           label: const Text(
                             "Send Order on WhatsApp",
                             style: TextStyle(
@@ -892,10 +794,8 @@ class _BulkOrderState extends State<BulkOrder> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
                         ),
                       )
-
                     ],
                   ),
                 ),
@@ -906,18 +806,23 @@ class _BulkOrderState extends State<BulkOrder> {
       ),
     );
   }
-
   Widget buildTextField({
     required TextEditingController controller,
     required String label,
     required IconData icon,
+    bool readOnly = false,
+    ValueChanged<String>? onChanged,
     int maxLines = 1,
     TextInputType keyboard = TextInputType.text,
   }) {
     return TextFormField(
       controller: controller,
-      onChanged: (_) {
+      readOnly: readOnly,
+      onChanged: (value) {
         setState(() {});
+        if(onChanged!=null){
+          onChanged(value);
+        }
       },
       keyboardType: keyboard,
       maxLines: maxLines,
@@ -953,51 +858,43 @@ class _BulkOrderState extends State<BulkOrder> {
         borderSide: BorderSide.none,
       ),
     );
-
 }
   Future<void> getCurrentLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
       if (!serviceEnabled) return;
-
       LocationPermission permission =
       await Geolocator.checkPermission();
-
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
-
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
         return;
       }
-
       setState(() {
         isLoadingLocation = true;
       });
-
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-
       List<Placemark> placeMarks =
       await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
-
       Placemark place = placeMarks.first;
-
       addressController.text =
       "${place.street}, ${place.locality}, ${place.postalCode}";
-
-      areaController.text = place.locality ?? "";
-
       pinController.text = place.postalCode ?? "";
-
+      final vm = context.read<GetAreaVM>();
+      if (pinController.text.length == 6) {
+        bool success = await vm.getAreaByPincode(pinController.text);
+        if (success) {
+          areaController.text = vm.areaData?.area ?? "";
+        }
+      }
       currentPosition = position;
-
       selectedLocation = LatLng(
         position.latitude,
         position.longitude,
@@ -1077,5 +974,4 @@ class _BulkOrderState extends State<BulkOrder> {
     }
 
   }
-
 }
