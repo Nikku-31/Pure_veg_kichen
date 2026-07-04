@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../AppManager/Model/DashboardM/menu_item_model.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
 import '../Screen/variant_Bottom_sheet.dart';
 import '../core/constants/app_colors.dart';
 
@@ -105,12 +106,59 @@ class MenuItemCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      item.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child:
+                          Consumer<WishlistVM>(
+                            builder: (context, wishlistVM, child) {
+
+                              final isWishlisted =
+                              wishlistVM.isWishlisted(item.id);
+
+                              return Row(
+                                children: [
+
+                                  Expanded(
+                                    child: Text(
+                                      item.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+
+                                  GestureDetector(
+
+                                    onTap: () async {
+
+                                      await wishlistVM.toggleWishlist(item);
+
+                                    },
+
+                                    child: Icon(
+
+                                      isWishlisted
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+
+                                      color: Colors.red,
+                                      size: 24,
+
+                                    ),
+
+                                  ),
+
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
 
                     if (item.description.trim().isNotEmpty) ...[
