@@ -387,6 +387,7 @@ class _AddViewItemState extends State<AddViewItem> {
                       await myOrderVM.saveOrder(
                         userId,
                         MyOrderModel(
+                            orderType: "Regular Order",
                           items: cartVM.items.map((e) {
                             return MyOrderItem(
                               itemId: e.itemId,

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
-
-class OrderPreview extends StatelessWidget {
+import 'package:intl/intl.dart';
+import '../AppManager/Model/OrderM/my_order_model.dart';
+import '../AppManager/ViewModel/OrderVM/my_order_vm.dart';
+import 'my_order.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+class OrderPreview extends StatefulWidget {
   final TextEditingController nameController;
   final TextEditingController phoneController;
   final TextEditingController pinController;
@@ -9,7 +15,6 @@ class OrderPreview extends StatelessWidget {
   final TextEditingController addressController;
   final double members;
   final List orderItems;
-  final VoidCallback onSend;
 
   const OrderPreview({
     super.key,
@@ -20,15 +25,27 @@ class OrderPreview extends StatelessWidget {
     required this.addressController,
     required this.members,
     required this.orderItems,
-    required this.onSend,
   });
 
   @override
+  State<OrderPreview> createState() => _OrderPreviewState();
+}
+
+class _OrderPreviewState extends State<OrderPreview> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text("Order Preview"),
         backgroundColor: AppColors.primary,
+        iconTheme: IconThemeData(
+          color: AppColors.background
+        ),
+        title: const Text("Order Preview",
+           style: TextStyle(
+             color: AppColors.background
+           ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(18),
@@ -49,27 +66,27 @@ class OrderPreview extends StatelessWidget {
             children: [
 
               Text(
-                "Name : ${nameController.text}",
+                "Name : ${widget.nameController.text}",
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                "Phone : ${phoneController.text}",
+                "Phone : ${widget.phoneController.text}",
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                "PIN : ${pinController.text}",
+                "PIN : ${widget.pinController.text}",
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                "Area : ${areaController.text}",
+                "Area : ${widget.areaController.text}",
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                "Address : ${addressController.text}",
+                "Address : ${widget.addressController.text}",
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                "Members : ${members.toInt()}",
+                "Members : ${widget.members.toInt()}",
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
 
@@ -85,14 +102,14 @@ class OrderPreview extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              if (orderItems.isEmpty)
+              if (widget.orderItems.isEmpty)
                 const Text(
                   "No Item Selected",
                   style: TextStyle(color: Colors.grey),
                 ),
 
-              if (orderItems.isNotEmpty)
-                ...orderItems.map((e) {
+              if (widget.orderItems.isNotEmpty)
+                ...widget.orderItems.map((e) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
@@ -126,7 +143,9 @@ class OrderPreview extends StatelessWidget {
                     backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  onPressed: onSend,
+                  onPressed: () async {
+                    await sendWhatsApp();
+                  },
                   icon: const Icon(
                     Icons.message,
                     color: Colors.white,
@@ -144,5 +163,109 @@ class OrderPreview extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> sendWhatsApp() async {
+
+    final prefs = await SharedPreferences.getInstance();
+    final int userId = prefs.getInt("userId") ?? 0;
+
+    String message = "";
+
+    message += "🌿 Bulk Order\n\n";
+    message += "Name : ${widget.nameController.text}\n";
+    message += "Phone : ${widget.phoneController.text}\n";
+    message += "PIN : ${widget.pinController.text}\n";
+    message += "Area : ${widget.areaController.text}\n";
+    message += "Address : ${widget.addressController.text}\n";
+    message += "Members : ${widget.members.toInt()}\n\n";
+
+    message += "Items\n";
+
+    for (var item in widget.orderItems) {
+      message +=
+      "• ${item.item} (${item.variant}) x ${item.qty}\n";
+    }
+
+    const phone = "919696660579";
+
+    final Uri url = Uri.parse(
+      "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
+    );
+
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    );
+
+    final bool? isSent = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        title: const Text("Confirm"),
+        content: const Text(
+          "Have you sent the order on WhatsApp?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text(
+              "No",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor:AppColors.primary,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Yes"),
+          ),
+        ],
+      ),
+    );
+
+    if (isSent == true) {
+
+      final myOrderVM = context.read<MyOrderVM>();
+
+      await myOrderVM.saveOrder(
+        userId,
+        MyOrderModel(
+          orderType: "Bulk Order",
+          items: widget.orderItems.map((e) {
+            return MyOrderItem(
+              itemId: 0,
+              variantId: 0,
+              itemName: e.item,
+              variantName: e.variant,
+              price: 0,
+              image: "",
+              quantity: e.qty,
+            );
+          }).toList(),
+          address: widget.addressController.text,
+          totalAmount: 0,
+          orderDate: DateFormat(
+            "dd MMM yyyy, hh:mm a",
+          ).format(DateTime.now()),
+          status: "Order Sent on WhatsApp",
+        ),
+      );
+
+      if (!mounted) return;
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const MyOrderPage(),
+        ),
+      );
+    }
   }
 }

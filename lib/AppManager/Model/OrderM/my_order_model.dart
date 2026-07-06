@@ -4,6 +4,7 @@ class MyOrderModel {
   final double totalAmount;
   final String orderDate;
   final String status;
+  final String orderType;
 
   MyOrderModel({
     required this.items,
@@ -11,6 +12,7 @@ class MyOrderModel {
     required this.totalAmount,
     required this.orderDate,
     required this.status,
+    required this.orderType,
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +22,7 @@ class MyOrderModel {
       "totalAmount": totalAmount,
       "orderDate": orderDate,
       "status": status,
+      "orderType": orderType,
     };
   }
 
@@ -32,6 +35,7 @@ class MyOrderModel {
       totalAmount: (json["totalAmount"] as num).toDouble(),
       orderDate: json["orderDate"] ?? "",
       status: json["status"] ?? "",
+      orderType: json["orderType"] ?? "",
     );
   }
 }

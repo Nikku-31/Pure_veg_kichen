@@ -714,7 +714,6 @@ class _BulkOrderState extends State<BulkOrder> {
                             addressController: addressController,
                             members: members,
                             orderItems: orderItems,
-                            onSend: sendWhatsApp,
                           ),
                         ),
                       );
@@ -855,73 +854,73 @@ class _BulkOrderState extends State<BulkOrder> {
       });
     }
   }
-  Future<void> sendWhatsApp() async {
-
-    if(!_formKey.currentState!.validate()){
-      return;
-    }
-
-    if(orderItems.isEmpty){
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please add at least one item"),
-        ),
-      );
-
-      return;
-
-    }
-
-    String message = "";
-
-    message += "🌿 Bulk Order\n\n";
-
-    message += "Name : ${nameController.text}\n";
-
-    message += "Phone : ${phoneController.text}\n";
-
-    message += "PIN : ${pinController.text}\n";
-
-    message += "Area : ${areaController.text}\n";
-
-    message += "Address : ${addressController.text}\n";
-    if(currentPosition!=null){
-
-      message +=
-      "Google Map : https://maps.google.com/?q=${currentPosition!.latitude},${currentPosition!.longitude}\n";
-
-    }
-
-    message += "Members : ${members.toInt()}\n\n";
-
-    message += "Items\n";
-
-    for(var item in orderItems){
-
-      message +=
-      "• ${item.item} (${item.variant}) x ${item.qty}\n";
-
-    }
-
-    const phone = "919935592408";
-
-    final Uri url = Uri.parse(
-      "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
-    );
-
-    try {
-      await launchUrl(
-        url,
-        mode: LaunchMode.externalApplication,
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Unable to open WhatsApp"),
-        ),
-      );
-    }
-
-  }
+  // Future<void> sendWhatsApp() async {
+  //
+  //   if(!_formKey.currentState!.validate()){
+  //     return;
+  //   }
+  //
+  //   if(orderItems.isEmpty){
+  //
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text("Please add at least one item"),
+  //       ),
+  //     );
+  //
+  //     return;
+  //
+  //   }
+  //
+  //   String message = "";
+  //
+  //   message += "🌿 Bulk Order\n\n";
+  //
+  //   message += "Name : ${nameController.text}\n";
+  //
+  //   message += "Phone : ${phoneController.text}\n";
+  //
+  //   message += "PIN : ${pinController.text}\n";
+  //
+  //   message += "Area : ${areaController.text}\n";
+  //
+  //   message += "Address : ${addressController.text}\n";
+  //   if(currentPosition!=null){
+  //
+  //     message +=
+  //     "Google Map : https://maps.google.com/?q=${currentPosition!.latitude},${currentPosition!.longitude}\n";
+  //
+  //   }
+  //
+  //   message += "Members : ${members.toInt()}\n\n";
+  //
+  //   message += "Items\n";
+  //
+  //   for(var item in orderItems){
+  //
+  //     message +=
+  //     "• ${item.item} (${item.variant}) x ${item.qty}\n";
+  //
+  //   }
+  //
+  //   const phone = "919935592408";
+  //
+  //   final Uri url = Uri.parse(
+  //     "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
+  //   );
+  //
+  //   try {
+  //     await launchUrl(
+  //       url,
+  //       mode: LaunchMode.externalApplication,
+  //     );
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text("Unable to open WhatsApp"),
+  //       ),
+  //     );
+  //   }
+  //
+  // }
 }
