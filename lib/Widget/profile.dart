@@ -171,18 +171,9 @@ class _ProfileState extends State<Profile> {
 
                   ),
                 ),
-                const SizedBox(height: 20),
-                /// Quick Actions
-                const Text(
-                  "Quick Actions",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff0B1B4D),
-                  ),
-                ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10,),
                 GridView.count(
+                  padding: EdgeInsets.all(10),
                   crossAxisCount: 2,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -201,14 +192,6 @@ class _ProfileState extends State<Profile> {
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>
                         const SaveAddress()));
                       }
-                    ),
-                    quickActionCard(
-                      icon: CupertinoIcons.arrow_counterclockwise_circle_fill,
-                      title: "My Refund",
-                    ),
-                    quickActionCard(
-                      icon: CupertinoIcons.star_circle_fill,
-                      title: "Badges",
                     ),
                   ],
                 ),
@@ -250,7 +233,7 @@ class _ProfileState extends State<Profile> {
                 //   subtitle: "Viewed 1 week ago",
                 //   trailing: "⭐ 4.7",
                 // ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 15),
                 /// Preferences
                 const Row(
                   children: [
@@ -265,7 +248,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height:5),
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -280,60 +263,10 @@ class _ProfileState extends State<Profile> {
                       ),
                       Divider(height: 1),
                       preferenceTile(
-                        title: "Notifications",
-                        trailing: const Icon(Icons.arrow_forward),
-                      ),
-                      // Divider(height: 1),
-                      // preferenceTile(
-                      //   title: "Dark Mode",
-                      //   trailing: Switch(
-                      //     value: false,
-                      //     onChanged: (value) {},
-                      //   ),
-                      // ),
-                      Divider(height: 1),
-                      preferenceTile(
-                        title: "Language",
-                        trailing: const Text(
-                          "English",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      Divider(height: 1),
-                      preferenceTile(
                         title: "Help & Support",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30),
-                /// Account
-                const Text(
-                  "Account",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff0B1B4D),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Column(
-                    children: [
-                      preferenceTile(
-                        title: "Email & Password",
-                        trailing: const Icon(Icons.arrow_forward),
-                      ),
-                      const Divider(height: 1),
+                      Divider(height: 1),
                       preferenceTile(
                         title: "Privacy Policy",
                         trailing: const Icon(Icons.arrow_forward),
@@ -369,10 +302,10 @@ class _ProfileState extends State<Profile> {
                                     ),
                                     onPressed: () async {
                                       // Cart Clear
-                                     await context.read<AddItemVM>().clearCart();
-                                     final prefs = await SharedPreferences.getInstance();
+                                      await context.read<AddItemVM>().clearCart();
+                                      final prefs = await SharedPreferences.getInstance();
 
-                                     await prefs.remove("isLogin");
+                                      await prefs.remove("isLogin");
                                       await prefs.remove("userId");
                                       await prefs.remove("userEmail");
 
@@ -397,6 +330,20 @@ class _ProfileState extends State<Profile> {
                           );
                         },
                       ),
+                    ],
+                  ),
+                ),
+                Divider(height: 1),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Column(
+                    children: [
+
+
                     ],
                   ),
                 ),
