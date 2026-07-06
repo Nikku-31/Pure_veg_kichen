@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/edit_profile.dart';
+import 'package:pure_veg/Screen/my_order.dart';
 import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
@@ -184,6 +185,10 @@ class _ProfileState extends State<Profile> {
                     quickActionCard(
                       icon: CupertinoIcons.cube_box_fill,
                       title: "My Order",
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                        const MyOrderPage()));
+                      }
                     ),
                     quickActionCard(
                       icon: CupertinoIcons.location_solid,
@@ -333,21 +338,7 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-                Divider(height: 1),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: Column(
-                    children: [
-
-
-                    ],
-                  ),
-                ),
-              ],
+               ],
             ),
           ),
         ),
@@ -388,59 +379,6 @@ class _ProfileState extends State<Profile> {
             ),
           ],
         ),
-      ),
-    );
-  }
-  Widget activityCard({
-    required String title,
-    required String subtitle,
-    required String trailing,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 14,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff0B1B4D),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            trailing,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -2,6 +2,7 @@ class CartItemModel {
   final int itemId;
   final String itemName;
   final String variantName;
+  final int variantId;
   final double price;
   final String image;
   int quantity;
@@ -10,6 +11,7 @@ class CartItemModel {
     required this.itemId,
     required this.itemName,
     required this.variantName,
+    required this.variantId,
     required this.price,
     required this.image,
     required this.quantity,
@@ -19,6 +21,7 @@ class CartItemModel {
       "itemId": itemId,
       "itemName": itemName,
       "variantName": variantName,
+      "variantId": variantId,
       "price": price,
       "image": image,
       "quantity": quantity,
@@ -30,6 +33,7 @@ class CartItemModel {
       itemId: json["itemId"],
       itemName: json["itemName"],
       variantName: json["variantName"],
+      variantId: json["variantId"],
       price: (json["price"] as num).toDouble(),
       image: json["image"],
       quantity: json["quantity"],

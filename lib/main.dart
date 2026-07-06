@@ -12,6 +12,8 @@ import 'AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
 import 'AppManager/ViewModel/LocationVM/get_area_vm.dart';
+import 'AppManager/ViewModel/OrderVM/my_order_vm.dart';
+import 'AppManager/ViewModel/OrderVM/place_order_vm.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,6 +36,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AddItemVM()),
         ChangeNotifierProvider(create: (_) => GetAreaVM(),),
         ChangeNotifierProvider(create: (_) => WishlistVM()..loadWishlist(),),
+        ChangeNotifierProvider(create: (_) => PlaceOrderVM(),),
+        ChangeNotifierProvider(create: (_) => MyOrderVM(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

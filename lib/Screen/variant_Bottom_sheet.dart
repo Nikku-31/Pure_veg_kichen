@@ -357,8 +357,9 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
 
                           context.read<AddItemVM>().addItem(
                             CartItemModel(
-                              itemId: selected.id,
+                              itemId: int.parse(widget.itemId),
                               itemName: widget.itemName,
+                              variantId: selected.id,
                               variantName: selected.label,
                               price: double.parse(selected.price),
                               image: widget.image,
