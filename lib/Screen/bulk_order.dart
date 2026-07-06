@@ -10,6 +10,7 @@ import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import '../AppManager/ViewModel/LocationVM/get_area_vm.dart';
+import 'order_preview.dart';
 class OrderItem {
   String category;
   String item;
@@ -674,150 +675,41 @@ class _BulkOrderState extends State<BulkOrder> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 30),
-                Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade200,
-                        blurRadius: 8,
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 38,
-                            width: 38,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff1B4332),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Center(
-                              child: Text(
-                                "3",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 15),
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Order Preview",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 17),
-                              ),
-                              SizedBox(height: 3),
-                              Text(
-                                "Review your order",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 25),
-                      Text(
-                        "Name : ${nameController.text}",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "Phone : ${phoneController.text}",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "PIN : ${pinController.text}",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "Area : ${areaController.text}",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "Address : ${addressController.text}",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        "Members : ${members.toInt()}",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      const Divider(height: 35),
-                      const Text(
-                        "Selected Items",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      if(orderItems.isEmpty)
-                        const Text(
-                          "No Item Selected",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      if(orderItems.isNotEmpty)
-                        ...orderItems.map((e){
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.restaurant,
-                                  size: 18,
-                                  color: Colors.orange,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    "${e.item} (${e.variant})",
-                                  ),
-                                ),
-                                Text(
-                                  "x${e.qty}",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        }),
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                          onPressed: sendWhatsApp,
-                          icon: const Icon(
-                            Icons.message,
-                            color: Colors.white,
-                          ),
-                          label: const Text(
-                            "Send Order on WhatsApp",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                const SizedBox(height: 25),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    onPressed: () {
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => OrderPreview(
+                            nameController: nameController,
+                            phoneController: phoneController,
+                            pinController: pinController,
+                            areaController: areaController,
+                            addressController: addressController,
+                            members: members,
+                            orderItems: orderItems,
+                            onSend: sendWhatsApp,
                           ),
                         ),
-                      )
-                    ],
+                      );
+
+                    },
+                    child: const Text(
+                      "Next",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
               ],
