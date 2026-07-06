@@ -11,6 +11,7 @@ import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import '../AppManager/ViewModel/LocationVM/get_area_vm.dart';
 import 'order_preview.dart';
+import 'package:flutter/services.dart';
 class OrderItem {
   String category;
   String item;
@@ -686,6 +687,22 @@ class _BulkOrderState extends State<BulkOrder> {
                     ),
                     onPressed: () {
 
+                      // Form validation
+                      if (!_formKey.currentState!.validate()) {
+                        return;
+                      }
+
+                      // At least one item selected hona chahiye
+                      if (orderItems.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please add at least one item"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      // Sab sahi hai to next page open hoga
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -701,7 +718,6 @@ class _BulkOrderState extends State<BulkOrder> {
                           ),
                         ),
                       );
-
                     },
                     child: const Text(
                       "Next",
@@ -738,11 +754,28 @@ class _BulkOrderState extends State<BulkOrder> {
         }
       },
       keyboardType: keyboard,
+      inputFormatters: controller == phoneController
+          ? [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(10),
+      ]
+          : controller == pinController
+          ? [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(6),
+      ]
+          : null,
       maxLines: maxLines,
       validator: (value) {
-        if (value == null || value.isEmpty) {
+        if (value == null || value.trim().isEmpty) {
           return "Required";
         }
+        if (controller == phoneController) {
+          if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+            return "Enter valid 10 digit mobile number";
+          }
+        }
+
         return null;
       },
       decoration: InputDecoration(
@@ -871,19 +904,23 @@ class _BulkOrderState extends State<BulkOrder> {
 
     }
 
+    const phone = "919935592408";
+
     final Uri url = Uri.parse(
-
-        "https://wa.me/919935592408?text=${Uri.encodeComponent(message)}"
-
+      "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
     );
 
-    if(await canLaunchUrl(url)){
-
+    try {
       await launchUrl(
         url,
         mode: LaunchMode.externalApplication,
       );
-
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Unable to open WhatsApp"),
+        ),
+      );
     }
 
   }
