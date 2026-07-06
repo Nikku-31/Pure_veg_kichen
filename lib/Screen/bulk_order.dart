@@ -96,60 +96,75 @@ class _BulkOrderState extends State<BulkOrder> {
                     ),
                   ),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(80),
-                        child: Image.asset(
-                          "assets/image/bulk.png",
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.cover,
-                        ),
+                      // Image + Heading
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(80),
+                            child: Image.asset(
+                              "assets/image/bulk.png",
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Bulk & Party Orders",
+                                  style: TextStyle(
+                                    color: Colors.orangeAccent,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                SizedBox(height: 15),
+                                Text(
+                                  "Feeding a crowd? Order a full Veg Thali Spread",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 18),
+
+                      const SizedBox(height: 5),
+
+                      // Bottom Description
                       const Text(
-                        "Bulk & Party Orders",
+                        "Fresh home-style food for birthdays,parties and office events.",
                         style: TextStyle(
-                          color: Colors.orangeAccent,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "Feeding a crowd?\nOrder a full Veg Thali Spread",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        "Fresh home-style food for birthdays,\nparties and office events.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white70,
+                          color: AppColors.background,
                           fontSize: 15,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Bulk Order",
                     style: TextStyle(
                       color: Colors.green.shade900,
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -159,7 +174,7 @@ class _BulkOrderState extends State<BulkOrder> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
@@ -203,7 +218,6 @@ class _BulkOrderState extends State<BulkOrder> {
                                   fontSize: 17,
                                 ),
                               ),
-                              SizedBox(height: 3),
                               Text(
                                 "Enter your information",
                                 style: TextStyle(
@@ -215,55 +229,71 @@ class _BulkOrderState extends State<BulkOrder> {
                           )
                         ],
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height:10),
                       buildTextField(
                         controller: nameController,
                         label: "Full Name",
                         icon: Icons.person,
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 10),
                       buildTextField(
                         controller: phoneController,
                         label: "Mobile Number",
                         icon: Icons.phone,
                         keyboard: TextInputType.number,
                       ),
-                      const SizedBox(height: 15),
-                      buildTextField(
-                        controller: pinController,
-                        label: "PIN Code",
-                        icon: Icons.pin_drop,
-                        keyboard: TextInputType.number,
-                        onChanged: (value) async {
-                          if (value.length < 6) {
-                            areaController.clear();
-                            context.read<GetAreaVM>().clearArea();
-                            return;
-                          }
-                          if (value.length == 6 &&
-                              value != (context.read<GetAreaVM>().areaData?.pincode ?? "")) {
-                            final vm = context.read<GetAreaVM>();
-                            bool success = await vm.getAreaByPincode(value);
-                            if (success) {
-                              areaController.text = vm.areaData?.area ?? "";
-                            } else {
-                              areaController.clear();
-                            }
-                          }
-                        },
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildTextField(
+                              controller: pinController,
+                              label: "PIN Code",
+                              icon: Icons.pin_drop,
+                              keyboard: TextInputType.number,
+                              onChanged: (value) async {
+                                if (value.length < 6) {
+                                  areaController.clear();
+                                  context.read<GetAreaVM>().clearArea();
+                                  return;
+                                }
+
+                                if (value.length == 6 &&
+                                    value !=
+                                        (context.read<GetAreaVM>().areaData?.pincode ?? "")) {
+                                  final vm = context.read<GetAreaVM>();
+
+                                  bool success = await vm.getAreaByPincode(value);
+
+                                  if (success) {
+                                    areaController.text = vm.areaData?.area ?? "";
+                                  } else {
+                                    areaController.clear();
+                                  }
+                                }
+                              },
+                            ),
+                          ),
+
+                          const SizedBox(width: 12),
+
+                          Expanded(
+                            child: buildTextField(
+                              controller: areaController,
+                              label: "Delivery Area",
+                              icon: Icons.location_city,
+                              readOnly: true,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 15),
-                      buildTextField(
-                        controller: areaController,
-                        label: "Delivery Area",
-                        icon: Icons.location_city,
-                        readOnly: true,
-                      ),
+
                       Consumer<GetAreaVM>(
                         builder: (context, vm, child) {
-                          if(!vm.isLoading){
+                          if (!vm.isLoading) {
                             return const SizedBox();
                           }
+
                           return const Padding(
                             padding: EdgeInsets.only(top: 8),
                             child: Row(
@@ -276,49 +306,20 @@ class _BulkOrderState extends State<BulkOrder> {
                                   ),
                                 ),
                                 SizedBox(width: 10),
-                                Text(
-                                  "Fetching delivery area...",
-                                ),
+                                Text("Fetching delivery area..."),
                               ],
                             ),
                           );
                         },
                       ),
-                      const SizedBox(height: 15),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: isLoadingLocation
-                              ? null
-                              : getCurrentLocation,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            padding:
-                            const EdgeInsets.symmetric(
-                                vertical: 15),
-                          ),
-                          icon: const Icon(
-                            Icons.my_location,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            isLoadingLocation
-                                ? "Getting Location..."
-                                : "Pin My Location",
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(height: 10,),
                       buildTextField(
                         controller: addressController,
                         label: "Address",
                         icon: Icons.home,
                         maxLines: 3,
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 10),
                       if (selectedLocation != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 15,),
@@ -382,15 +383,14 @@ class _BulkOrderState extends State<BulkOrder> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height:10),
                 Container(
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade200,
+                      BoxShadow(color: Colors.grey.shade200,
                         blurRadius: 8,
                       )
                     ],
@@ -436,7 +436,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           )
                         ],
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height:15),
                       Consumer<CategoriesVM>(
                         builder: (context, vm, child) {
 
@@ -472,7 +472,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           );
                         },
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 10),
                       Consumer<MenuItemVM>(
                         builder: (context, itemVM, child) {
 
@@ -519,7 +519,7 @@ class _BulkOrderState extends State<BulkOrder> {
                         },
                       ),
 
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 10),
                       Consumer<GetVariantsVM>(
                         builder: (context, variantVM, child) {
 
@@ -551,7 +551,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           );
                         },
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
@@ -587,7 +587,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       if(orderItems.isEmpty)
                         const Center(
                           child: Padding(
