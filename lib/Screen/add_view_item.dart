@@ -267,8 +267,7 @@ class AddViewItem extends StatelessWidget {
                   }
         
                   message += "💰 *Total :* ₹${cartVM.totalPrice.toStringAsFixed(0)}";
-                  const phone = "918765098423"; // <-- Isko apne number se replace karo
-        
+                  const phone = "919935592408";
                   final Uri url = Uri.parse(
                     "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
                   );

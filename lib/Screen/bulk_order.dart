@@ -5,7 +5,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import '../AppManager/Model/DashboardM/menu_item_model.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import '../AppManager/ViewModel/LocationVM/get_area_vm.dart';
 class OrderItem {
   String category;
@@ -36,37 +39,11 @@ class _BulkOrderState extends State<BulkOrder> {
   final TextEditingController pinController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-  Map<String, List<String>> items = {
-    "Starter": [
-      "Paneer Tikka",
-      "Veg Manchurian",
-      "Spring Roll",
-    ],
-    "Main Course": [
-      "Shahi Paneer",
-      "Dal Makhani",
-      "Mix Veg",
-    ],
-    "Rice": [
-      "Jeera Rice",
-      "Veg Biryani",
-    ],
-    "Bread": [
-      "Butter Naan",
-      "Tandoori Roti",
-    ],
-    "Dessert": [
-      "Gulab Jamun",
-      "Rasgulla",
-    ],
-  };
-  List<String> variants = [
-    "Half",
-    "Full",
-  ];
-  String? selectedCategory;
-  String? selectedItem;
+  String? selectedCategoryId;
+  String? selectedItemId;
   String? selectedVariant;
+
+  MenuItemModel? selectedMenuItem;
   List<OrderItem> orderItems = [];
   double members = 20;
   Position? currentPosition;
@@ -470,65 +447,108 @@ class _BulkOrderState extends State<BulkOrder> {
                           }
 
                           return DropdownButtonFormField<String>(
-                            value: selectedCategory,
+                            value: selectedCategoryId,
                             decoration: inputDecoration(
                               "Category",
                               Icons.restaurant_menu,
                             ),
                             items: vm.categories.map((category) {
                               return DropdownMenuItem<String>(
-                                value: category.name,
+                                value: category.id.toString(),
                                 child: Text(category.name),
                               );
                             }).toList(),
-                            onChanged: (value) {
+                            onChanged: (value) async {
                               setState(() {
-                                selectedCategory = value;
-                                selectedItem = null;
+                                selectedCategoryId = value;
+                                selectedItemId = null;
                                 selectedVariant = null;
+                                selectedMenuItem = null;
                               });
-
-                              // 👇 Yahin se Item API call hogi
+                              await context.read<MenuItemVM>().fetchMenuItems(
+                                categoryId: value,
+                              );
                             },
                           );
                         },
                       ),
                       const SizedBox(height: 15),
-                      DropdownButtonFormField<String>(
-                        value: selectedItem,
-                        decoration: inputDecoration(
-                          "Item",
-                          Icons.fastfood,
-                        ),
-                        items: (items[selectedCategory] ?? []).map((e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: Text(e),
+                      Consumer<MenuItemVM>(
+                        builder: (context, itemVM, child) {
+
+                          if (itemVM.isLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          return DropdownButtonFormField<String>(
+                            value: selectedItemId,
+                            decoration: inputDecoration(
+                              "Item",
+                              Icons.fastfood,
+                            ),
+                            items: itemVM.menuItems.map((item) {
+                              return DropdownMenuItem<String>(
+                                value: item.id,
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.55,
+                                  child: Text(
+                                    item.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) async {
+                              final item = itemVM.menuItems.firstWhere(
+                                    (e) => e.id == value,
+                              );
+                              setState(() {
+                                selectedItemId = value;
+                                selectedMenuItem = item;
+                                selectedVariant = null;
+                              });
+
+                              await context.read<GetVariantsVM>().getVariants(
+                                int.parse(item.id),
+                              );
+                            },
                           );
-                        }).toList(),
-                        onChanged: (v) {
-                          setState(() {
-                            selectedItem = v;
-                          });
                         },
                       ),
+
                       const SizedBox(height: 15),
-                      DropdownButtonFormField<String>(
-                        value: selectedVariant,
-                        decoration: inputDecoration(
-                          "Variant",
-                          Icons.layers,
-                        ),
-                        items: variants.map((e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: Text(e),
+                      Consumer<GetVariantsVM>(
+                        builder: (context, variantVM, child) {
+
+                          if (variantVM.isLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
+                          return DropdownButtonFormField<String>(
+                            value: selectedVariant,
+                            decoration: inputDecoration(
+                              "Variant",
+                              Icons.layers,
+                            ),
+                            items: variantVM.variants.map((variant) {
+                              return DropdownMenuItem<String>(
+                                value: variant.value,
+                                child: Text(
+                                  "${variant.label} (${variant.price})",
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedVariant = value;
+                              });
+                            },
                           );
-                        }).toList(),
-                        onChanged: (v) {
-                          setState(() {
-                            selectedVariant = v;
-                          });
                         },
                       ),
                       const SizedBox(height: 20),
@@ -540,23 +560,24 @@ class _BulkOrderState extends State<BulkOrder> {
                             padding: const EdgeInsets.symmetric(vertical: 15),
                           ),
                           onPressed: () {
-                            if (selectedCategory == null ||
-                                selectedItem == null ||
+                            if (selectedCategoryId == null ||
+                                selectedMenuItem == null ||
                                 selectedVariant == null) {
                               return;
                             }
                             setState(() {
                               orderItems.add(
                                 OrderItem(
-                                  category: selectedCategory!,
-                                  item: selectedItem!,
+                                  category: selectedCategoryId!,
+                                  item: selectedMenuItem!.name,
                                   variant: selectedVariant!,
                                 ),
                               );
 
-                              selectedCategory = null;
-                              selectedItem = null;
+                              selectedCategoryId = null;
+                              selectedItemId = null;
                               selectedVariant = null;
+                              selectedMenuItem = null;
                             });
                           },
                           icon: const Icon(Icons.add,color: Colors.white),

@@ -321,70 +321,67 @@ class _DashboardState extends State<Dashboard> {
           ),
 
           //view button
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16,
-            child: Consumer<AddItemVM>(
-              builder: (context, cartVM, child) {
+          if (_selectedIndex == 0)
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 16,
+              child: Consumer<AddItemVM>(
+                builder: (context, cartVM, child) {
 
-                if (cartVM.items.isEmpty) {
-                  return const SizedBox();
-                }
+                  if (cartVM.items.isEmpty) {
+                    return const SizedBox();
+                  }
 
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AddViewItem(),
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AddViewItem(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 60,
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                    );
-                  },
-                  child: Container(
-                    height: 60,
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-
-                        Expanded(
-                          child: Text(
-                            "${cartVM.totalItem} Item | ₹${cartVM.totalPrice}",
-                            style: const TextStyle(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "${cartVM.totalItem} Item | ₹${cartVM.totalPrice}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            "View Item",
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 17,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
-
-                        const Text(
-                          "View Item",
-                          style: TextStyle(
+                          const SizedBox(width: 8),
+                          const Icon(
+                            Icons.arrow_forward_ios,
                             color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            size: 18,
                           ),
-                        ),
-
-                        const SizedBox(width: 8),
-
-                        const Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
       ],
       ),
       // BOTTOM NAVIGATION
