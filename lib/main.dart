@@ -13,6 +13,8 @@ import 'AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
 import 'AppManager/ViewModel/LocationVM/get_area_vm.dart';
+import 'AppManager/ViewModel/OrderVM/get_order_details_vm.dart';
+import 'AppManager/ViewModel/OrderVM/get_order_item_vm.dart';
 import 'AppManager/ViewModel/OrderVM/my_order_vm.dart';
 import 'AppManager/ViewModel/OrderVM/place_order_vm.dart';
 
@@ -40,6 +42,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PlaceOrderVM(),),
         ChangeNotifierProvider(create: (_) => MyOrderVM(),),
         ChangeNotifierProvider(create: (_) => ProfileImageVM()..loadImage(),),
+        ChangeNotifierProvider(create: (_) => GetOrderItemsVM(),),
+        ChangeNotifierProvider(create: (_) => GetOrderDetailsVM(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
