@@ -143,7 +143,6 @@ class _DashboardState extends State<Dashboard> {
                         controller: _searchController,
                         onChanged: (value) async {
                           final vm = context.read<MenuItemVM>();
-
                           if (value.trim().isNotEmpty) {
                             // Search hamesha all items par hoga
                             await vm.fetchMenuItems();

@@ -71,6 +71,16 @@ class AddItemVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  int getItemIndex(int itemId) {
+    return _items.indexWhere((e) => e.itemId == itemId);
+  }
+
+  int getItemQuantity(int itemId) {
+    final index = getItemIndex(itemId);
+    if (index == -1) return 0;
+    return _items[index].quantity;
+  }
+
   // Delete Item
   void removeItem(int index) {
     _items.removeAt(index);
@@ -95,6 +105,7 @@ class AddItemVM extends ChangeNotifier {
     }
     return total;
   }
+
 
   // Clear Cart
   Future<void> clearCart() async {

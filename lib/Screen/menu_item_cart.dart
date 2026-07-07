@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../AppManager/Model/DashboardM/menu_item_model.dart';
+import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
 import '../Screen/variant_Bottom_sheet.dart';
@@ -51,54 +52,109 @@ class MenuItemCard extends StatelessWidget {
                   Positioned(
                     top: 6,
                     right: 6,
-                    child: GestureDetector(
-                      onTap: () async {
-                        final variantVM = Provider.of<GetVariantsVM>(
-                          context,
-                          listen: false,
-                        );
+                    child: Consumer<AddItemVM>(
+                      builder: (context, cartVM, child) {
 
-                        final itemId = int.tryParse(item.id);
+                        final index = cartVM.getItemIndex(int.parse(item.id));
 
-                        if (itemId == null) return;
+                        if (index == -1) {
+                          // ========= SAME OLD + BUTTON =========
 
-                        await variantVM.getVariants(itemId);
+                          return GestureDetector(
+                            onTap: () async {
+                              final variantVM =
+                              Provider.of<GetVariantsVM>(context, listen: false);
 
-                        if (!context.mounted) return;
+                              final itemId = int.tryParse(item.id);
 
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
+                              if (itemId == null) return;
+
+                              await variantVM.getVariants(itemId);
+
+                              if (!context.mounted) return;
+
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20),
+                                  ),
+                                ),
+                                builder: (_) => VariantBottomSheet(
+                                  itemId: item.id,
+                                  itemName: item.name,
+                                  image: item.image,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.all(4),
+                              child: const Icon(
+                                Icons.add,
+                                color: Colors.black,
+                                size: 20,
+                              ),
                             ),
+                          );
+                        }
+
+                        return Container(
+                          height: 30,
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          decoration: BoxDecoration(
+                            color:Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          builder: (_) => VariantBottomSheet(
-                            itemId: item.id,
-                            itemName: item.name,
-                            image: item.image,
-                          )
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  cartVM.decrease(index);
+                                },
+                                child: const Icon(
+                                  Icons.remove,
+                                  color: Colors.black,
+                                  size: 18,
+                                ),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 6),
+                                child: Text(
+                                  "${cartVM.getItemQuantity(int.parse(item.id))}",
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+
+                              GestureDetector(
+                                onTap: () {
+                                  cartVM.increase(index);
+                                },
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.black,
+                                  size: 18,
+                                ),
+                              ),
+
+                            ],
+                          ),
                         );
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.all(4),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.black,
-                          size: 20,
-                        ),
-                      ),
                     ),
                   ),
                 ],
               ),
             ),
-
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/edit_profile_vm.dart';
@@ -258,7 +259,7 @@ class _EditProfileState extends State<EditProfile> {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const Profile(),
+                                builder: (_) => const Dashboard(),
                               ),
                                   (route) => false,
                             );
