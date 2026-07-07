@@ -5,6 +5,7 @@ import 'package:pure_veg/Screen/edit_profile.dart';
 import 'package:pure_veg/Widget/dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/otp_vm.dart';
+import '../AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
 
 class Otp extends StatefulWidget {
@@ -276,6 +277,7 @@ class _OtpState extends State<Otp> {
                                 "userId",
                                 vm.responseModel?.user?.id ?? 0,
                               );
+                              await context.read<ProfileImageVM>().loadImage();
                               await context.read<WishlistVM>().loadWishlist();
         
                               await prefs.setString(

@@ -166,7 +166,6 @@ class _OrderPreviewState extends State<OrderPreview> {
   }
 
   Future<void> sendWhatsApp() async {
-
     final prefs = await SharedPreferences.getInstance();
     final int userId = prefs.getInt("userId") ?? 0;
 
@@ -183,8 +182,7 @@ class _OrderPreviewState extends State<OrderPreview> {
     message += "Items\n";
 
     for (var item in widget.orderItems) {
-      message +=
-      "• ${item.item} (${item.variant}) x ${item.qty}\n";
+      message += "• ${item.item} (${item.variant}) x ${item.qty}\n";
     }
 
     const phone = "919696660579";
@@ -193,11 +191,7 @@ class _OrderPreviewState extends State<OrderPreview> {
       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
     );
 
-    await launchUrl(
-      url,
-      mode: LaunchMode.externalApplication,
-    );
-
+    /// Show popup first
     final bool? isSent = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -208,7 +202,7 @@ class _OrderPreviewState extends State<OrderPreview> {
         ),
         title: const Text("Confirm"),
         content: const Text(
-          "Have you sent the order on WhatsApp?",
+          "Do you want to send this order on WhatsApp?",
         ),
         actions: [
           TextButton(
@@ -220,7 +214,7 @@ class _OrderPreviewState extends State<OrderPreview> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor:AppColors.primary,
+              backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(context, true),
@@ -230,42 +224,49 @@ class _OrderPreviewState extends State<OrderPreview> {
       ),
     );
 
-    if (isSent == true) {
+    /// No -> Stay on same page
+    if (isSent != true) return;
 
-      final myOrderVM = context.read<MyOrderVM>();
+    /// Open WhatsApp
+    await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    );
 
-      await myOrderVM.saveOrder(
-        userId,
-        MyOrderModel(
-          orderType: "Bulk Order",
-          items: widget.orderItems.map((e) {
-            return MyOrderItem(
-              itemId: 0,
-              variantId: 0,
-              itemName: e.item,
-              variantName: e.variant,
-              price: 0,
-              image: "",
-              quantity: e.qty,
-            );
-          }).toList(),
-          address: widget.addressController.text,
-          totalAmount: 0,
-          orderDate: DateFormat(
-            "dd MMM yyyy, hh:mm a",
-          ).format(DateTime.now()),
-          status: "Order Sent on WhatsApp",
-        ),
-      );
+    /// Save Order
+    final myOrderVM = context.read<MyOrderVM>();
 
-      if (!mounted) return;
+    await myOrderVM.saveOrder(
+      userId,
+      MyOrderModel(
+        orderType: "Bulk Order",
+        items: widget.orderItems.map((e) {
+          return MyOrderItem(
+            itemId: 0,
+            variantId: 0,
+            itemName: e.item,
+            variantName: e.variant,
+            price: 0,
+            image: "",
+            quantity: e.qty,
+          );
+        }).toList(),
+        address: widget.addressController.text,
+        totalAmount: 0,
+        orderDate: DateFormat(
+          "dd MMM yyyy, hh:mm a",
+        ).format(DateTime.now()),
+        status: "Order Sent on WhatsApp",
+      ),
+    );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const MyOrderPage(),
-        ),
-      );
-    }
+    if (!mounted) return;
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const MyOrderPage(),
+      ),
+    );
   }
 }

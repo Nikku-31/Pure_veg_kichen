@@ -8,6 +8,7 @@ import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import '../AppManager/ViewModel/AccountVM/user_profile_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 class Profile extends StatefulWidget {
@@ -22,7 +23,6 @@ class _ProfileState extends State<Profile> {
   String phone = "";
   String address = "";
   int id = 0;
-  File? profileImage;
 
   @override
   void initState() {
@@ -40,10 +40,10 @@ class _ProfileState extends State<Profile> {
         context,
         listen: false,
       ).getProfile(id);
+    }
 
-      if (mounted) {
-        setState(() {});
-      }
+    if (mounted) {
+      setState(() {});
     }
   }
   @override
@@ -95,17 +95,22 @@ class _ProfileState extends State<Profile> {
                               color: Colors.white,
                             ),
                           ),
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: Colors.white,
-                            backgroundImage:
-                            profileImage != null ? FileImage(profileImage!) : null,
-                            child: profileImage == null
-                                ? const Text(
-                              "👨‍🍳",
-                              style: TextStyle(fontSize: 40),
-                            )
-                                : null,
+                          Consumer<ProfileImageVM>(
+                            builder: (context, imageVM, child) {
+                              return CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.white,
+                                backgroundImage: imageVM.image != null
+                                    ? FileImage(imageVM.image!)
+                                    : null,
+                                child: imageVM.image == null
+                                    ? const Text(
+                                  "👨‍🍳",
+                                  style: TextStyle(fontSize: 40),
+                                )
+                                    : null,
+                              );
+                            },
                           ),
                           const SizedBox(width: 15),
                           Expanded(

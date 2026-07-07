@@ -7,6 +7,7 @@ import 'package:pure_veg/Screen/wishlist.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/Widget/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
@@ -36,7 +37,7 @@ class _DashboardState extends State<Dashboard> {
     Future.microtask(() {
       context.read<AddItemVM>().loadCart();
       context.read<CategoriesVM>().fetchCategories(); // ya jo tumhara method hai
-
+      context.read<ProfileImageVM>().loadImage();
       context.read<MenuItemVM>().fetchMenuItems();
     });
 
@@ -99,7 +100,7 @@ class _DashboardState extends State<Dashboard> {
                               "Ready to cook today?",
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 16,
+                                fontSize: 18,
                               ),
                             ),
                           ],
@@ -108,17 +109,23 @@ class _DashboardState extends State<Dashboard> {
                           onTap: () {
                             _openProfile();
                           },
-                          child: const CircleAvatar(
-                            radius: 24,
-                            backgroundColor: AppColors.primary,
-                            // backgroundImage: NetworkImage(
-                            //   "https://your-image-url.com/profile.jpg",
-                            // ),
-                            child: Icon(
-                              CupertinoIcons.person_fill,
-                              color: Colors.white,
-                              size: 28,
-                            ),
+                          child: Consumer<ProfileImageVM>(
+                            builder: (context, imageVM, child) {
+                              return CircleAvatar(
+                                radius: 35,
+                                backgroundColor: AppColors.primary,
+                                backgroundImage: imageVM.image != null
+                                    ? FileImage(imageVM.image!)
+                                    : null,
+                                child: imageVM.image == null
+                                    ? const Icon(
+                                  CupertinoIcons.person_fill,
+                                  color: Colors.white,
+                                  size: 35,
+                                )
+                                    : null,
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -283,11 +290,9 @@ class _DashboardState extends State<Dashboard> {
                             child: CircularProgressIndicator(),
                           );
                         }
-
                         final items = isCategorySelected
                             ? vm.filteredMenuItems
                             : vm.filteredMenuItems.take(4).toList();
-
                         if (items.isEmpty) {
                           return const Center(
                             child: Padding(
@@ -303,7 +308,6 @@ class _DashboardState extends State<Dashboard> {
                             ),
                           );
                         }
-
                         return Column(
                           children: items
                               .map((item) => MenuItemCard(item: item))
@@ -319,8 +323,6 @@ class _DashboardState extends State<Dashboard> {
                 ? const BulkOrder()
                 : const WishlistScreen(),
           ),
-
-          //view button
           if (_selectedIndex == 0)
             Positioned(
               left: 16,
@@ -328,11 +330,9 @@ class _DashboardState extends State<Dashboard> {
               bottom: 16,
               child: Consumer<AddItemVM>(
                 builder: (context, cartVM, child) {
-
                   if (cartVM.items.isEmpty) {
                     return const SizedBox();
                   }
-
                   return InkWell(
                     onTap: () {
                       Navigator.push(

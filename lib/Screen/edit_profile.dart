@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/edit_profile_vm.dart';
+import '../AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import '../Widget/profile.dart';
 
 class EditProfile extends StatefulWidget {
@@ -42,7 +44,16 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         _profileImage = File(image.path);
       });
+
+      await context.read<ProfileImageVM>().setImage(
+        File(image.path),
+      );
     }
+  }
+
+  Future<void> saveProfileImage(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString("profileImage", path);
   }
   @override
   void initState() {
@@ -51,6 +62,19 @@ class _EditProfileState extends State<EditProfile> {
     nameController = TextEditingController(text: widget.name);
     emailController = TextEditingController(text: widget.email);
     phoneController = TextEditingController(text: widget.phone);
+    loadProfileImage();
+  }
+
+  Future<void> loadProfileImage() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    String? imagePath = prefs.getString("profileImage");
+
+    if (imagePath != null && File(imagePath).existsSync()) {
+      setState(() {
+        _profileImage = File(imagePath);
+      });
+    }
   }
   @override
   void dispose() {
@@ -141,18 +165,23 @@ class _EditProfileState extends State<EditProfile> {
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  CircleAvatar(
-                    radius: 55,
-                    backgroundColor: Colors.white,
-                    backgroundImage:
-                    _profileImage != null ? FileImage(_profileImage!) : null,
-                    child: _profileImage == null
-                        ? const Icon(
-                      Icons.person,
-                      size: 55,
-                      color: Colors.grey,
-                    )
-                        : null,
+                  Consumer<ProfileImageVM>(
+                    builder: (_, imageVM, __) {
+                      return CircleAvatar(
+                        radius: 55,
+                        backgroundColor: Colors.white,
+                        backgroundImage: imageVM.image != null
+                            ? FileImage(imageVM.image!)
+                            : null,
+                        child: imageVM.image == null
+                            ? const Icon(
+                          Icons.person,
+                          size: 55,
+                          color: Colors.grey,
+                        )
+                            : null,
+                      );
+                    },
                   ),
                   Container(
                     decoration: const BoxDecoration(

@@ -343,11 +343,6 @@ class _AddViewItemState extends State<AddViewItem> {
 
                     );
 
-                    await launchUrl(
-                      url,
-                      mode: LaunchMode.externalApplication,
-                    );
-
                     final bool? isSent = await showDialog<bool>(
                       context: context,
                       barrierDismissible: false,
@@ -381,7 +376,10 @@ class _AddViewItemState extends State<AddViewItem> {
                     );
 
                     if (isSent == true) {
-
+                      await launchUrl(
+                        url,
+                        mode: LaunchMode.externalApplication,
+                      );
                       final myOrderVM = context.read<MyOrderVM>();
 
                       await myOrderVM.saveOrder(
@@ -419,7 +417,8 @@ class _AddViewItemState extends State<AddViewItem> {
                         ),
                       );
                     }
-                  } else {
+                  }
+                  else {
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
