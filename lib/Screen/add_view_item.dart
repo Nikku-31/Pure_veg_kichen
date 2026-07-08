@@ -17,9 +17,14 @@ class AddViewItem extends StatefulWidget {
 }
 class _AddViewItemState extends State<AddViewItem> {
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController cookingRequestController =
+  TextEditingController();
+
+  bool showCookingRequest = false;
   @override
   void dispose() {
     addressController.dispose();
+    cookingRequestController.dispose();
     super.dispose();
   }
   @override
@@ -52,81 +57,144 @@ class _AddViewItemState extends State<AddViewItem> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
-                    child: Row(
+                    child: Column(
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            "https://purevegkitchenindia.com/${item.image}",
-                            width: 70, height: 70,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) {
-                              return Container(
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                "https://purevegkitchenindia.com/${item.image}",
                                 width: 70,
                                 height: 70,
-                                color: Colors.grey.shade200,
-                                child: const Icon(Icons.fastfood),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.itemName,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                item.variantName,
-                                style: const TextStyle(color: Colors.grey),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "₹${item.price}",
-                                style: const TextStyle(
-                                  color: AppColors.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text("₹${(item.price * item.quantity).toStringAsFixed(0)}",
-                              style: const TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                            const SizedBox(height: 12),
-                            Row(
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.itemName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    item.variantName,
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    "₹${item.price}",
+                                    style: const TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                InkWell(
-                                  onTap: () => cartVM.decrease(index),
-                                  child: const Icon(Icons.remove_circle_outline),
+                                Text(
+                                  "₹${(item.price * item.quantity).toStringAsFixed(0)}",
+                                  style: const TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                                  child: Text(item.quantity.toString()),
-                                ),
-                                InkWell(
-                                  onTap: () => cartVM.increase(index),
-                                  child: const Icon(Icons.add_circle_outline),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => cartVM.decrease(index),
+                                      child: const Icon(Icons.remove_circle_outline),
+                                    ),
+                                    Padding(
+                                      padding:
+                                      const EdgeInsets.symmetric(horizontal: 10),
+                                      child: Text(item.quantity.toString()),
+                                    ),
+                                    InkWell(
+                                      onTap: () => cartVM.increase(index),
+                                      child: const Icon(Icons.add_circle_outline),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
                         ),
+                        const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                icon: const Icon(
+                                  Icons.add,
+                                  size: 18,
+                                  color: AppColors.primary,
+                                ),
+                                label: const Text(
+                                  "Add Items",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: OutlinedButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    showCookingRequest = !showCookingRequest;
+                                  });
+                                },
+                                icon: const Icon(
+                                  Icons.edit_note,
+                                  size: 18,
+                                  color: AppColors.primary,
+                                ),
+                                label: const Text(
+                                  "Cooking Request",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        if (showCookingRequest) ...[
+                          const SizedBox(height: 12),
+
+                          TextField(
+                            controller: cookingRequestController,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              hintText: "Type cooking requests",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          // const SizedBox(height: 8),
+                          //
+                          // Text(
+                          //   "This restaurant usually does not accept special requests, and refund in this regard will not be possible.",
+                          //   style: TextStyle(
+                          //     color: Colors.grey.shade600,
+                          //     fontSize: 12,
+                          //   ),
+                          // ),
+                        ],
                       ],
                     ),
                   ),
@@ -272,6 +340,7 @@ class _AddViewItemState extends State<AddViewItem> {
                   if (success) {
                     String message = "🛒 *New Order*\n\n";
                     message += "📍 Address:\n${addressController.text.trim()}\n\n";
+
                     for (var item in cartVM.items) {
                       message +=
                       "🍽 ${item.itemName}\n"
@@ -279,6 +348,13 @@ class _AddViewItemState extends State<AddViewItem> {
                           "Qty : ${item.quantity}\n"
                           "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n\n";
                     }
+
+// 👇 YAHAN ADD KARNA HAI
+                    if (cookingRequestController.text.trim().isNotEmpty) {
+                      message +=
+                      "🍳 Cooking Request:\n${cookingRequestController.text.trim()}\n\n";
+                    }
+
                     message +=
                     "💰 Total : ₹${cartVM.totalPrice.toStringAsFixed(0)}";
                     const phone = "919696660579";

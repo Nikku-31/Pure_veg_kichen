@@ -53,10 +53,12 @@ class _ProfileState extends State<Profile> {
           iconTheme: IconThemeData(
             color:AppColors.background
           ),
-          title: Text("My Profile",
-          style: TextStyle(
-            color: AppColors.background
-          ),),
+          title: Center(
+            child: Text("My Profile",
+            style: TextStyle(
+              color: AppColors.background
+            ),),
+          ),
           actions: [
             IconButton(
               onPressed: () async {

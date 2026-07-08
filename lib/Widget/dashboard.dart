@@ -30,19 +30,26 @@ class _DashboardState extends State<Dashboard> {
   }
   bool isCategorySelected = false;
   int selectedCategoryIndex = -1;
+  bool _isLogin = false;
   @override
   void initState() {
     super.initState();
-
+    _loadLoginStatus();
     Future.microtask(() {
       context.read<AddItemVM>().loadCart();
-      context.read<CategoriesVM>().fetchCategories(); // ya jo tumhara method hai
+      context.read<CategoriesVM>().fetchCategories();
       context.read<ProfileImageVM>().loadImage();
       context.read<MenuItemVM>().fetchMenuItems();
     });
 
   }
+  Future<void> _loadLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
 
+    setState(() {
+      _isLogin = prefs.getBool("isLogin") ?? false;
+    });
+  }
   Future<void> _openProfile() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -318,9 +325,11 @@ class _DashboardState extends State<Dashboard> {
                 ),
               ),
             )
-                : _selectedIndex == 1
-                ? const BulkOrder()
-                : const WishlistScreen(),
+                :  _selectedIndex == 1
+            ? const BulkOrder()
+                : _selectedIndex == 2
+            ? const WishlistScreen()
+                : const Profile(),
           ),
           if (_selectedIndex == 0)
             Positioned(
@@ -393,11 +402,15 @@ class _DashboardState extends State<Dashboard> {
             _selectedIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "Home"),
-          BottomNavigationBarItem( icon: Icon(CupertinoIcons.cart_fill), label: "Bulk order"),
-          BottomNavigationBarItem(  icon: Icon(CupertinoIcons.heart_fill), label: "Saved"),
-          //BottomNavigationBarItem(icon: Icon(CupertinoIcons.person), label: "Profile"),
+        items: [
+          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "Home",),
+          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.cart_fill), label: "Bulk order",),
+          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.heart_fill), label: "Saved",),
+          if (_isLogin)
+            const BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.person),
+              label: "Profile",
+            ),
         ],
       ),
     );
