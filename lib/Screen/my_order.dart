@@ -98,6 +98,7 @@ class _MyOrderPageState extends State<MyOrderPage> {
                                     Text(order.createdAt),
                                   ],
                                 ),
+
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(
@@ -116,7 +117,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
                                   ),
                                 ),
                               ),
-
                             ],
                           ),
                           const SizedBox(height: 10),

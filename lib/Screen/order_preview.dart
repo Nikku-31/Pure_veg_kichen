@@ -243,6 +243,8 @@ class _OrderPreviewState extends State<OrderPreview> {
         );
       }).toList(),
     );
+    print("Place Order Request:");
+    print(request.toJson());
 
     bool success = await orderVM.placeOrder(request);
 

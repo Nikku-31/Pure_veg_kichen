@@ -135,24 +135,6 @@ class _ProfileState extends State<Profile> {
                                           )
                                               : null,
                                         ),
-
-                                        Positioned(
-                                          right: 0,
-                                          bottom: 0,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.black12,
-                                                  blurRadius: 5,
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   );
