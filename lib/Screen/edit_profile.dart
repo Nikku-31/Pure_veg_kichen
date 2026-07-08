@@ -241,20 +241,49 @@ class _EditProfileState extends State<EditProfile> {
                       onPressed: vm.isLoading
                           ? null
                           : () async {
-      
+
+                        // Name validation
+                        if (nameController.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please enter your name"),
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Phone validation
+                        if (phoneController.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please enter your phone number"),
+                            ),
+                          );
+                          return;
+                        }
+
+                        if (phoneController.text.trim().length != 10) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Enter 10 digit number"),
+                            ),
+                          );
+                          return;
+                        }
+
                         bool success = await vm.updateProfile(
                           id: widget.id,
                           name: nameController.text.trim(),
                           phone: phoneController.text.trim(),
                         );
-      
+
                         if (success) {
-      
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(vm.responseModel!.message),
                             ),
                           );
+
                           if (widget.fromOtp) {
                             Navigator.pushAndRemoveUntil(
                               context,
@@ -266,17 +295,13 @@ class _EditProfileState extends State<EditProfile> {
                           } else {
                             Navigator.pop(context, true);
                           }
-      
                         } else {
-      
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text("Enter 10 digit number "),
+                              content: Text("Something went wrong"),
                             ),
                           );
-      
                         }
-      
                       },
                       child: vm.isLoading
                           ? const CircularProgressIndicator(
