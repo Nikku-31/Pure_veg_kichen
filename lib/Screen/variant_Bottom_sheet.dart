@@ -3,11 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../AppManager/Model/DashboardM/cart_item_model.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
-
 class VariantBottomSheet extends StatefulWidget {
   final String itemId;
   final String itemName;
@@ -18,19 +16,15 @@ class VariantBottomSheet extends StatefulWidget {
     required this.itemName,
     required this.image,
   });
-
   @override
   State<VariantBottomSheet> createState() => _VariantBottomSheetState();
 }
-
 class _VariantBottomSheetState extends State<VariantBottomSheet> {
   int selectedIndex = 0;
   int quantity = 1;
-
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<GetVariantsVM>(context);
-
     if (vm.variants.isEmpty) {
       return SafeArea(
         child: Container(
@@ -47,8 +41,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
               Row(
                 children: [
                   Expanded(
-                    child: Text(
-                      widget.itemName,
+                    child: Text(widget.itemName,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -57,37 +50,27 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 30),
-
               const Icon(
                 Icons.info_outline,
                 size: 55,
                 color: Colors.grey,
               ),
-
               const SizedBox(height: 15),
-
-              const Text(
-                "No Variants Available",
+              const Text("No Variants Available",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               const SizedBox(height: 8),
-
-              const Text(
-                "This item has no variants.",
+              const Text("This item has no variants.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.grey,
                 ),
               ),
-
               const SizedBox(height: 25),
-
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -126,7 +109,6 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             /// Header
             Container(
               padding: const EdgeInsets.all(18),
@@ -137,7 +119,6 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
               ),
               child: Row(
                 children: [
-
                   Container(
                     height: 60,
                     width: 60,
@@ -147,9 +128,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                     ),
                     child: const Icon(Icons.fastfood),
                   ),
-
                   const SizedBox(width: 15),
-
                   Expanded(
                     child: Text(
                       widget.itemName,
@@ -162,30 +141,25 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                 ],
               ),
             ),
-
             Container(
               color: const Color(0xffF5F5F7),
               padding: const EdgeInsets.all(15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Quantity",
+                  const Text("Quantity",
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const Text(
-                    "Select any 1",
+                  const Text("Select any 1",
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),
                   ),
-
                   const SizedBox(height: 5),
-
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -201,7 +175,6 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                       ),
                       itemBuilder: (context, index) {
                         final variant = vm.variants[index];
-
                         return InkWell(
                           onTap: () {
                             setState(() {
@@ -219,9 +192,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
                                     children: [
-
-                                      Text(
-                                        variant.label,
+                                      Text(variant.label,
                                         style: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w600,
@@ -241,17 +212,13 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                                     ],
                                   ),
                                 ),
-
-                                Text(
-                                  "₹${variant.price}",
+                                Text("₹${variant.price}",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 15,
                                   ),
                                 ),
-
                                 const SizedBox(width: 10),
-
                                 Radio<int>(
                                   activeColor:AppColors.primary,
                                   value: index,
@@ -286,7 +253,6 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-
                         InkWell(
                           onTap: () {
                             if (quantity > 1) {
@@ -300,9 +266,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                             color: Colors.green,
                           ),
                         ),
-
-                        Text(
-                          quantity.toString(),
+                        Text(quantity.toString(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 22,
@@ -323,9 +287,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                       ],
                     ),
                   ),
-
                   const SizedBox(width: 15),
-
                   Expanded(
                     child: SizedBox(
                       height: 50,
@@ -338,12 +300,9 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                         ),
                         onPressed: () async {
                           final prefs = await SharedPreferences.getInstance();
-
                           bool isLogin = prefs.getBool("isLogin") ?? false;
-
                           if (!isLogin) {
                             Navigator.pop(context);
-
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -352,9 +311,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                             );
                             return;
                           }
-                          // User login hai
                           final selected = vm.variants[selectedIndex];
-
                           context.read<AddItemVM>().addItem(
                             CartItemModel(
                               itemId: int.parse(widget.itemId),
@@ -366,10 +323,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                               quantity: quantity,
                             ),
                           );
-
                           Navigator.pop(context);
-
-                          /// Yahi tumhari Cart API call hogi
                         },
                         child: Text(
                           "Add Item | ₹${vm.variants[selectedIndex].price}",

@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:intl/intl.dart';
 import '../AppManager/Model/OrderM/my_order_model.dart';
+import '../AppManager/Model/OrderM/place_order_model.dart';
 import '../AppManager/ViewModel/OrderVM/my_order_vm.dart';
+import '../AppManager/ViewModel/OrderVM/place_order_vm.dart';
 import 'my_order.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -226,7 +228,35 @@ class _OrderPreviewState extends State<OrderPreview> {
 
     /// No -> Stay on same page
     if (isSent != true) return;
+    final orderVM = context.read<PlaceOrderVM>();
 
+    final request = PlaceOrderRequest(
+      userId: userId,
+      customerAddress: widget.addressController.text.trim(),
+      orderType: "bulk",
+      paymentMethod: "cod",
+      items: widget.orderItems.map((e) {
+        return OrderItem(
+          itemId: e.itemId,
+          variantLabel: e.variantId,
+          quantity: e.qty,
+        );
+      }).toList(),
+    );
+
+    bool success = await orderVM.placeOrder(request);
+
+    if (!success) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Order Failed"),
+        ),
+      );
+
+      return;
+    }
     /// Open WhatsApp
     await launchUrl(
       url,

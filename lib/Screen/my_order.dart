@@ -1,28 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../AppManager/ViewModel/OrderVM/get_order_details_vm.dart';
-import '../AppManager/ViewModel/OrderVM/my_order_vm.dart';
 import '../core/constants/app_colors.dart';
 import 'order_details.dart';
-
 class MyOrderPage extends StatefulWidget {
   const MyOrderPage({super.key});
   @override
   State<MyOrderPage> createState() => _MyOrderPageState();
 }
-
 class _MyOrderPageState extends State<MyOrderPage> {
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() async {
       final prefs = await SharedPreferences.getInstance();
-
       final userId = prefs.getInt("userId") ?? 0;
-
       await context.read<GetOrderDetailsVM>().getOrders(userId);
     });
   }
@@ -30,7 +23,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F5),
-
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: AppColors.background
@@ -45,7 +37,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
         ),
         centerTitle: true,
       ),
-
       body: SafeArea(
         child: Consumer<GetOrderDetailsVM>(
           builder: (context, vm, child) {
@@ -60,13 +51,11 @@ class _MyOrderPageState extends State<MyOrderPage> {
                 ),
               );
             }
-        
             return ListView.builder(
               padding: const EdgeInsets.all(15),
               itemCount: vm.orderList.length,
               itemBuilder: (context, index) {
                 final order = vm.orderList[index];
-        
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -78,7 +67,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
                       ),
                     );
                   },
-
                   child: Card(
                     color: Colors.grey.shade300,
                     elevation: 3,
@@ -91,7 +79,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,7 +99,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
                                   ],
                                 ),
                               ),
-
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
@@ -133,7 +119,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
 
                             ],
                           ),
-
                           const SizedBox(height: 10),
                           Text(
                             "Delivery Address",
@@ -166,7 +151,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
                                 ),
                               ],
                             ),
-                          
                           const SizedBox(height: 8),
                         ],
                       ),

@@ -45,93 +45,54 @@ class _ProfileState extends State<Profile> {
     final vm = Provider.of<UserProfileVM>(context);
     final user = vm.user;
     if (vm.isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
     }
     return Scaffold(
-    backgroundColor: const Color(0xffF6F8F8),
-    body: Stack(
-      children: [
+        backgroundColor: const Color(0xffFAFAFA),
+        appBar: AppBar(
+          backgroundColor: AppColors.primary,
+          iconTheme: IconThemeData(
+            color:AppColors.background
+          ),
+          title: Text("My Profile",
+          style: TextStyle(
+            color: AppColors.background
+          ),),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => EditProfile(
+                      id: user?.id ?? 0,
+                      name: user?.name ?? "",
+                      email: user?.email ?? "",
+                      phone: user?.phone ?? "",
+                    ),
+                  ),
+                );
 
-      // Green Header
-      Container(
-      height: 200,
-      decoration: const BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(40),
+                if (result == true) {
+                  await loadProfile();
+                }
+              },
+              icon: const Icon(
+                Icons.edit_outlined,
+                color:AppColors.background,
+                size: 24,
+              ),
+            ),
+          ],
         ),
-      ),
-    ),
-
-    SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+        body: SafeArea(
+            child: SingleChildScrollView(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 0),
+                  padding: const EdgeInsets.only(top: 20),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Row(
-                          children: [
-
-                            IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                              ),
-                            ),
-
-                            const SizedBox(width: 8),
-
-                            const Expanded(
-                              child: Text(
-                                "My Profile",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-
-                            IconButton(
-                              onPressed: () async {
-                                final result = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => EditProfile(
-                                      id: user?.id ?? 0,
-                                      name: user?.name ?? "",
-                                      email: user?.email ?? "",
-                                      phone: user?.phone ?? "",
-                                    ),
-                                  ),
-                                );
-
-                                if (result == true) {
-                                  await loadProfile();
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.edit_outlined,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
                       /// Profile Image
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -144,7 +105,7 @@ class _ProfileState extends State<Profile> {
                               BoxShadow(
                                 color: Colors.black12,
                                 blurRadius: 10,
-                                offset: Offset(0, 5),
+                                offset: Offset(0,5),
                               ),
                             ],
                           ),
@@ -153,20 +114,47 @@ class _ProfileState extends State<Profile> {
 
                               Consumer<ProfileImageVM>(
                                 builder: (context, imageVM, child) {
-                                  return CircleAvatar(
-                                    radius: 45,
-                                    backgroundColor: Colors.grey.shade200,
-                                    backgroundImage:
-                                    imageVM.image != null
-                                        ? FileImage(imageVM.image!)
-                                        : null,
-                                    child: imageVM.image == null
-                                        ? const Icon(
-                                      CupertinoIcons.person_fill,
-                                      size: 40,
-                                      color: Colors.grey,
-                                    )
-                                        : null,
+                                  return SizedBox(
+                                    width: 95,
+                                    height: 95,
+                                    child: Stack(
+                                      children: [
+
+                                        CircleAvatar(
+                                          radius: 45,
+                                          backgroundColor: Colors.grey.shade200,
+                                          backgroundImage:
+                                          imageVM.image != null
+                                              ? FileImage(imageVM.image!)
+                                              : null,
+                                          child: imageVM.image == null
+                                              ? const Icon(
+                                            CupertinoIcons.person_fill,
+                                            size: 42,
+                                            color: Colors.grey,
+                                          )
+                                              : null,
+                                        ),
+
+                                        Positioned(
+                                          right: 0,
+                                          bottom: 0,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(6),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black12,
+                                                  blurRadius: 5,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 },
                               ),
@@ -205,6 +193,16 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 SizedBox(height: 15,),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 15),
+                        child: Text(
+                          "Quick Action",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
                 GridView.count(
                   padding: EdgeInsets.all(10),
                   crossAxisCount: 2,
@@ -239,7 +237,7 @@ class _ProfileState extends State<Profile> {
                     Text(
                       "Preferences",
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Color(0xff0B1B4D),
                       ),
@@ -250,18 +248,22 @@ class _ProfileState extends State<Profile> {
                    Column(
                     children: [
                       preferenceTile(
+                        icon: Icons.info_outline,
                         title: "About us",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
                       preferenceTile(
+                        icon: Icons.support_agent,
                         title: "Help & Support",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
                       preferenceTile(
+                        icon: Icons.privacy_tip_outlined,
                         title: "Privacy Policy",
                         trailing: const Icon(Icons.arrow_forward),
                       ),
                       preferenceTile(
+                        icon: Icons.logout,
                         title: "Logout",
                         textColor: Colors.red,
                         trailing: const Icon(Icons.arrow_forward),
@@ -325,8 +327,6 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ),
-    ]
-    )
     );
   }
   Widget quickActionCard({
@@ -368,6 +368,7 @@ class _ProfileState extends State<Profile> {
     );
   }
   Widget preferenceTile({
+    required IconData icon,
     required String title,
     required Widget trailing,
     Color textColor = const Color(0xff0B1B4D),
@@ -383,6 +384,15 @@ class _ProfileState extends State<Profile> {
         ),
         child: Row(
           children: [
+
+            Icon(
+              icon,
+              color: AppColors.primary,
+              size: 24,
+            ),
+
+            const SizedBox(width: 15),
+
             Expanded(
               child: Text(
                 title,
@@ -393,6 +403,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
             ),
+
             trailing,
           ],
         ),

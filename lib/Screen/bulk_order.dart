@@ -13,12 +13,16 @@ import '../AppManager/ViewModel/LocationVM/get_area_vm.dart';
 import 'order_preview.dart';
 import 'package:flutter/services.dart';
 class OrderItem {
+  int itemId;
+  int variantId;
   String category;
   String item;
   String variant;
   int qty;
 
   OrderItem({
+    required this.itemId,
+    required this.variantId,
     required this.category,
     required this.item,
     required this.variant,
@@ -567,12 +571,23 @@ class _BulkOrderState extends State<BulkOrder> {
                                 selectedVariant == null) {
                               return;
                             }
+
+                            final variant = context
+                                .read<GetVariantsVM>()
+                                .variants
+                                .firstWhere(
+                                  (e) => e.value == selectedVariant,
+                            );
+
                             setState(() {
                               orderItems.add(
                                 OrderItem(
+                                  itemId: int.parse(selectedMenuItem!.id),
+                                  variantId: variant.id,
                                   category: selectedCategoryId!,
                                   item: selectedMenuItem!.name,
-                                  variant: selectedVariant!,
+                                  variant: variant.label,
+                                  qty: 1,
                                 ),
                               );
 

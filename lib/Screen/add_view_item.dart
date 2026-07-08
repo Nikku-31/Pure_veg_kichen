@@ -12,14 +12,11 @@ import 'my_order.dart';
 import 'package:intl/intl.dart';
 class AddViewItem extends StatefulWidget {
   const AddViewItem({super.key});
-
   @override
   State<AddViewItem> createState() => _AddViewItemState();
 }
-
 class _AddViewItemState extends State<AddViewItem> {
   final TextEditingController addressController = TextEditingController();
-
   @override
   void dispose() {
     addressController.dispose();
@@ -34,10 +31,6 @@ class _AddViewItemState extends State<AddViewItem> {
         iconTheme: IconThemeData(
           color: AppColors.background
         ),
-        // title: const Text("My Cart",
-        // style: TextStyle(
-        //   color: AppColors.background
-        // ),),
       ),
       body: Consumer<AddItemVM>(
         builder: (context, cartVM, child) {
@@ -46,15 +39,11 @@ class _AddViewItemState extends State<AddViewItem> {
               child: Text("No Item Added"),
             );
           }
-
           return ListView(
             padding: const EdgeInsets.all(12),
             children: [
-
-              // Cart Items
               ...List.generate(cartVM.items.length, (index) {
                 final item = cartVM.items[index];
-
                 return Card(
                   color: Colors.grey.shade200,
                   margin: const EdgeInsets.only(bottom: 12),
@@ -69,8 +58,7 @@ class _AddViewItemState extends State<AddViewItem> {
                           borderRadius: BorderRadius.circular(10),
                           child: Image.network(
                             "https://purevegkitchenindia.com/${item.image}",
-                            width: 70,
-                            height: 70,
+                            width: 70, height: 70,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) {
                               return Container(
@@ -82,9 +70,7 @@ class _AddViewItemState extends State<AddViewItem> {
                             },
                           ),
                         ),
-
                         const SizedBox(width: 12),
-
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,16 +82,12 @@ class _AddViewItemState extends State<AddViewItem> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-
                               const SizedBox(height: 5),
-
                               Text(
                                 item.variantName,
                                 style: const TextStyle(color: Colors.grey),
                               ),
-
                               const SizedBox(height: 8),
-
                               Text(
                                 "₹${item.price}",
                                 style: const TextStyle(
@@ -116,33 +98,27 @@ class _AddViewItemState extends State<AddViewItem> {
                             ],
                           ),
                         ),
-
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text(
-                              "₹${(item.price * item.quantity).toStringAsFixed(0)}",
+                            Text("₹${(item.price * item.quantity).toStringAsFixed(0)}",
                               style: const TextStyle(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-
                             const SizedBox(height: 12),
-
                             Row(
                               children: [
                                 InkWell(
                                   onTap: () => cartVM.decrease(index),
                                   child: const Icon(Icons.remove_circle_outline),
                                 ),
-
                                 Padding(
                                   padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
                                   child: Text(item.quantity.toString()),
                                 ),
-
                                 InkWell(
                                   onTap: () => cartVM.increase(index),
                                   child: const Icon(Icons.add_circle_outline),
@@ -157,8 +133,6 @@ class _AddViewItemState extends State<AddViewItem> {
                 );
               }),
               const SizedBox(height: 20),
-
-              // Bill Details Card
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -167,16 +141,12 @@ class _AddViewItemState extends State<AddViewItem> {
                 ),
                 child: Column(
                   children: [
-
                     Row(
                       children: [
                         const Icon(Icons.receipt_long,
                             color: AppColors.primary),
-
                         const SizedBox(width: 10),
-
-                        const Text(
-                          "Bill Details",
+                        const Text("Bill Details",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -184,9 +154,7 @@ class _AddViewItemState extends State<AddViewItem> {
                         ),
                       ],
                     ),
-
                     const SizedBox(height: 20),
-
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
@@ -195,16 +163,13 @@ class _AddViewItemState extends State<AddViewItem> {
                         Text("₹${cartVM.totalPrice}")
                       ],
                     ),
-
                     const Divider(height: 30),
-
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
                       children: const [
                         Text("Delivery Fee"),
-                        Text(
-                          "FREE",
+                        Text("FREE",
                           style: TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,
@@ -212,9 +177,7 @@ class _AddViewItemState extends State<AddViewItem> {
                         ),
                       ],
                     ),
-
                     const Divider(height: 30),
-
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
@@ -223,22 +186,18 @@ class _AddViewItemState extends State<AddViewItem> {
                         Text("₹0"),
                       ],
                     ),
-
                     const Divider(height: 30),
-
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Total Pay",
+                        const Text("Total Pay",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
                         ),
-                        Text(
-                          "₹${cartVM.totalPrice}",
+                        Text("₹${cartVM.totalPrice}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -249,10 +208,7 @@ class _AddViewItemState extends State<AddViewItem> {
                   ],
                 ),
               ),
-
-              // Address
               const SizedBox(height: 20),
-
               TextField(
                 controller: addressController,
                 maxLines: 3,
@@ -265,20 +221,17 @@ class _AddViewItemState extends State<AddViewItem> {
                   prefixIcon: const Icon(Icons.location_on),
                 ),
               ),
-
               const SizedBox(height: 20),
             ],
           );
         },
       ),
-
       bottomNavigationBar: SafeArea(
         child: Consumer<AddItemVM>(
           builder: (context, cartVM, child) {
             if (cartVM.items.isEmpty) {
               return const SizedBox();
             }
-
             return Container(
               padding: const EdgeInsets.all(16),
               height: 80,
@@ -298,12 +251,10 @@ class _AddViewItemState extends State<AddViewItem> {
                     );
                     return;
                   }
-
                   final prefs = await SharedPreferences.getInstance();
                   final int userId = prefs.getInt("userId") ?? 0;
                   final cartVM = context.read<AddItemVM>();
                   final orderVM = context.read<PlaceOrderVM>();
-
                   final request = PlaceOrderRequest(
                     userId: userId,
                     customerAddress: addressController.text.trim(),
@@ -318,13 +269,9 @@ class _AddViewItemState extends State<AddViewItem> {
                     }).toList(),
                   );
                   bool success = await orderVM.placeOrder(request);
-
                   if (success) {
-
                     String message = "🛒 *New Order*\n\n";
-
                     message += "📍 Address:\n${addressController.text.trim()}\n\n";
-
                     for (var item in cartVM.items) {
                       message +=
                       "🍽 ${item.itemName}\n"
@@ -332,17 +279,13 @@ class _AddViewItemState extends State<AddViewItem> {
                           "Qty : ${item.quantity}\n"
                           "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n\n";
                     }
-
                     message +=
                     "💰 Total : ₹${cartVM.totalPrice.toStringAsFixed(0)}";
-
                     const phone = "919696660579";
-
                     final Uri url = Uri.parse(
                       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
 
                     );
-
                     final bool? isSent = await showDialog<bool>(
                       context: context,
                       barrierDismissible: false,
@@ -374,14 +317,12 @@ class _AddViewItemState extends State<AddViewItem> {
                         ],
                       ),
                     );
-
                     if (isSent == true) {
                       await launchUrl(
                         url,
                         mode: LaunchMode.externalApplication,
                       );
                       final myOrderVM = context.read<MyOrderVM>();
-
                       await myOrderVM.saveOrder(
                         userId,
                         MyOrderModel(
@@ -405,11 +346,8 @@ class _AddViewItemState extends State<AddViewItem> {
                           status: "Order Sent on WhatsApp",
                         ),
                       );
-
                       await cartVM.clearCart();
-
                       if (!context.mounted) return;
-
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -419,21 +357,17 @@ class _AddViewItemState extends State<AddViewItem> {
                     }
                   }
                   else {
-
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Order Failed"),
                       ),
                     );
-
                   }
                 },
-                icon: const Icon(
-                  Icons.chat,
+                icon: const Icon(Icons.chat,
                   color: Colors.white,
                 ),
-                label: const Text(
-                  "Order on WhatsApp",
+                label: const Text("Order on WhatsApp",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
