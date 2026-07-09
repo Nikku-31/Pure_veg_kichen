@@ -7,6 +7,7 @@ import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import '../AppManager/ViewModel/AccountVM/user_profile_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
@@ -23,6 +24,82 @@ class _ProfileState extends State<Profile> {
   String address = "";
   int id = 0;
   @override
+
+  Future<void> _launchEmail() async {
+    final Uri emailUri = Uri.parse(
+      "mailto:purevegkitchen03@gmail.com?subject=Support&body=Hello",
+    );
+
+    try {
+      await launchUrl(
+        emailUri,
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> _launchPhone() async {
+    final Uri phoneUri = Uri(
+      scheme: 'tel',
+      path: '4562485585',
+    );
+
+    if (await canLaunchUrl(phoneUri)) {
+      await launchUrl(phoneUri);
+    }
+  }
+
+  void _showHelpSupport() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  "Help & Support",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 20),
+            
+                ListTile(
+                  leading: const Icon(Icons.email, color: Colors.red),
+                  title: const Text("purevegkitchen03@gmail.com"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _launchEmail();
+                  },
+                ),
+            
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.phone, color: Colors.green),
+                  title: const Text("4562485585"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _launchPhone();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
   void initState() {
     super.initState();
     loadProfile();
@@ -245,11 +322,13 @@ class _ProfileState extends State<Profile> {
                         icon: Icons.support_agent,
                         title: "Help & Support",
                         trailing: const Icon(Icons.arrow_forward),
+                        onTap: _showHelpSupport,
                       ),
                       preferenceTile(
                         icon: Icons.privacy_tip_outlined,
                         title: "Privacy Policy",
                         trailing: const Icon(Icons.arrow_forward),
+
                       ),
                       preferenceTile(
                         icon: Icons.logout,
