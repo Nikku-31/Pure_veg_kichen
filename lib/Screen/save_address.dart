@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
@@ -15,6 +16,7 @@ class _SaveAddressState extends State<SaveAddress> {
   final TextEditingController receiverNameController = TextEditingController();
   final TextEditingController receiverPhoneController = TextEditingController();
 
+  bool isFormValid = false;
   double latitude = 0.0;
   double longitude = 0.0;
 
@@ -24,6 +26,24 @@ class _SaveAddressState extends State<SaveAddress> {
   void initState() {
     super.initState();
     getCurrentLocation();
+    addressDetailsController.addListener(validateForm);
+    receiverNameController.addListener(validateForm);
+    receiverPhoneController.addListener(validateForm);
+  }
+  @override
+  void dispose() {
+    addressDetailsController.dispose();
+    receiverNameController.dispose();
+    receiverPhoneController.dispose();
+    super.dispose();
+  }
+  void validateForm() {
+    setState(() {
+      isFormValid =
+          addressDetailsController.text.trim().isNotEmpty &&
+              receiverNameController.text.trim().isNotEmpty &&
+              receiverPhoneController.text.trim().length == 10;
+    });
   }
   Future<void> getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -73,19 +93,7 @@ class _SaveAddressState extends State<SaveAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF5F5F5),
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: AppColors.primary,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          "Select Address",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Stack(
           children: [
@@ -126,6 +134,7 @@ class _SaveAddressState extends State<SaveAddress> {
                       onTap: (){
                         Navigator.pop(context);
                       },
+
                       child: const Icon(Icons.arrow_back,size:28),
                     ),
                     const SizedBox(width:10),
@@ -133,7 +142,7 @@ class _SaveAddressState extends State<SaveAddress> {
                       child: Container(
                         height: 55,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color:AppColors.background,
                           borderRadius: BorderRadius.circular(18),
                           boxShadow: [
                             BoxShadow(
@@ -253,19 +262,21 @@ class _SaveAddressState extends State<SaveAddress> {
                           addressType(
                             "Home",
                             Icons.home_outlined,
-                            true,
+                            selectedType == "Home",
                           ),
-                          const SizedBox(width:10),
+                          const SizedBox(width: 10),
+
                           addressType(
                             "Work",
                             Icons.work_outline,
-                            false,
+                            selectedType == "Work",
                           ),
-                          const SizedBox(width:10),
+                          const SizedBox(width: 10),
+
                           addressType(
                             "Other",
                             Icons.location_on_outlined,
-                            false,
+                            selectedType == "Other",
                           ),
                         ],
                       ),
@@ -275,22 +286,20 @@ class _SaveAddressState extends State<SaveAddress> {
                         height: 55,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor:
+                            isFormValid ? AppColors.primary : Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
-                          onPressed: () {
-
+                          onPressed: isFormValid
+                              ? () {
                             print(address);
-
                             print(addressDetailsController.text);
-
                             print(receiverNameController.text);
-
                             print(receiverPhoneController.text);
-
-                          },
+                          }
+                              : null,
                           child: const Text(
                             "Save address",
                             style: TextStyle(
@@ -344,8 +353,6 @@ class _SaveAddressState extends State<SaveAddress> {
               ],
             ),
           ),
-
-          const Icon(Icons.arrow_forward_ios,size:16)
         ],
       ),
     );
@@ -360,8 +367,19 @@ class _SaveAddressState extends State<SaveAddress> {
       children: [
         TextField(
           controller: controller,
+          keyboardType: hint == "Receiver's Phone"
+              ? TextInputType.number
+              : TextInputType.text,
+          maxLength: hint == "Receiver's Phone" ? 10 : null,
+          inputFormatters: hint == "Receiver's Phone"
+              ? [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(10),
+          ]
+              : [],
           decoration: InputDecoration(
             hintText: hint,
+            counterText: "",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
             ),
@@ -380,34 +398,52 @@ class _SaveAddressState extends State<SaveAddress> {
       IconData icon,
       bool selected,
       ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 10,
-      ),
-      decoration: BoxDecoration(
-        color: selected
-            ? AppColors.primary.withOpacity(.1)
-            : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: selected
-              ? AppColors.primary
-              : Colors.grey.shade300,
+    return InkWell(
+      onTap: () {
+        setState(() {
+          selectedType = title;
+        });
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 10,
         ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 18,
+        decoration: BoxDecoration(
+          color: selected
+              ? AppColors.primary.withOpacity(.1)
+              : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
             color: selected
                 ? AppColors.primary
-                : Colors.black54,
+                : Colors.grey.shade300,
           ),
-          const SizedBox(width:5),
-          Text(title),
-        ],
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 18,
+              color: selected
+                  ? AppColors.primary
+                  : Colors.black54,
+            ),
+            const SizedBox(width: 5),
+            Text(
+              title,
+              style: TextStyle(
+                color: selected
+                    ? AppColors.primary
+                    : Colors.black,
+                fontWeight: selected
+                    ? FontWeight.w600
+                    : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
