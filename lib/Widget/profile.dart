@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_veg/Screen/about_us.dart';
 import 'package:pure_veg/Screen/my_order.dart';
 import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
@@ -235,6 +236,10 @@ class _ProfileState extends State<Profile> {
                         icon: Icons.info_outline,
                         title: "About us",
                         trailing: const Icon(Icons.arrow_forward),
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>
+                            const AboutUs()));
+                          }
                       ),
                       preferenceTile(
                         icon: Icons.support_agent,
