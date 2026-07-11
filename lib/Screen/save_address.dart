@@ -12,11 +12,10 @@ class SaveAddress extends StatefulWidget {
 class _SaveAddressState extends State<SaveAddress> {
 
   GoogleMapController? mapController;
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController addressDetailsController = TextEditingController();
   final TextEditingController receiverNameController = TextEditingController();
   final TextEditingController receiverPhoneController = TextEditingController();
-
-  bool isFormValid = false;
   double latitude = 0.0;
   double longitude = 0.0;
 
@@ -26,9 +25,6 @@ class _SaveAddressState extends State<SaveAddress> {
   void initState() {
     super.initState();
     getCurrentLocation();
-    addressDetailsController.addListener(validateForm);
-    receiverNameController.addListener(validateForm);
-    receiverPhoneController.addListener(validateForm);
   }
   @override
   void dispose() {
@@ -36,14 +32,6 @@ class _SaveAddressState extends State<SaveAddress> {
     receiverNameController.dispose();
     receiverPhoneController.dispose();
     super.dispose();
-  }
-  void validateForm() {
-    setState(() {
-      isFormValid =
-          addressDetailsController.text.trim().isNotEmpty &&
-              receiverNameController.text.trim().isNotEmpty &&
-              receiverPhoneController.text.trim().length == 10;
-    });
   }
   Future<void> getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -206,111 +194,113 @@ class _SaveAddressState extends State<SaveAddress> {
                 ),
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(18),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 5,
-                        width: 70,
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      const SizedBox(height:20),
-                      addressCard(),
-                      const SizedBox(height:20),
-                      buildField(
-                        controller: addressDetailsController,
-                        hint: "Address details*",
-                        helper: "E.g. Floor, House no.",
-                      ),
-                      const SizedBox(height:18),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Receiver details for this address",
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 5,
+                          width: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                      ),
-                      const SizedBox(height:15),
-                      buildField(
-                        controller: receiverNameController,
-                        hint: "Receiver's Name",
-                        helper: "",
-                      ),
-                      const SizedBox(height:15),
-                      buildField(
-                        controller: receiverPhoneController,
-                        hint: "Receiver's Phone",
-                        helper: "",
-                      ),
-                      const SizedBox(height:20),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Save address as",
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
-                          ),
+                        const SizedBox(height:20),
+                        addressCard(),
+                        const SizedBox(height:20),
+                        buildField(
+                          controller: addressDetailsController,
+                          hint: "Address details*",
+                          helper: "E.g. Floor, House no.",
                         ),
-                      ),
-                      const SizedBox(height:12),
-                      Row(
-                        children: [
-                          addressType(
-                            "Home",
-                            Icons.home_outlined,
-                            selectedType == "Home",
-                          ),
-                          const SizedBox(width: 10),
-
-                          addressType(
-                            "Work",
-                            Icons.work_outline,
-                            selectedType == "Work",
-                          ),
-                          const SizedBox(width: 10),
-
-                          addressType(
-                            "Other",
-                            Icons.location_on_outlined,
-                            selectedType == "Other",
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height:30),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 55,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                            isFormValid ? AppColors.primary : Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          onPressed: isFormValid
-                              ? () {
-                            print(address);
-                            print(addressDetailsController.text);
-                            print(receiverNameController.text);
-                            print(receiverPhoneController.text);
-                          }
-                              : null,
-                          child: const Text(
-                            "Save address",
+                        const SizedBox(height:18),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Receiver details for this address",
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+                              color: Colors.grey.shade700,
                             ),
                           ),
                         ),
-                      ),
-        
-                    ],
+                        const SizedBox(height:15),
+                        buildField(
+                          controller: receiverNameController,
+                          hint: "Receiver's Name",
+                          helper: "",
+                        ),
+                        const SizedBox(height:15),
+                        buildField(
+                          controller: receiverPhoneController,
+                          hint: "Receiver's Phone",
+                          helper: "",
+                        ),
+                        const SizedBox(height:20),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Save address as",
+                            style: TextStyle(
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height:12),
+                        Row(
+                          children: [
+                            addressType(
+                              "Home",
+                              Icons.home_outlined,
+                              selectedType == "Home",
+                            ),
+                            const SizedBox(width: 10),
+                    
+                            addressType(
+                              "Work",
+                              Icons.work_outline,
+                              selectedType == "Work",
+                            ),
+                            const SizedBox(width: 10),
+                    
+                            addressType(
+                              "Other",
+                              Icons.location_on_outlined,
+                              selectedType == "Other",
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height:30),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 55,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                print(address);
+                                print(addressDetailsController.text);
+                                print(receiverNameController.text);
+                                print(receiverPhoneController.text);
+                              }
+                            },
+                            child: const Text(
+                              "Save address",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                            
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -362,37 +352,69 @@ class _SaveAddressState extends State<SaveAddress> {
     required String hint,
     required String helper,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: controller,
-          keyboardType: hint == "Receiver's Phone"
-              ? TextInputType.number
-              : TextInputType.text,
-          maxLength: hint == "Receiver's Phone" ? 10 : null,
-          inputFormatters: hint == "Receiver's Phone"
-              ? [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(10),
-          ]
-              : [],
-          decoration: InputDecoration(
-            hintText: hint,
-            counterText: "",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: controller,
+            keyboardType: hint == "Receiver's Phone"
+                ? TextInputType.number
+                : TextInputType.text,
+            maxLength: hint == "Receiver's Phone" ? 10 : null,
+            inputFormatters: hint == "Receiver's Phone"
+                ? [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(10),
+            ]
+                : [],
+
+            validator: (value) {
+              if (hint == "Address details*" &&
+                  (value == null || value.trim().isEmpty)) {
+                return "Please fill address";
+              }
+
+              if (hint == "Receiver's Name" &&
+                  (value == null || value.trim().isEmpty)) {
+                return "Please enter receiver name";
+              }
+
+              if (hint == "Receiver's Phone") {
+                if (value == null || value.trim().isEmpty) {
+                  return "Please enter phone number";
+                }
+
+                if (value.length != 10) {
+                  return "Please enter a valid 10-digit phone number";
+                }
+              }
+
+              return null;
+            },
+
+            decoration: InputDecoration(
+              hintText: hint,
+              counterText: "",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
             ),
           ),
-        ),
-        if (helper.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 5),
-            child: Text(helper),
-          ),
-      ],
-    );
-  }
+
+          if (helper.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: Text(helper),
+            ),
+        ],
+      );
+    }
   Widget addressType(
       String title,
       IconData icon,
