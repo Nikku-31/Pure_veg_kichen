@@ -17,6 +17,7 @@ import 'AppManager/ViewModel/OrderVM/get_order_details_vm.dart';
 import 'AppManager/ViewModel/OrderVM/get_order_item_vm.dart';
 import 'AppManager/ViewModel/OrderVM/my_order_vm.dart';
 import 'AppManager/ViewModel/OrderVM/place_order_vm.dart';
+import 'Screen/Widget/address_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileImageVM()..loadImage(),),
         ChangeNotifierProvider(create: (_) => GetOrderItemsVM(),),
         ChangeNotifierProvider(create: (_) => GetOrderDetailsVM(),),
+        ChangeNotifierProvider(create: (_) => AddressProvider(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

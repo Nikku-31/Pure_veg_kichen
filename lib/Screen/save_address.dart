@@ -2,10 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../AppManager/Model/LocationM/address_model.dart';
+import 'Widget/address_provider.dart';
+import 'Widget/search_location_screen.dart';
+import 'address_list_screen.dart';
 class SaveAddress extends StatefulWidget {
-  const SaveAddress({super.key});
+  final String address;
+  final double latitude;
+  final double longitude;
+
+  const SaveAddress({
+    super.key,
+    required this.address,
+    required this.latitude,
+    required this.longitude,
+  });
   @override
   State<SaveAddress> createState() => _SaveAddressState();
 }
@@ -22,9 +36,18 @@ class _SaveAddressState extends State<SaveAddress> {
   String selectedType = "Home";
   String address = "Fetching current location...";
   @override
+  @override
+  @override
   void initState() {
     super.initState();
-    getCurrentLocation();
+
+    if (widget.address.isNotEmpty) {
+      address = widget.address;
+      latitude = widget.latitude;
+      longitude = widget.longitude;
+    } else {
+      getCurrentLocation();
+    }
   }
   @override
   void dispose() {
@@ -127,30 +150,50 @@ class _SaveAddressState extends State<SaveAddress> {
                     ),
                     const SizedBox(width:10),
                     Expanded(
-                      child: Container(
-                        height: 55,
-                        decoration: BoxDecoration(
-                          color:AppColors.background,
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 8,
-                            )
-                          ],
-                        ),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Search for area, street name...",
-                            prefixIcon: Icon(
-                              Icons.search,
-                              color: AppColors.primary,
+                      child: GestureDetector(
+                        onTap: () async {
+
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SearchLocationScreen(),
                             ),
+                          );
+
+                          if (result != null) {
+                            setState(() {
+                              address = result["address"];
+                              latitude = result["latitude"];
+                              longitude = result["longitude"];
+                            });
+                          }
+                        },
+                        child: Container(
+                          height: 55,
+                          decoration: BoxDecoration(
+                            color: AppColors.background,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            children: [
+                              Icon(Icons.search, color: AppColors.primary),
+                              const SizedBox(width: 10),
+                              const Text(
+                                "Search for area, street name...",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -283,10 +326,29 @@ class _SaveAddressState extends State<SaveAddress> {
                             ),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                print(address);
-                                print(addressDetailsController.text);
-                                print(receiverNameController.text);
-                                print(receiverPhoneController.text);
+
+                                final newAddress = AddressModel(
+                                  type: selectedType,
+                                  address: address,
+                                  addressDetails: addressDetailsController.text.trim(),
+                                  receiverName: receiverNameController.text.trim(),
+                                  receiverPhone: receiverPhoneController.text.trim(),
+                                  latitude: latitude,
+                                  longitude: longitude,
+                                );
+
+                                Provider.of<AddressProvider>(
+                                  context,
+                                  listen: false,
+                                ).addAddress(newAddress);
+
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const AddressListScreen(),
+                                  ),
+                                      (route) => false,
+                                );
                               }
                             },
                             child: const Text(
@@ -298,7 +360,6 @@ class _SaveAddressState extends State<SaveAddress> {
                             ),
                           ),
                         ),
-                            
                       ],
                     ),
                   ),

@@ -298,7 +298,7 @@ class _DashboardState extends State<Dashboard> {
                         }
                         final items = isCategorySelected
                             ? vm.filteredMenuItems
-                            : vm.filteredMenuItems.take(4).toList();
+                            : vm.filteredMenuItems.take(6).toList();
                         if (items.isEmpty) {
                           return const Center(
                             child: Padding(

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/about_us.dart';
+import 'package:pure_veg/Screen/address_list_screen.dart';
 import 'package:pure_veg/Screen/my_order.dart';
 import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/Widget/login.dart';
@@ -287,7 +288,7 @@ class _ProfileState extends State<Profile> {
                       title: "Save Address",
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>
-                        const SaveAddress()));
+                        const AddressListScreen()));
                       }
                     ),
                   ],
