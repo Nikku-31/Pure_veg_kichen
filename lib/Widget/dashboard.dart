@@ -14,6 +14,7 @@ import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import '../Screen/add_view_item.dart';
 import '../Screen/menu_item_cart.dart';
 import '../core/constants/app_colors.dart';
+import 'package:shimmer/shimmer.dart';
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
   @override
@@ -75,6 +76,7 @@ class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor:Colors.white,
       body: Stack(
@@ -196,9 +198,7 @@ class _DashboardState extends State<Dashboard> {
                     Consumer<CategoriesVM>(
                       builder: (context, vm, child) {
                         if (vm.isLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                          return const CategoryShimmer();
                         }
 
                         return SingleChildScrollView(
@@ -292,9 +292,7 @@ class _DashboardState extends State<Dashboard> {
                         print("Loading : ${vm.isLoading}");
                         print("Items : ${vm.menuItems.length}");
                         if (vm.isLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                          return const TrendingShimmer();
                         }
                         final items = isCategorySelected
                             ? vm.filteredMenuItems
@@ -549,6 +547,104 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+class TrendingShimmer extends StatelessWidget {
+  const TrendingShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: List.generate(
+        6,
+            (index) => Padding(
+          padding: const EdgeInsets.only(bottom: 15),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 95,
+                    height: 110,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 18,
+                          width: double.infinity,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          height: 14,
+                          width: 180,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          height: 14,
+                          width: 120,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height: 15),
+                        Container(
+                          height: 16,
+                          width: 90,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryShimmer extends StatelessWidget {
+  const CategoryShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 110,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (_, __) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              width: 110,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

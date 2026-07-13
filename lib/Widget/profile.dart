@@ -13,6 +13,7 @@ import '../AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import '../AppManager/ViewModel/AccountVM/user_profile_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../Screen/edit_profile.dart';
+import 'package:shimmer/shimmer.dart';
 class Profile extends StatefulWidget {
   const Profile({super.key});
   @override
@@ -124,6 +125,7 @@ class _ProfileState extends State<Profile> {
     final vm = Provider.of<UserProfileVM>(context);
     final user = vm.user;
     if (vm.isLoading) {
+      return const ProfileShimmer();
     }
     return Scaffold(
         backgroundColor: const Color(0xffFAFAFA),
@@ -474,6 +476,166 @@ class _ProfileState extends State<Profile> {
             ),
 
             trailing,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileShimmer extends StatelessWidget {
+  const ProfileShimmer({super.key});
+
+  Widget shimmerBox({
+    double? width,
+    double? height,
+    BorderRadius? radius,
+  }) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: radius ?? BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xffFAFAFA),
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        title: const Text(
+          "My Profile",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+
+            const SizedBox(height: 20),
+
+            /// Profile Card
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Row(
+                  children: [
+                    shimmerBox(
+                      width: 90,
+                      height: 90,
+                      radius: BorderRadius.circular(45),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          shimmerBox(width: 150, height: 18),
+                          const SizedBox(height: 10),
+                          shimmerBox(width: 200, height: 14),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// Quick Action Heading
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: shimmerBox(width: 140, height: 20),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            /// Grid
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: 2,
+                gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 14,
+                  mainAxisSpacing: 14,
+                  childAspectRatio: 1.6,
+                ),
+                itemBuilder: (_, __) {
+                  return shimmerBox(
+                    height: 120,
+                    radius: BorderRadius.circular(18),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            /// Preference Heading
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: shimmerBox(width: 130, height: 20),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 4,
+              itemBuilder: (_, __) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  child: Row(
+                    children: [
+                      shimmerBox(
+                        width: 24,
+                        height: 24,
+                        radius: BorderRadius.circular(12),
+                      ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: shimmerBox(
+                          height: 16,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      shimmerBox(
+                        width: 20,
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
