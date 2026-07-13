@@ -85,8 +85,7 @@ class MenuItemCard extends StatelessWidget {
                                   itemId: item.id,
                                   itemName: item.name,
                                   image: item.image,
-                                ),
-                              );
+                                ),);
                             },
                             child: Container(
                               decoration: BoxDecoration(

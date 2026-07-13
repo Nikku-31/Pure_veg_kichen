@@ -13,6 +13,35 @@ class SearchLocationScreen extends StatefulWidget {
 }
 
 class _SearchLocationScreenState extends State<SearchLocationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getCurrentLocationOnly();
+  }
+
+  Future<void> getCurrentLocationOnly() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+
+    currentLat = position.latitude;
+    currentLng = position.longitude;
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position.latitude,
+      position.longitude,
+    );
+
+    currentCity = placemarks.first.locality ?? "";
+  }
+
   Future<void> getCurrentLocation() async {
 
     bool serviceEnabled =
@@ -37,6 +66,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     );
 
     Placemark place = placemarks.first;
+    currentCity = place.locality ?? "";
 
     String address =
         "${place.name}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea}";
@@ -67,13 +97,23 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     });
 
     try {
+      final query = currentCity.isNotEmpty
+          ? "$value, $currentCity, India"
+          : "$value, India";
+
       final url = Uri.https(
         "nominatim.openstreetmap.org",
         "/search",
         {
-          "q": value,
+          "q": query,
           "format": "jsonv2",
-          "limit": "10",
+          "countrycodes": "in",
+          "addressdetails": "1",
+
+          // Current location ke aas-paas search
+          "viewbox":
+          "${currentLng - 0.2},${currentLat + 0.2},${currentLng + 0.2},${currentLat - 0.2}",
+          "bounded": "1",
         },
       );
 
@@ -107,9 +147,11 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
   final TextEditingController searchController = TextEditingController();
 
   List<PlaceModel> places = [];
-
   bool loading = false;
+  String currentCity = "";
 
+  double currentLat = 0.0;
+  double currentLng = 0.0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,8 +204,6 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                         ),
                       ),
                     ),
-                
-                    const SizedBox(height: 10),
                     const SizedBox(height: 20),
                     InkWell(
                       onTap: getCurrentLocation,
