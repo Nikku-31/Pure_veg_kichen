@@ -2,11 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/save_address.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/Model/LocationM/address_model.dart';
 import 'Widget/address_provider.dart';
 
-class AddressListScreen extends StatelessWidget {
+class AddressListScreen extends StatefulWidget {
   const AddressListScreen({super.key});
+
+  @override
+  State<AddressListScreen> createState() => _AddressListScreenState();
+}
+
+class _AddressListScreenState extends State<AddressListScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadAddresses();
+  }
+
+  Future<void> _loadAddresses() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    int userId = prefs.getInt("userId") ?? 0;
+
+    await context.read<AddressProvider>().loadAddresses(userId);
+  }
+
 
   IconData _getIcon(String type) {
     switch (type.toLowerCase()) {

@@ -324,7 +324,7 @@ class _SaveAddressState extends State<SaveAddress> {
                                 borderRadius: BorderRadius.circular(15),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
 
                                 final newAddress = AddressModel(
@@ -337,7 +337,7 @@ class _SaveAddressState extends State<SaveAddress> {
                                   longitude: longitude,
                                 );
 
-                                Provider.of<AddressProvider>(
+                                await Provider.of<AddressProvider>(
                                   context,
                                   listen: false,
                                 ).addAddress(newAddress);

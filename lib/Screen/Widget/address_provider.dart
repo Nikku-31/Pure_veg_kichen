@@ -1,29 +1,80 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../AppManager/Model/LocationM/address_model.dart';
 
 class AddressProvider extends ChangeNotifier {
-  final List<AddressModel> _addresses = [];
+  List<AddressModel> _addresses = [];
 
   List<AddressModel> get addresses => _addresses;
 
+  int _userId = 0;
+
+  /// Load User Addresses
+  Future<void> loadAddresses(int userId) async {
+    _userId = userId;
+
+    final prefs = await SharedPreferences.getInstance();
+
+    final data = prefs.getString("address_$userId");
+
+    if (data != null) {
+      final List decoded = jsonDecode(data);
+
+      _addresses =
+          decoded.map((e) => AddressModel.fromJson(e)).toList();
+    } else {
+      _addresses = [];
+    }
+
+    notifyListeners();
+  }
+
+  /// Save Addresses in SharedPreferences
+  Future<void> _saveAddresses() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final data =
+    jsonEncode(_addresses.map((e) => e.toJson()).toList());
+
+    await prefs.setString(
+      "address_$_userId",
+      data,
+    );
+  }
+
   /// Add Address
-  void addAddress(AddressModel address) {
+  Future<void> addAddress(AddressModel address) async {
     _addresses.add(address);
+
+    await _saveAddresses();
+
     notifyListeners();
   }
 
   /// Update Address
-  void updateAddress(int index, AddressModel address) {
+  Future<void> updateAddress(
+      int index,
+      AddressModel address,
+      ) async {
     if (index >= 0 && index < _addresses.length) {
       _addresses[index] = address;
+
+      await _saveAddresses();
+
       notifyListeners();
     }
   }
 
   /// Delete Address
-  void deleteAddress(int index) {
+  Future<void> deleteAddress(int index) async {
     if (index >= 0 && index < _addresses.length) {
       _addresses.removeAt(index);
+
+      await _saveAddresses();
+
       notifyListeners();
     }
   }
@@ -33,12 +84,15 @@ class AddressProvider extends ChangeNotifier {
     return _addresses[index];
   }
 
-  /// Total Saved Addresses
+  /// Total Address
   int get totalAddress => _addresses.length;
 
-  /// Remove All Addresses
-  void clearAddresses() {
+  /// Clear All
+  Future<void> clearAddresses() async {
     _addresses.clear();
+
+    await _saveAddresses();
+
     notifyListeners();
   }
 }
