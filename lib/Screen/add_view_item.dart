@@ -295,12 +295,14 @@ class _AddViewItemState extends State<AddViewItem> {
               Consumer<AddressProvider>(
                 builder: (_, provider, __) {
 
+                  if (provider.addresses.isEmpty) {
+                    return const SizedBox();
+                  }
+
                   return DropdownButtonFormField<AddressModel>(
                     value: selectedAddress,
                     hint: const Text("Choose Address"),
-
                     items: provider.addresses.map((e) {
-
                       return DropdownMenuItem(
                         value: e,
                         child: Text(
@@ -308,15 +310,11 @@ class _AddViewItemState extends State<AddViewItem> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       );
-
                     }).toList(),
-
                     onChanged: (value) {
-
                       setState(() {
                         selectedAddress = value;
                       });
-
                     },
                   );
                 },
@@ -343,6 +341,16 @@ class _AddViewItemState extends State<AddViewItem> {
                 ),
                 onPressed: () async {
 
+                  final addressProvider = context.read<AddressProvider>();
+
+                  if (addressProvider.addresses.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please save address first"),
+                      ),
+                    );
+                    return;
+                  }
                   if (selectedAddress == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -452,7 +460,7 @@ class _AddViewItemState extends State<AddViewItem> {
                               );
                             }).toList(),
 
-                            address: selectedAddress!.address,   // 👈 ye line add karo
+                            address: selectedAddress!.address,
 
                             totalAmount: cartVM.totalPrice,
                             orderDate: DateFormat(

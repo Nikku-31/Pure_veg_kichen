@@ -181,7 +181,7 @@ class _SaveAddressState extends State<SaveAddress> {
                           const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "Landmark / Entry Photo (Optional)",
+                              "Landmark (Optional)",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
