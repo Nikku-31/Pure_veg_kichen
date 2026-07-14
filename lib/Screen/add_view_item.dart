@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../AppManager/Model/LocationM/address_model.dart';
 import '../AppManager/Model/OrderM/my_order_model.dart';
 import '../AppManager/Model/OrderM/place_order_model.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/OrderVM/my_order_vm.dart';
 import '../AppManager/ViewModel/OrderVM/place_order_vm.dart';
 import '../core/constants/app_colors.dart';
+import 'Widget/address_provider.dart';
 import 'my_order.dart';
 import 'package:intl/intl.dart';
 class AddViewItem extends StatefulWidget {
@@ -20,6 +22,20 @@ class _AddViewItemState extends State<AddViewItem> {
   TextEditingController();
 
   bool showCookingRequest = false;
+  AddressModel? selectedAddress;
+
+  @override
+  void initState() {
+    super.initState();
+    loadAddresses();
+  }
+
+  Future<void> loadAddresses() async {
+    final prefs = await SharedPreferences.getInstance();
+    int userId = prefs.getInt("userId") ?? 0;
+
+    context.read<AddressProvider>().loadAddresses(userId);
+  }
   @override
   void dispose() {
     cookingRequestController.dispose();
@@ -275,6 +291,36 @@ class _AddViewItemState extends State<AddViewItem> {
                 ),
               ),
               const SizedBox(height: 20),
+
+              Consumer<AddressProvider>(
+                builder: (_, provider, __) {
+
+                  return DropdownButtonFormField<AddressModel>(
+                    value: selectedAddress,
+                    hint: const Text("Choose Address"),
+
+                    items: provider.addresses.map((e) {
+
+                      return DropdownMenuItem(
+                        value: e,
+                        child: Text(
+                          "${e.type} - ${e.address}",
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
+
+                    }).toList(),
+
+                    onChanged: (value) {
+
+                      setState(() {
+                        selectedAddress = value;
+                      });
+
+                    },
+                  );
+                },
+              ),
             ],
           );
         },
@@ -296,12 +342,25 @@ class _AddViewItemState extends State<AddViewItem> {
                   ),
                 ),
                 onPressed: () async {
+
+                  if (selectedAddress == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Please select address"),
+                      ),
+                    );
+                    return;
+                  }
+
                   final prefs = await SharedPreferences.getInstance();
                   final int userId = prefs.getInt("userId") ?? 0;
+
                   final cartVM = context.read<AddItemVM>();
                   final orderVM = context.read<PlaceOrderVM>();
+
                   final request = PlaceOrderRequest(
                     userId: userId,
+                    customerAddress: selectedAddress!.address,
                     orderType: "delivery",
                     paymentMethod: "cod",
                     items: cartVM.items.map((e) {
@@ -315,6 +374,13 @@ class _AddViewItemState extends State<AddViewItem> {
                   bool success = await orderVM.placeOrder(request);
                   if (success) {
                     String message = "🛒 *New Order*\n\n";
+
+                    message +=
+                    "📍 Address:\n"
+                        "${selectedAddress!.address}\n"
+                        "${selectedAddress!.addressDetails}\n"
+                        "${selectedAddress!.receiverName} - ${selectedAddress!.receiverPhone}\n\n";
+
                     for (var item in cartVM.items) {
                       message +=
                       "🍽 ${item.itemName}\n"
@@ -372,25 +438,28 @@ class _AddViewItemState extends State<AddViewItem> {
                       final myOrderVM = context.read<MyOrderVM>();
                       await myOrderVM.saveOrder(
                         userId,
-                        MyOrderModel(
+                          MyOrderModel(
                             orderType: "Regular Order",
-                          items: cartVM.items.map((e) {
-                            return MyOrderItem(
-                              itemId: e.itemId,
-                              variantId: e.variantId,
-                              itemName: e.itemName,
-                              variantName: e.variantName,
-                              price: e.price,
-                              image: e.image,
-                              quantity: e.quantity,
-                            );
-                          }).toList(),
-                          totalAmount: cartVM.totalPrice,
-                          orderDate: DateFormat(
-                            "dd MMM yyyy, hh:mm a",
-                          ).format(DateTime.now()),
-                          status: "Order Sent on WhatsApp",
-                        ),
+                            items: cartVM.items.map((e) {
+                              return MyOrderItem(
+                                itemId: e.itemId,
+                                variantId: e.variantId,
+                                itemName: e.itemName,
+                                variantName: e.variantName,
+                                price: e.price,
+                                image: e.image,
+                                quantity: e.quantity,
+                              );
+                            }).toList(),
+
+                            address: selectedAddress!.address,   // 👈 ye line add karo
+
+                            totalAmount: cartVM.totalPrice,
+                            orderDate: DateFormat(
+                              "dd MMM yyyy, hh:mm a",
+                            ).format(DateTime.now()),
+                            status: "Order Sent on WhatsApp",
+                          )
                       );
                       await cartVM.clearCart();
                       if (!context.mounted) return;

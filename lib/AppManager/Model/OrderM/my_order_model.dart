@@ -1,5 +1,6 @@
 class MyOrderModel {
   final List<MyOrderItem> items;
+  final String address;
   final double totalAmount;
   final String orderDate;
   final String status;
@@ -7,6 +8,7 @@ class MyOrderModel {
 
   MyOrderModel({
     required this.items,
+    required this.address,
     required this.totalAmount,
     required this.orderDate,
     required this.status,
@@ -16,6 +18,7 @@ class MyOrderModel {
   Map<String, dynamic> toJson() {
     return {
       "items": items.map((e) => e.toJson()).toList(),
+      "address": address,
       "totalAmount": totalAmount,
       "orderDate": orderDate,
       "status": status,
@@ -28,6 +31,7 @@ class MyOrderModel {
       items: (json["items"] as List)
           .map((e) => MyOrderItem.fromJson(e))
           .toList(),
+      address: json["address"] ?? "",
       totalAmount: (json["totalAmount"] as num).toDouble(),
       orderDate: json["orderDate"] ?? "",
       status: json["status"] ?? "",

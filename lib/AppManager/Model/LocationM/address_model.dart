@@ -6,6 +6,9 @@ class AddressModel {
   final String receiverPhone;
   final double latitude;
   final double longitude;
+  final String addressName;
+  final String landmark;
+  final String instruction;
 
   AddressModel({
     required this.type,
@@ -15,6 +18,9 @@ class AddressModel {
     required this.receiverPhone,
     required this.latitude,
     required this.longitude,
+    required this.addressName,
+    required this.landmark,
+    required this.instruction,
   });
 
   Map<String, dynamic> toJson() {
@@ -26,6 +32,9 @@ class AddressModel {
       "receiverPhone": receiverPhone,
       "latitude": latitude,
       "longitude": longitude,
+      "addressName": addressName,
+      "landmark": landmark,
+      "instruction": instruction,
     };
   }
 
@@ -38,6 +47,9 @@ class AddressModel {
       receiverPhone: json["receiverPhone"] ?? "",
       latitude: (json["latitude"] ?? 0).toDouble(),
       longitude: (json["longitude"] ?? 0).toDouble(),
+      addressName: json["addressName"] ?? "",
+      landmark: json["landmark"] ?? "",
+      instruction: json["instruction"] ?? "",
     );
   }
 
@@ -49,6 +61,9 @@ class AddressModel {
     String? receiverPhone,
     double? latitude,
     double? longitude,
+    String? addressName,
+    String? landmark,
+    String? instruction,
   }) {
     return AddressModel(
       type: type ?? this.type,
@@ -58,6 +73,9 @@ class AddressModel {
       receiverPhone: receiverPhone ?? this.receiverPhone,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      addressName: addressName ?? this.addressName,
+      landmark: landmark ?? this.landmark,
+      instruction: instruction ?? this.instruction,
     );
   }
 }

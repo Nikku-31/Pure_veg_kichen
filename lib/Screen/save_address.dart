@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../AppManager/Model/LocationM/address_model.dart';
+
 import 'Widget/address_provider.dart';
-import 'Widget/search_location_screen.dart';
-import 'package:geocoding/geocoding.dart';
 import 'address_list_screen.dart';
-import 'package:location/location.dart' as loc;
+import '../AppManager/Model/LocationM/address_model.dart';
 class SaveAddress extends StatefulWidget {
   final String address;
   final double latitude;
@@ -26,108 +22,41 @@ class SaveAddress extends StatefulWidget {
 }
 class _SaveAddressState extends State<SaveAddress> {
 
-  GoogleMapController? mapController;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController addressDetailsController = TextEditingController();
   final TextEditingController receiverNameController = TextEditingController();
   final TextEditingController receiverPhoneController = TextEditingController();
+  final TextEditingController buildingController = TextEditingController();
+  final TextEditingController areaController = TextEditingController();
+  final TextEditingController saveAddressAsController = TextEditingController();
+  final TextEditingController instructionController = TextEditingController();
+  final TextEditingController landmarkController = TextEditingController();
   double latitude = 0.0;
   double longitude = 0.0;
 
-  String selectedType = "Home";
+  String selectedType = "House";
   String address = "Fetching current location...";
   @override
   void initState() {
     super.initState();
 
-
-    if (widget.address.isNotEmpty) {
-      address = widget.address;
-      latitude = widget.latitude;
-      longitude = widget.longitude;
-    } else {
-      checkLocationService();
-    }
+    address = widget.address;
+    latitude = widget.latitude;
+    longitude = widget.longitude;
   }
   @override
   void dispose() {
     addressDetailsController.dispose();
     receiverNameController.dispose();
     receiverPhoneController.dispose();
+    buildingController.dispose();
+    areaController.dispose();
+    saveAddressAsController.dispose();
+    landmarkController.dispose();
+    instructionController.dispose();
     super.dispose();
   }
 
-  final loc.Location location = loc.Location();
-
-  Future<void> checkLocationService() async {
-    bool serviceEnabled = await location.serviceEnabled();
-
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-
-      if (!serviceEnabled) {
-        return;
-      }
-    }
-
-    loc.PermissionStatus permission = await location.hasPermission();
-    if (permission == loc.PermissionStatus.denied) {
-      permission = await location.requestPermission();
-
-      if (permission != loc.PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    await getCurrentLocation();
-  }
-  Future<void> getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      setState(() {
-        address = "Location Service Disabled";
-      });
-      return;
-    }
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-
-      if (permission == LocationPermission.denied) {
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return;
-    }
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    latitude = position.latitude;
-    longitude = position.longitude;
-    List<Placemark> placemark = await placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-    Placemark place = placemark.first;
-    setState(() {
-      address =
-      "${place.name}, ${place.subLocality}, ${place.locality}, ${place.administrativeArea}";
-    });
-
-    if (mapController != null) {
-      mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(latitude, longitude),
-            zoom: 17,
-          ),
-        ),
-      );
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,127 +64,9 @@ class _SaveAddressState extends State<SaveAddress> {
       body: SafeArea(
         child: Stack(
           children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * .55,
-              width: double.infinity,
-              child: latitude == 0.0 && longitude == 0.0
-                  ? const Center(
-                child: CircularProgressIndicator(),
-              )
-                  : GoogleMap(
-                onMapCreated: (controller) {
-                  mapController = controller;
-                },
-
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(latitude, longitude),
-                  zoom: 17,
-                ),
-
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-
-                markers: {
-                  Marker(
-                    markerId: const MarkerId("current"),
-                    position: LatLng(latitude, longitude),
-                  ),
-                },
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: (){
-                        Navigator.pop(context);
-                      },
-
-                      child: const Icon(Icons.arrow_back,size:28),
-                    ),
-                    const SizedBox(width:10),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () async {
-
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SearchLocationScreen(),
-                            ),
-                          );
-
-                          if (result != null) {
-                            setState(() {
-                              address = result["address"];
-                              latitude = result["latitude"];
-                              longitude = result["longitude"];
-                            });
-                          }
-                        },
-                        child: Container(
-                          height: 55,
-                          decoration: BoxDecoration(
-                            color: AppColors.background,
-                            borderRadius: BorderRadius.circular(18),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 8,
-                              ),
-                            ],
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search, color: AppColors.primary),
-                              const SizedBox(width: 10),
-                              const Text(
-                                "Search for area, street name...",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: 190,
-              left: 0,
-              right: 0,
-              child: Icon(
-                Icons.location_pin,
-                size: 60,
-                color: AppColors.primary,
-              ),
-            ),
-            Positioned(
-              top: 300,
-              left: 90,
-              right: 90,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                onPressed: getCurrentLocation,
-                icon: const Icon(Icons.my_location),
-                label: const Text("Use current location"),
-              ),
-            ),
             Align(
-              alignment: Alignment.bottomCenter,
               child: Container(
-                height: MediaQuery.of(context).size.height * .55,
+                height: MediaQuery.of(context).size.height,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(
@@ -267,174 +78,256 @@ class _SaveAddressState extends State<SaveAddress> {
                   child: Form(
                     key: _formKey,
                     child: Column(
-                      children: [
-                        Container(
-                          height: 5,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        const SizedBox(height:20),
-                        addressCard(),
-                        const SizedBox(height:20),
-                        buildField(
-                          controller: addressDetailsController,
-                          hint: "Address details*",
-                          helper: "E.g. Floor, House no.",
-                        ),
-                        const SizedBox(height:18),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Receiver details for this address",
-                            style: TextStyle(
-                              color: Colors.grey.shade700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height:15),
-                        buildField(
-                          controller: receiverNameController,
-                          hint: "Receiver's Name",
-                          helper: "",
-                        ),
-                        const SizedBox(height:15),
-                        buildField(
-                          controller: receiverPhoneController,
-                          hint: "Receiver's Phone",
-                          helper: "",
-                        ),
-                        const SizedBox(height:20),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Save address as",
-                            style: TextStyle(
-                              color: Colors.grey.shade700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height:12),
-                        Row(
-                          children: [
-                            addressType(
-                              "Home",
-                              Icons.home_outlined,
-                              selectedType == "Home",
-                            ),
-                            const SizedBox(width: 10),
-                    
-                            addressType(
-                              "Work",
-                              Icons.work_outline,
-                              selectedType == "Work",
-                            ),
-                            const SizedBox(width: 10),
-                    
-                            addressType(
-                              "Other",
-                              Icons.location_on_outlined,
-                              selectedType == "Other",
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height:30),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 55,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                                final newAddress = AddressModel(
-                                  type: selectedType,
-                                  address: address,
-                                  addressDetails: addressDetailsController.text.trim(),
-                                  receiverName: receiverNameController.text.trim(),
-                                  receiverPhone: receiverPhoneController.text.trim(),
-                                  latitude: latitude,
-                                  longitude: longitude,
-                                );
-
-                                await Provider.of<AddressProvider>(
-                                  context,
-                                  listen: false,
-                                ).addAddress(newAddress);
-
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const AddressListScreen(),
-                                  ),
-                                      (route) => false,
-                                );
-                              }
-                            },
-                            child: const Text(
-                              "Save address",
+                          const SizedBox(height: 55),
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Receiver Details",
                               style: TextStyle(
-                                color: Colors.white,
                                 fontSize: 18,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                        ),
-                      ],
+
+                          const SizedBox(height: 15),
+
+                          buildField(
+                            controller: receiverNameController,
+                            hint: "Receiver Name *",
+                            helper: "",
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          buildField(
+                            controller: receiverPhoneController,
+                            hint: "Receiver Phone *",
+                            helper: "",
+                          ),
+
+                          const SizedBox(height: 25),
+                          // Location Details
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Location Details",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: addressType(
+                                  "House",
+                                  Icons.home_outlined,
+                                  selectedType == "House",
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: addressType(
+                                  "Office",
+                                  Icons.work_outline,
+                                  selectedType == "Office",
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: addressType(
+                                  "Other",
+                                  Icons.location_on_outlined,
+                                  selectedType == "Other",
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          buildField(
+                            controller: buildingController,
+                            hint: "Building / Floor *",
+                            helper: "",
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          buildField(
+                            controller: areaController,
+                            hint: "Area / Locality *",
+                            helper: "",
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          buildField(
+                            controller: saveAddressAsController,
+                            hint: "Save address as *",
+                            helper: "",
+                          ),
+
+                          const SizedBox(height: 25),
+
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Landmark / Entry Photo (Optional)",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          buildField(
+                            controller: landmarkController,
+                            hint: "Landmark (Optional)",
+                            helper: "",
+                          ),
+
+                          const SizedBox(height: 25),
+
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Delivery Instructions (Optional)",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          buildField(
+                            controller: instructionController,
+                            hint: "Instructions to reach location",
+                            helper: "",
+                          ),
+
+                          const SizedBox(height: 30),
+
+                          SizedBox(
+                            width: double.infinity,
+                            height: 55,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  final newAddress = AddressModel(
+                                    type: selectedType,
+                                    address: areaController.text.trim(),
+                                    addressDetails: buildingController.text.trim(),
+                                    receiverName: receiverNameController.text.trim(),
+                                    receiverPhone: receiverPhoneController.text.trim(),
+                                    latitude: latitude,
+                                    longitude: longitude,
+                                    addressName: saveAddressAsController.text.trim(),
+                                    landmark: landmarkController.text.trim(),
+                                    instruction: instructionController.text.trim(),
+                                  );
+
+                                   context.read<AddressProvider>().addAddress(newAddress);
+
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const AddressListScreen(
+
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                              ),
+                              child: const Text(
+                                "Save Address",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ]
                     ),
                   ),
                 ),
               ),
-            )
+            ),
+
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      size: 28,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-  Widget addressCard() {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          Icon(
-            Icons.location_on,
-            color: AppColors.primary,
-          ),
-
-          const SizedBox(width:10),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-                Text(
-                  address,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget addressCard() {
+  //   return Container(
+  //     padding: const EdgeInsets.all(15),
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(15),
+  //       border: Border.all(color: Colors.grey.shade300),
+  //     ),
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //
+  //         Icon(
+  //           Icons.location_on,
+  //           color: AppColors.primary,
+  //         ),
+  //
+  //         const SizedBox(width:10),
+  //
+  //         Expanded(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //
+  //               Text(
+  //                 address,
+  //                 style: const TextStyle(
+  //                   fontWeight: FontWeight.w600,
+  //                 ),
+  //               ),
+  //
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget buildField({
     required TextEditingController controller,
     required String hint,
@@ -445,11 +338,11 @@ class _SaveAddressState extends State<SaveAddress> {
         children: [
           TextFormField(
             controller: controller,
-            keyboardType: hint == "Receiver's Phone"
+            keyboardType: hint == "Receiver Phone *"
                 ? TextInputType.number
                 : TextInputType.text,
-            maxLength: hint == "Receiver's Phone" ? 10 : null,
-            inputFormatters: hint == "Receiver's Phone"
+            maxLength: hint == "Receiver Phone *" ? 10 : null,
+            inputFormatters: hint == "Receiver Phone *"
                 ? [
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(10),
@@ -457,24 +350,35 @@ class _SaveAddressState extends State<SaveAddress> {
                 : [],
 
             validator: (value) {
-              if (hint == "Address details*" &&
-                  (value == null || value.trim().isEmpty)) {
-                return "Please fill address";
-              }
 
-              if (hint == "Receiver's Name" &&
+              if (hint == "Receiver Name *" &&
                   (value == null || value.trim().isEmpty)) {
                 return "Please enter receiver name";
               }
 
-              if (hint == "Receiver's Phone") {
+              if (hint == "Receiver Phone *") {
                 if (value == null || value.trim().isEmpty) {
                   return "Please enter phone number";
                 }
 
                 if (value.length != 10) {
-                  return "Please enter a valid 10-digit phone number";
+                  return "Please enter valid 10 digit phone number";
                 }
+              }
+
+              if (hint == "Building / Floor *" &&
+                  (value == null || value.trim().isEmpty)) {
+                return "Please enter Building/Floor";
+              }
+
+              if (hint == "Area / Locality *" &&
+                  (value == null || value.trim().isEmpty)) {
+                return "Please enter Area/Locality";
+              }
+
+              if (hint == "Save address as *" &&
+                  (value == null || value.trim().isEmpty)) {
+                return "Please enter Address Name";
               }
 
               return null;
