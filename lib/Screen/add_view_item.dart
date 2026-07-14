@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../AppManager/Model/LocationM/address_model.dart';
+import '../AppManager/Model/OrderM/add_ons_model.dart';
 import '../AppManager/Model/OrderM/my_order_model.dart';
 import '../AppManager/Model/OrderM/place_order_model.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
+import '../AppManager/ViewModel/OrderVM/add_ons_vm.dart';
 import '../AppManager/ViewModel/OrderVM/my_order_vm.dart';
 import '../AppManager/ViewModel/OrderVM/place_order_vm.dart';
 import '../core/constants/app_colors.dart';
@@ -18,10 +20,7 @@ class AddViewItem extends StatefulWidget {
   State<AddViewItem> createState() => _AddViewItemState();
 }
 class _AddViewItemState extends State<AddViewItem> {
-  final TextEditingController cookingRequestController =
-  TextEditingController();
-
-  bool showCookingRequest = false;
+  List<AddonData> selectedAddons = [];
   AddressModel? selectedAddress;
 
   @override
@@ -38,7 +37,6 @@ class _AddViewItemState extends State<AddViewItem> {
   }
   @override
   void dispose() {
-    cookingRequestController.dispose();
     super.dispose();
   }
   @override
@@ -167,10 +165,71 @@ class _AddViewItemState extends State<AddViewItem> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: OutlinedButton.icon(
-                                onPressed: () {
-                                  setState(() {
-                                    showCookingRequest = !showCookingRequest;
-                                  });
+                                onPressed: () async {
+                                  final addonVM = context.read<AddonVM>();
+
+                                  await addonVM.getAddons(item.itemId);
+
+                                  if (!context.mounted) return;
+
+                                  await showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      backgroundColor: AppColors.background,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      title: const Text("Choose Add-ons"),
+                                      content: SizedBox(
+                                        width: double.maxFinite,
+                                        child: Consumer<AddonVM>(
+                                          builder: (context, vm, child) {
+                                            if (vm.isLoading) {
+                                              return const Center(
+                                                child: CircularProgressIndicator(),
+                                              );
+                                            }
+
+                                            if (vm.addons.isEmpty) {
+                                              return const Text("No Add-ons Available");
+                                            }
+
+                                            return ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: vm.addons.length,
+                                              itemBuilder: (context, index) {
+                                                final addon = vm.addons[index];
+
+                                                return CheckboxListTile(
+                                                  value: addon.isSelected,
+                                                  title: Text(addon.addonName),
+                                                  subtitle: Text("₹${addon.price}"),
+                                                  onChanged: (_) {
+                                                    vm.toggleAddon(addon);
+                                                  },
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Done",
+                                          style: TextStyle(
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15
+                                          ),),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                  );
                                 },
                                 icon: const Icon(
                                   Icons.edit_note,
@@ -178,37 +237,13 @@ class _AddViewItemState extends State<AddViewItem> {
                                   color: AppColors.primary,
                                 ),
                                 label: const Text(
-                                  "Cooking Request",
+                                  "Add-ons",
                                   style: TextStyle(color: Colors.black),
                                 ),
                               ),
                             ),
                           ],
                         ),
-
-                        if (showCookingRequest) ...[
-                          const SizedBox(height: 12),
-
-                          TextField(
-                            controller: cookingRequestController,
-                            maxLines: 3,
-                            decoration: InputDecoration(
-                              hintText: "Type cooking requests",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          // const SizedBox(height: 8),
-                          //
-                          // Text(
-                          //   "This restaurant usually does not accept special requests, and refund in this regard will not be possible.",
-                          //   style: TextStyle(
-                          //     color: Colors.grey.shade600,
-                          //     fontSize: 12,
-                          //   ),
-                          // ),
-                        ],
                       ],
                     ),
                   ),
@@ -396,9 +431,18 @@ class _AddViewItemState extends State<AddViewItem> {
                           "Qty : ${item.quantity}\n"
                           "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n\n";
                     }
-                    if (cookingRequestController.text.trim().isNotEmpty) {
-                      message +=
-                      "🍳 Cooking Request:\n${cookingRequestController.text.trim()}\n\n";
+                    if (selectedAddons.isNotEmpty) {
+
+                      message += "\n🧀 Add-ons\n";
+
+                      for (var addon in selectedAddons) {
+
+                        message +=
+                        "${addon.addonName} - ₹${addon.price}\n";
+
+                      }
+
+                      message += "\n";
                     }
                     message +=
                     "💰 Total : ₹${cartVM.totalPrice.toStringAsFixed(0)}";
