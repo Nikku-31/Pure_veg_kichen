@@ -1,13 +1,11 @@
 class PlaceOrderRequest {
   final int userId;
-  final String customerAddress;
   final String orderType;
   final String paymentMethod;
   final List<OrderItem> items;
 
   PlaceOrderRequest({
     required this.userId,
-    required this.customerAddress,
     required this.orderType,
     required this.paymentMethod,
     required this.items,
@@ -16,7 +14,6 @@ class PlaceOrderRequest {
   Map<String, dynamic> toJson() {
     return {
       "user_id": userId,
-      "customer_address": customerAddress,
       "order_type": orderType,
       "payment_method": paymentMethod,
       "items": items.map((e) => e.toJson()).toList(),

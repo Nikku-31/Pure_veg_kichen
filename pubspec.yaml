@@ -45,6 +45,7 @@ dependencies:
   string_similarity: ^2.2.0
   shared_preferences: ^2.5.5
   url_launcher: ^6.3.2
+  location: ^8.0.1
 
   intl: ^0.20.3
 #  flutter_google_places: ^0.3.0

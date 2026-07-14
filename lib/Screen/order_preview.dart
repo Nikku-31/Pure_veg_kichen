@@ -232,7 +232,6 @@ class _OrderPreviewState extends State<OrderPreview> {
 
     final request = PlaceOrderRequest(
       userId: userId,
-      customerAddress: widget.addressController.text.trim(),
       orderType: "bulk",
       paymentMethod: "cod",
       items: widget.orderItems.map((e) {
@@ -283,7 +282,6 @@ class _OrderPreviewState extends State<OrderPreview> {
             quantity: e.qty,
           );
         }).toList(),
-        address: widget.addressController.text,
         totalAmount: 0,
         orderDate: DateFormat(
           "dd MMM yyyy, hh:mm a",

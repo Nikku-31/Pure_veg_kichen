@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
@@ -8,7 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../AppManager/Model/LocationM/address_model.dart';
 import 'Widget/address_provider.dart';
 import 'Widget/search_location_screen.dart';
+import 'package:geocoding/geocoding.dart';
 import 'address_list_screen.dart';
+import 'package:location/location.dart' as loc;
 class SaveAddress extends StatefulWidget {
   final String address;
   final double latitude;
@@ -36,17 +37,16 @@ class _SaveAddressState extends State<SaveAddress> {
   String selectedType = "Home";
   String address = "Fetching current location...";
   @override
-  @override
-  @override
   void initState() {
     super.initState();
+
 
     if (widget.address.isNotEmpty) {
       address = widget.address;
       latitude = widget.latitude;
       longitude = widget.longitude;
     } else {
-      getCurrentLocation();
+      checkLocationService();
     }
   }
   @override
@@ -55,6 +55,31 @@ class _SaveAddressState extends State<SaveAddress> {
     receiverNameController.dispose();
     receiverPhoneController.dispose();
     super.dispose();
+  }
+
+  final loc.Location location = loc.Location();
+
+  Future<void> checkLocationService() async {
+    bool serviceEnabled = await location.serviceEnabled();
+
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    loc.PermissionStatus permission = await location.hasPermission();
+    if (permission == loc.PermissionStatus.denied) {
+      permission = await location.requestPermission();
+
+      if (permission != loc.PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    await getCurrentLocation();
   }
   Future<void> getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -68,11 +93,13 @@ class _SaveAddressState extends State<SaveAddress> {
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.denied) {
+        return;
+      }
     }
+
     if (permission == LocationPermission.deniedForever) {
-      setState(() {
-        address = "Location Permission Denied";
-      });
       return;
     }
     Position position = await Geolocator.getCurrentPosition(

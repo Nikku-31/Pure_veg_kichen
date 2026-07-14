@@ -38,10 +38,8 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
       position.latitude,
       position.longitude,
     );
-
     currentCity = placemarks.first.locality ?? "";
   }
-
   Future<void> getCurrentLocation() async {
 
     bool serviceEnabled =
@@ -82,7 +80,6 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
       ),
     );
   }
-
   Future<void> searchLocation(String value) async {
     if (value.trim().isEmpty) {
       setState(() {
@@ -116,7 +113,6 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
           "bounded": "1",
         },
       );
-
       final response = await http.get(
         url,
         headers: {

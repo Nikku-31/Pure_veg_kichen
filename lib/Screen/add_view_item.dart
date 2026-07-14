@@ -16,14 +16,12 @@ class AddViewItem extends StatefulWidget {
   State<AddViewItem> createState() => _AddViewItemState();
 }
 class _AddViewItemState extends State<AddViewItem> {
-  final TextEditingController addressController = TextEditingController();
   final TextEditingController cookingRequestController =
   TextEditingController();
 
   bool showCookingRequest = false;
   @override
   void dispose() {
-    addressController.dispose();
     cookingRequestController.dispose();
     super.dispose();
   }
@@ -277,19 +275,6 @@ class _AddViewItemState extends State<AddViewItem> {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
-                controller: addressController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: "Delivery Address",
-                  hintText: "Enter your complete address",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  prefixIcon: const Icon(Icons.location_on),
-                ),
-              ),
-              const SizedBox(height: 20),
             ],
           );
         },
@@ -311,21 +296,12 @@ class _AddViewItemState extends State<AddViewItem> {
                   ),
                 ),
                 onPressed: () async {
-                  if (addressController.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please enter delivery address"),
-                      ),
-                    );
-                    return;
-                  }
                   final prefs = await SharedPreferences.getInstance();
                   final int userId = prefs.getInt("userId") ?? 0;
                   final cartVM = context.read<AddItemVM>();
                   final orderVM = context.read<PlaceOrderVM>();
                   final request = PlaceOrderRequest(
                     userId: userId,
-                    customerAddress: addressController.text.trim(),
                     orderType: "delivery",
                     paymentMethod: "cod",
                     items: cartVM.items.map((e) {
@@ -339,8 +315,6 @@ class _AddViewItemState extends State<AddViewItem> {
                   bool success = await orderVM.placeOrder(request);
                   if (success) {
                     String message = "🛒 *New Order*\n\n";
-                    message += "📍 Address:\n${addressController.text.trim()}\n\n";
-
                     for (var item in cartVM.items) {
                       message +=
                       "🍽 ${item.itemName}\n"
@@ -348,13 +322,10 @@ class _AddViewItemState extends State<AddViewItem> {
                           "Qty : ${item.quantity}\n"
                           "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n\n";
                     }
-
-// 👇 YAHAN ADD KARNA HAI
                     if (cookingRequestController.text.trim().isNotEmpty) {
                       message +=
                       "🍳 Cooking Request:\n${cookingRequestController.text.trim()}\n\n";
                     }
-
                     message +=
                     "💰 Total : ₹${cartVM.totalPrice.toStringAsFixed(0)}";
                     const phone = "919696660579";
@@ -414,7 +385,6 @@ class _AddViewItemState extends State<AddViewItem> {
                               quantity: e.quantity,
                             );
                           }).toList(),
-                          address: addressController.text.trim(),
                           totalAmount: cartVM.totalPrice,
                           orderDate: DateFormat(
                             "dd MMM yyyy, hh:mm a",
