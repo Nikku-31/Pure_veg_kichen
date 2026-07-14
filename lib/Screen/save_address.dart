@@ -11,11 +11,14 @@ class SaveAddress extends StatefulWidget {
   final double latitude;
   final double longitude;
 
+  final bool isFromAddViewItem;
+
   const SaveAddress({
     super.key,
     required this.address,
     required this.latitude,
     required this.longitude,
+    this.isFromAddViewItem = false,
   });
   @override
   State<SaveAddress> createState() => _SaveAddressState();
@@ -80,7 +83,6 @@ class _SaveAddressState extends State<SaveAddress> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           const SizedBox(height: 55),
                           const Align(
                             alignment: Alignment.centerLeft,
@@ -241,14 +243,16 @@ class _SaveAddressState extends State<SaveAddress> {
 
                                    context.read<AddressProvider>().addAddress(newAddress);
 
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const AddressListScreen(
-
+                                  if (widget.isFromAddViewItem) {
+                                    Navigator.pop(context);
+                                  } else {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const AddressListScreen(),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -348,42 +352,33 @@ class _SaveAddressState extends State<SaveAddress> {
               LengthLimitingTextInputFormatter(10),
             ]
                 : [],
-
             validator: (value) {
-
               if (hint == "Receiver Name *" &&
                   (value == null || value.trim().isEmpty)) {
                 return "Please enter receiver name";
               }
-
               if (hint == "Receiver Phone *") {
                 if (value == null || value.trim().isEmpty) {
                   return "Please enter phone number";
                 }
-
                 if (value.length != 10) {
                   return "Please enter valid 10 digit phone number";
                 }
               }
-
               if (hint == "Building / Floor *" &&
                   (value == null || value.trim().isEmpty)) {
                 return "Please enter Building/Floor";
               }
-
               if (hint == "Area / Locality *" &&
                   (value == null || value.trim().isEmpty)) {
                 return "Please enter Area/Locality";
               }
-
               if (hint == "Save address as *" &&
                   (value == null || value.trim().isEmpty)) {
                 return "Please enter Address Name";
               }
-
               return null;
             },
-
             decoration: InputDecoration(
               hintText: hint,
               counterText: "",
@@ -398,7 +393,6 @@ class _SaveAddressState extends State<SaveAddress> {
               ),
             ),
           ),
-
           if (helper.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 5),

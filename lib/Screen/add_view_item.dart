@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pure_veg/Screen/save_address.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../AppManager/Model/LocationM/address_model.dart';
@@ -326,6 +327,50 @@ class _AddViewItemState extends State<AddViewItem> {
                 ),
               ),
               const SizedBox(height: 20),
+              Consumer<AddressProvider>(
+                builder: (_, provider, __) {
+
+                  if (provider.addresses.isNotEmpty) {
+                    return const SizedBox();
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const SaveAddress(
+                                address: "",
+                                latitude: 0.0,
+                                longitude: 0.0,
+                                isFromAddViewItem: true,
+                              ),
+                            ),
+                          );
+
+                          if (!mounted) return;
+
+                          await loadAddresses();
+                          setState(() {});
+                        },
+                        icon: const Icon(Icons.location_on),
+                        label: const Text("Save Address"),
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 20),
 
               Consumer<AddressProvider>(
                 builder: (_, provider, __) {
@@ -379,11 +424,6 @@ class _AddViewItemState extends State<AddViewItem> {
                   final addressProvider = context.read<AddressProvider>();
 
                   if (addressProvider.addresses.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please save address first"),
-                      ),
-                    );
                     return;
                   }
                   if (selectedAddress == null) {
@@ -394,13 +434,10 @@ class _AddViewItemState extends State<AddViewItem> {
                     );
                     return;
                   }
-
                   final prefs = await SharedPreferences.getInstance();
                   final int userId = prefs.getInt("userId") ?? 0;
-
                   final cartVM = context.read<AddItemVM>();
                   final orderVM = context.read<PlaceOrderVM>();
-
                   final request = PlaceOrderRequest(
                     userId: userId,
                     customerAddress: selectedAddress!.address,
@@ -417,7 +454,6 @@ class _AddViewItemState extends State<AddViewItem> {
                   bool success = await orderVM.placeOrder(request);
                   if (success) {
                     String message = "🛒 *New Order*\n\n";
-
                     message +=
                     "📍 Address:\n"
                         "${selectedAddress!.address}\n"
@@ -432,16 +468,12 @@ class _AddViewItemState extends State<AddViewItem> {
                           "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n\n";
                     }
                     if (selectedAddons.isNotEmpty) {
-
                       message += "\n🧀 Add-ons\n";
-
                       for (var addon in selectedAddons) {
-
                         message +=
                         "${addon.addonName} - ₹${addon.price}\n";
 
                       }
-
                       message += "\n";
                     }
                     message +=
