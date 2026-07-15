@@ -85,6 +85,7 @@ class MenuItemCard extends StatelessWidget {
                                   itemId: item.id,
                                   itemName: item.name,
                                   image: item.image,
+                                  addons: item.addons,
                                 ),);
                             },
                             child: Container(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
-
 import 'Widget/address_provider.dart';
 import 'address_list_screen.dart';
 import '../AppManager/Model/LocationM/address_model.dart';
@@ -12,7 +11,6 @@ class SaveAddress extends StatefulWidget {
   final double longitude;
 
   final bool isFromAddViewItem;
-
   const SaveAddress({
     super.key,
     required this.address,
@@ -24,7 +22,6 @@ class SaveAddress extends StatefulWidget {
   State<SaveAddress> createState() => _SaveAddressState();
 }
 class _SaveAddressState extends State<SaveAddress> {
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController addressDetailsController = TextEditingController();
   final TextEditingController receiverNameController = TextEditingController();
@@ -42,7 +39,6 @@ class _SaveAddressState extends State<SaveAddress> {
   @override
   void initState() {
     super.initState();
-
     address = widget.address;
     latitude = widget.latitude;
     longitude = widget.longitude;
@@ -59,7 +55,6 @@ class _SaveAddressState extends State<SaveAddress> {
     instructionController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,46 +81,37 @@ class _SaveAddressState extends State<SaveAddress> {
                           const SizedBox(height: 55),
                           const Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Receiver Details",
+                            child: Text("Receiver Details",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 15),
-
                           buildField(
                             controller: receiverNameController,
                             hint: "Receiver Name *",
                             helper: "",
                           ),
-
                           const SizedBox(height: 15),
-
                           buildField(
                             controller: receiverPhoneController,
                             hint: "Receiver Phone *",
                             helper: "",
                           ),
-
                           const SizedBox(height: 25),
                           // Location Details
                           const Align(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Location Details",
+                            child: Text("Location Details",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 15),
-
                           Row(
                             children: [
                               Expanded(
@@ -153,33 +139,25 @@ class _SaveAddressState extends State<SaveAddress> {
                               ),
                             ],
                           ),
-
                           const SizedBox(height: 20),
-
                           buildField(
                             controller: buildingController,
                             hint: "Building / Floor *",
                             helper: "",
                           ),
-
                           const SizedBox(height: 15),
-
                           buildField(
                             controller: areaController,
                             hint: "Area / Locality *",
                             helper: "",
                           ),
-
                           const SizedBox(height: 15),
-
                           buildField(
                             controller: saveAddressAsController,
                             hint: "Save address as *",
                             helper: "",
                           ),
-
                           const SizedBox(height: 25),
-
                           const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -190,17 +168,13 @@ class _SaveAddressState extends State<SaveAddress> {
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 10),
-
                           buildField(
                             controller: landmarkController,
                             hint: "Landmark (Optional)",
                             helper: "",
                           ),
-
                           const SizedBox(height: 25),
-
                           const Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -211,17 +185,13 @@ class _SaveAddressState extends State<SaveAddress> {
                               ),
                             ),
                           ),
-
                           const SizedBox(height: 10),
-
                           buildField(
                             controller: instructionController,
                             hint: "Instructions to reach location",
                             helper: "",
                           ),
-
                           const SizedBox(height: 30),
-
                           SizedBox(
                             width: double.infinity,
                             height: 55,
@@ -240,9 +210,7 @@ class _SaveAddressState extends State<SaveAddress> {
                                     landmark: landmarkController.text.trim(),
                                     instruction: instructionController.text.trim(),
                                   );
-
                                    context.read<AddressProvider>().addAddress(newAddress);
-
                                   if (widget.isFromAddViewItem) {
                                     Navigator.pop(context);
                                   } else {
@@ -258,8 +226,7 @@ class _SaveAddressState extends State<SaveAddress> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
                               ),
-                              child: const Text(
-                                "Save Address",
+                              child: const Text("Save Address",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -267,14 +234,12 @@ class _SaveAddressState extends State<SaveAddress> {
                               ),
                             ),
                           ),
-
                         ]
                     ),
                   ),
                 ),
               ),
             ),
-
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(15),
@@ -295,43 +260,6 @@ class _SaveAddressState extends State<SaveAddress> {
       ),
     );
   }
-  // Widget addressCard() {
-  //   return Container(
-  //     padding: const EdgeInsets.all(15),
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(15),
-  //       border: Border.all(color: Colors.grey.shade300),
-  //     ),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //
-  //         Icon(
-  //           Icons.location_on,
-  //           color: AppColors.primary,
-  //         ),
-  //
-  //         const SizedBox(width:10),
-  //
-  //         Expanded(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //
-  //               Text(
-  //                 address,
-  //                 style: const TextStyle(
-  //                   fontWeight: FontWeight.w600,
-  //                 ),
-  //               ),
-  //
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget buildField({
     required TextEditingController controller,
     required String hint,

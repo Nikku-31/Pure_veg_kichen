@@ -1,11 +1,13 @@
 class GetOrderDetailsModel {
   final bool success;
+  final String message;
   final int userId;
   final int totalOrders;
   final List<OrderData> data;
 
   GetOrderDetailsModel({
     required this.success,
+    required this.message,
     required this.userId,
     required this.totalOrders,
     required this.data,
@@ -14,6 +16,7 @@ class GetOrderDetailsModel {
   factory GetOrderDetailsModel.fromJson(Map<String, dynamic> json) {
     return GetOrderDetailsModel(
       success: json["success"] ?? false,
+      message: json["message"] ?? "",
       userId: json["user_id"] ?? 0,
       totalOrders: json["total_orders"] ?? 0,
       data: json["data"] == null
@@ -33,6 +36,7 @@ class OrderData {
   final String paymentMethod;
   final String totalAmount;
   final String status;
+  final String orderStage;
   final String notes;
   final String createdAt;
 
@@ -44,6 +48,7 @@ class OrderData {
     required this.paymentMethod,
     required this.totalAmount,
     required this.status,
+    required this.orderStage,
     required this.notes,
     required this.createdAt,
   });
@@ -57,6 +62,7 @@ class OrderData {
       paymentMethod: json["payment_method"] ?? "",
       totalAmount: json["total_amount"] ?? "0",
       status: json["status"] ?? "",
+      orderStage: json["order_stage"] ?? "",
       notes: json["notes"] ?? "",
       createdAt: json["created_at"] ?? "",
     );

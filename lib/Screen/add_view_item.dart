@@ -23,22 +23,16 @@ class AddViewItem extends StatefulWidget {
 class _AddViewItemState extends State<AddViewItem> {
   List<AddonData> selectedAddons = [];
   AddressModel? selectedAddress;
-
   @override
   void initState() {
     super.initState();
     loadAddresses();
   }
-
   Future<void> loadAddresses() async {
     final prefs = await SharedPreferences.getInstance();
     int userId = prefs.getInt("userId") ?? 0;
 
     context.read<AddressProvider>().loadAddresses(userId);
-  }
-  @override
-  void dispose() {
-    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -89,21 +83,18 @@ class _AddViewItemState extends State<AddViewItem> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    item.itemName,
+                                  Text(item.itemName,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                   const SizedBox(height: 5),
-                                  Text(
-                                    item.variantName,
+                                  Text(item.variantName,
                                     style: const TextStyle(color: Colors.grey),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text(
-                                    "₹${item.price}",
+                                  Text("₹${item.price}",
                                     style: const TextStyle(
                                       color: AppColors.primary,
                                       fontWeight: FontWeight.bold,
@@ -115,8 +106,7 @@ class _AddViewItemState extends State<AddViewItem> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text(
-                                  "₹${(item.price * item.quantity).toStringAsFixed(0)}",
+                                Text("₹${(item.price * item.quantity).toStringAsFixed(0)}",
                                   style: const TextStyle(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
@@ -168,11 +158,8 @@ class _AddViewItemState extends State<AddViewItem> {
                               child: OutlinedButton.icon(
                                 onPressed: () async {
                                   final addonVM = context.read<AddonVM>();
-
                                   await addonVM.getAddons(item.itemId);
-
                                   if (!context.mounted) return;
-
                                   await showDialog(
                                   context: context,
                                   builder: (context) {
@@ -191,17 +178,14 @@ class _AddViewItemState extends State<AddViewItem> {
                                                 child: CircularProgressIndicator(),
                                               );
                                             }
-
                                             if (vm.addons.isEmpty) {
                                               return const Text("No Add-ons Available");
                                             }
-
                                             return ListView.builder(
                                               shrinkWrap: true,
                                               itemCount: vm.addons.length,
                                               itemBuilder: (context, index) {
                                                 final addon = vm.addons[index];
-
                                                 return CheckboxListTile(
                                                   value: addon.isSelected,
                                                   title: Text(addon.addonName),
@@ -329,11 +313,9 @@ class _AddViewItemState extends State<AddViewItem> {
               const SizedBox(height: 20),
               Consumer<AddressProvider>(
                 builder: (_, provider, __) {
-
                   if (provider.addresses.isNotEmpty) {
                     return const SizedBox();
                   }
-
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: SizedBox(
@@ -356,10 +338,9 @@ class _AddViewItemState extends State<AddViewItem> {
                               ),
                             ),
                           );
-
                           if (!mounted) return;
-
                           await loadAddresses();
+                          setState(() {});
                           setState(() {});
                         },
                         icon: const Icon(Icons.location_on),
@@ -369,19 +350,31 @@ class _AddViewItemState extends State<AddViewItem> {
                   );
                 },
               ),
-
               const SizedBox(height: 20),
-
               Consumer<AddressProvider>(
                 builder: (_, provider, __) {
-
                   if (provider.addresses.isEmpty) {
                     return const SizedBox();
                   }
-
                   return DropdownButtonFormField<AddressModel>(
                     value: selectedAddress,
                     hint: const Text("Choose Address"),
+
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(color: Colors.black, ),
+                      ),
+                    ),
+
                     items: provider.addresses.map((e) {
                       return DropdownMenuItem(
                         value: e,
@@ -391,6 +384,7 @@ class _AddViewItemState extends State<AddViewItem> {
                         ),
                       );
                     }).toList(),
+
                     onChanged: (value) {
                       setState(() {
                         selectedAddress = value;
@@ -420,9 +414,7 @@ class _AddViewItemState extends State<AddViewItem> {
                   ),
                 ),
                 onPressed: () async {
-
                   final addressProvider = context.read<AddressProvider>();
-
                   if (addressProvider.addresses.isEmpty) {
                     return;
                   }
@@ -459,7 +451,6 @@ class _AddViewItemState extends State<AddViewItem> {
                         "${selectedAddress!.address}\n"
                         "${selectedAddress!.addressDetails}\n"
                         "${selectedAddress!.receiverName} - ${selectedAddress!.receiverPhone}\n\n";
-
                     for (var item in cartVM.items) {
                       message +=
                       "🍽 ${item.itemName}\n"
@@ -472,7 +463,6 @@ class _AddViewItemState extends State<AddViewItem> {
                       for (var addon in selectedAddons) {
                         message +=
                         "${addon.addonName} - ₹${addon.price}\n";
-
                       }
                       message += "\n";
                     }
@@ -481,7 +471,6 @@ class _AddViewItemState extends State<AddViewItem> {
                     const phone = "919696660579";
                     final Uri url = Uri.parse(
                       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
-
                     );
                     final bool? isSent = await showDialog<bool>(
                       context: context,

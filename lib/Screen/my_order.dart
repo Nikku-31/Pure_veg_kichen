@@ -152,6 +152,26 @@ class _MyOrderPageState extends State<MyOrderPage> {
                               ],
                             ),
                           const SizedBox(height: 8),
+
+                          Row(
+                            children: [
+                              const Text(
+                                "Order Stage : ",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                order.orderStage,
+                                style: const TextStyle(
+                                  color: Colors.orange,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 8),
                         ],
                       ),
                     ),

@@ -4,17 +4,20 @@ import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/Model/DashboardM/cart_item_model.dart';
+import '../AppManager/Model/DashboardM/menu_item_model.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 class VariantBottomSheet extends StatefulWidget {
   final String itemId;
   final String itemName;
   final String image;
+  final List<AddonModel> addons;
   const VariantBottomSheet({
     super.key,
     required this.itemId,
     required this.itemName,
     required this.image,
+    required this.addons,
   });
   @override
   State<VariantBottomSheet> createState() => _VariantBottomSheetState();

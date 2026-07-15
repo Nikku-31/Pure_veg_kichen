@@ -12,6 +12,7 @@ class MenuItemModel {
   final String sortOrder;
   final String createdAt;
   final List<VariantModel> variants;
+  final List<AddonModel> addons;
 
   MenuItemModel({
     required this.id,
@@ -27,6 +28,7 @@ class MenuItemModel {
     required this.sortOrder,
     required this.createdAt,
     required this.variants,
+    required this.addons,
   });
 
   factory MenuItemModel.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,29 @@ class MenuItemModel {
       variants: (json["variants"] as List<dynamic>? ?? [])
           .map((e) => VariantModel.fromJson(e))
           .toList(),
+      addons: (json["addons"] as List<dynamic>? ?? [])
+          .map((e) => AddonModel.fromJson(e))
+          .toList(),
+    );
+  }
+}
+
+class AddonModel {
+  final String id;
+  final String name;
+  final String price;
+
+  AddonModel({
+    required this.id,
+    required this.name,
+    required this.price,
+  });
+
+  factory AddonModel.fromJson(Map<String, dynamic> json) {
+    return AddonModel(
+      id: json["id"].toString(),
+      name: json["name"] ?? "",
+      price: json["price"].toString(),
     );
   }
 }

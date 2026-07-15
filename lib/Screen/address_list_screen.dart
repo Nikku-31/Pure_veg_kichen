@@ -5,30 +5,22 @@ import 'package:pure_veg/core/constants/app_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/Model/LocationM/address_model.dart';
 import 'Widget/address_provider.dart';
-
 class AddressListScreen extends StatefulWidget {
   const AddressListScreen({super.key});
-
   @override
   State<AddressListScreen> createState() => _AddressListScreenState();
 }
-
 class _AddressListScreenState extends State<AddressListScreen> {
   @override
   void initState() {
     super.initState();
     _loadAddresses();
   }
-
   Future<void> _loadAddresses() async {
     final prefs = await SharedPreferences.getInstance();
-
     int userId = prefs.getInt("userId") ?? 0;
-
     await context.read<AddressProvider>().loadAddresses(userId);
   }
-
-
   IconData _getIcon(String type) {
     switch (type.toLowerCase()) {
       case "home":
@@ -39,11 +31,9 @@ class _AddressListScreenState extends State<AddressListScreen> {
         return Icons.location_on;
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AddressProvider>(context);
-
     return Scaffold(
         backgroundColor: const Color(0xffF6F6F6),
         appBar: AppBar(
@@ -53,7 +43,6 @@ class _AddressListScreenState extends State<AddressListScreen> {
           ),
           title: Text("Save address",style: TextStyle(
             color: AppColors.background,
-
           ),),
         ),
         body: provider.addresses.isEmpty
@@ -71,7 +60,6 @@ class _AddressListScreenState extends State<AddressListScreen> {
             itemCount: provider.addresses.length,
             itemBuilder: (context, index) {
               AddressModel address = provider.addresses[index];
-
               return Container(
                 margin: const EdgeInsets.only(bottom: 15),
                 padding: const EdgeInsets.all(15),
@@ -90,7 +78,6 @@ class _AddressListScreenState extends State<AddressListScreen> {
                   Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                   CircleAvatar(
                   radius: 22,
                   backgroundColor:
@@ -100,15 +87,12 @@ class _AddressListScreenState extends State<AddressListScreen> {
                     color: Colors.deepOrange,
                   ),
                 ),
-
                 const SizedBox(width: 15),
-
                 Expanded(
                   child: Column(
                     crossAxisAlignment:
                     CrossAxisAlignment.start,
                     children: [
-
                       Text(
                         address.type,
                         style: const TextStyle(
@@ -116,9 +100,7 @@ class _AddressListScreenState extends State<AddressListScreen> {
                           fontSize: 18,
                         ),
                       ),
-
                       const SizedBox(height: 6),
-
                       Text(
                         address.address,
                         style: const TextStyle(
@@ -126,18 +108,14 @@ class _AddressListScreenState extends State<AddressListScreen> {
                           height: 1.4,
                         ),
                       ),
-
                       const SizedBox(height: 5),
-
                       Text(
                         address.addressDetails,
                         style: const TextStyle(
                           color: Colors.black87,
                         ),
                       ),
-
                       const SizedBox(height: 6),
-
                       Text(
                         "${address.receiverName} • ${address.receiverPhone}",
                         style: const TextStyle(
@@ -150,17 +128,14 @@ class _AddressListScreenState extends State<AddressListScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-
                         IconButton(
                           onPressed: () {
-                            // Edit Address
                           },
                           icon: const Icon(
                             Icons.edit,
                             color: Colors.black,
                           ),
                         ),
-
                         IconButton(
                           onPressed: () {
                             provider.deleteAddress(index);
@@ -179,7 +154,6 @@ class _AddressListScreenState extends State<AddressListScreen> {
               );
             },
         ),
-
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.deepOrange,
         onPressed: () {
