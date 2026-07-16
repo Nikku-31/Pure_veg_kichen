@@ -9,10 +9,22 @@ class AddonVM extends ChangeNotifier {
 
   List<AddonData> addons = [];
 
-  /// Selected Addons
   List<AddonData> selectedAddons = [];
 
-  /// Load Addons by Item Id
+  Map<int, bool> addonAvailable = {};
+
+  Future<void> checkAddonAvailable(int itemId) async {
+    try {
+      final data = await _service.getAddons(itemId);
+
+      addonAvailable[itemId] = data.isNotEmpty;
+      notifyListeners();
+    } catch (e) {
+      addonAvailable[itemId] = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> getAddons(int itemId) async {
     try {
       isLoading = true;

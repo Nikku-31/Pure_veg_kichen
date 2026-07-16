@@ -15,24 +15,85 @@ import '../core/constants/app_colors.dart';
 import 'Widget/address_provider.dart';
 import 'my_order.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
 class AddViewItem extends StatefulWidget {
   const AddViewItem({super.key});
   @override
   State<AddViewItem> createState() => _AddViewItemState();
 }
 class _AddViewItemState extends State<AddViewItem> {
-  List<AddonData> selectedAddons = [];
+  Map<int, List<AddonData>> itemAddons = {};
   AddressModel? selectedAddress;
+  double get addonsTotal {
+    return itemAddons.values
+        .expand((e) => e)
+        .fold<double>(
+      0.0,
+          (sum, addon) => sum + addon.price,
+    );
+  }
   @override
   void initState() {
     super.initState();
     loadAddresses();
+    loadAddons();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final cartVM = context.read<AddItemVM>();
+      final addonVM = context.read<AddonVM>();
+
+      for (final item in cartVM.items) {
+        addonVM.checkAddonAvailable(item.itemId);
+      }
+    });
   }
   Future<void> loadAddresses() async {
     final prefs = await SharedPreferences.getInstance();
     int userId = prefs.getInt("userId") ?? 0;
 
     context.read<AddressProvider>().loadAddresses(userId);
+  }
+
+  Future<void> saveAddons() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final userId = prefs.getInt("userId") ?? 0;
+
+    final Map<String, dynamic> data = {};
+
+    itemAddons.forEach((itemId, addons) {
+      data[itemId.toString()] =
+          addons.map((e) => e.toJson()).toList();
+    });
+
+    await prefs.setString(
+      "addons_$userId",
+      jsonEncode(data),
+    );
+  }
+
+  Future<void> loadAddons() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final userId = prefs.getInt("userId") ?? 0;
+
+    final jsonString = prefs.getString("addons_$userId");
+
+    if (jsonString == null) return;
+
+    final Map<String, dynamic> json =
+    jsonDecode(jsonString);
+
+    itemAddons.clear();
+
+    json.forEach((key, value) {
+      itemAddons[int.parse(key)] =
+          (value as List)
+              .map((e) => AddonData.fromJson(e))
+              .toList();
+    });
+
+    setState(() {});
   }
   @override
   Widget build(BuildContext context) {
@@ -43,6 +104,10 @@ class _AddViewItemState extends State<AddViewItem> {
         iconTheme: IconThemeData(
           color: AppColors.background
         ),
+        title: Text("Add Item",
+        style: TextStyle(
+          color: AppColors.background
+        ),),
       ),
       body: Consumer<AddItemVM>(
         builder: (context, cartVM, child) {
@@ -71,11 +136,38 @@ class _AddViewItemState extends State<AddViewItem> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
+                              child: (item.image.trim().isEmpty || item.image == "null")
+                                  ? Container(
+                                width: 120,
+                                height: 120,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Text("🍽️",
+                                  style: TextStyle(fontSize: 35),
+                                ),
+                              )
+                                  : Image.network(
                                 "https://purevegkitchenindia.com/${item.image}",
-                                width: 70,
-                                height: 70,
+                                width: 120,
+                                height: 120,
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 70,
+                                    height: 70,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Text("🍽️",
+                                      style: TextStyle(fontSize: 35),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -134,6 +226,23 @@ class _AddViewItemState extends State<AddViewItem> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 12),
+
+                        if ((itemAddons[item.itemId] ?? []).isNotEmpty)
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Add : ${itemAddons[item.itemId]!.map((e) => e.addonName).join(", ")}",
+                                  style: const TextStyle(
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
                         const SizedBox(height: 15),
                         Row(
                           children: [
@@ -154,78 +263,112 @@ class _AddViewItemState extends State<AddViewItem> {
                               ),
                             ),
                             const SizedBox(width: 10),
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () async {
-                                  final addonVM = context.read<AddonVM>();
-                                  await addonVM.getAddons(item.itemId);
-                                  if (!context.mounted) return;
-                                  await showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      backgroundColor: AppColors.background,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      title: const Text("Choose Add-ons"),
-                                      content: SizedBox(
-                                        width: double.maxFinite,
-                                        child: Consumer<AddonVM>(
-                                          builder: (context, vm, child) {
-                                            if (vm.isLoading) {
-                                              return const Center(
-                                                child: CircularProgressIndicator(),
-                                              );
-                                            }
-                                            if (vm.addons.isEmpty) {
-                                              return const Text("No Add-ons Available");
-                                            }
-                                            return ListView.builder(
-                                              shrinkWrap: true,
-                                              itemCount: vm.addons.length,
-                                              itemBuilder: (context, index) {
-                                                final addon = vm.addons[index];
-                                                return CheckboxListTile(
-                                                  value: addon.isSelected,
-                                                  title: Text(addon.addonName),
-                                                  subtitle: Text("₹${addon.price}"),
-                                                  onChanged: (_) {
-                                                    vm.toggleAddon(addon);
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: const Text("Done",
-                                          style: TextStyle(
-                                            color: AppColors.primary,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15
-                                          ),),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                  );
-                                },
-                                icon: const Icon(
-                                  Icons.edit_note,
-                                  size: 18,
-                                  color: AppColors.primary,
-                                ),
-                                label: const Text(
-                                  "Add-ons",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
+                            Consumer<AddonVM>(
+                              builder: (context, addonVM, child) {
+                                if (addonVM.addonAvailable[item.itemId] != true) {
+                                  return const SizedBox();
+                                }
+
+                                return Expanded(
+                                  child: OutlinedButton.icon(
+                                    onPressed: () async {
+                                      final addonVM = context.read<AddonVM>();
+                                      await addonVM.getAddons(item.itemId);
+
+                                      final oldSelection = itemAddons[item.itemId] ?? [];
+
+                                      for (final addon in addonVM.addons) {
+                                        addon.isSelected = oldSelection.any(
+                                              (e) => e.addonId == addon.addonId,
+                                        );
+                                      }
+
+                                      addonVM.selectedAddons = List.from(oldSelection);
+
+                                      if (!context.mounted) return;
+
+                                      await showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            backgroundColor: AppColors.background,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(16),
+                                            ),
+                                            title: const Text("Choose Add-ons"),
+                                            content: SizedBox(
+                                              width: double.maxFinite,
+                                              child: Consumer<AddonVM>(
+                                                builder: (context, vm, child) {
+                                                  if (vm.isLoading) {
+                                                    return const Center(
+                                                      child: CircularProgressIndicator(),
+                                                    );
+                                                  }
+                                                  if (vm.addons.isEmpty) {
+                                                    return const Text("No Add-ons Available");
+                                                  }
+                                                  return ListView.builder(
+                                                    shrinkWrap: true,
+                                                    itemCount: vm.addons.length,
+                                                    itemBuilder: (context, index) {
+                                                      final addon = vm.addons[index];
+                                                      return CheckboxListTile(
+                                                        value: addon.isSelected,
+                                                        activeColor: AppColors.primary,
+                                                        checkColor: Colors.white,
+
+                                                        title: Text(addon.addonName),
+                                                        subtitle: Text("₹${addon.price}"),
+                                                        onChanged: (_) {
+                                                          vm.toggleAddon(addon);
+                                                        },
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () async {
+                                                  setState(() {
+                                                    itemAddons[item.itemId] = context
+                                                        .read<AddonVM>()
+                                                        .selectedAddons
+                                                        .map((e) => AddonData(
+                                                      addonId: e.addonId,
+                                                      addonName: e.addonName,
+                                                      price: e.price,
+                                                      isSelected: true,
+                                                    ))
+                                                        .toList();
+                                                  });
+                                                  await saveAddons();
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text("Done",
+                                                style: TextStyle(
+                                                  color: AppColors.primary
+                                                ),),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit_note,
+                                      size: 18,
+                                      color: AppColors.primary,
+                                    ),
+                                    label: const Text(
+                                      "Add-ons",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -262,7 +405,7 @@ class _AddViewItemState extends State<AddViewItem> {
                       MainAxisAlignment.spaceBetween,
                       children: [
                         const Text("Item Total"),
-                        Text("₹${cartVM.totalPrice}")
+                        Text("₹${(cartVM.totalPrice + addonsTotal).toStringAsFixed(0)}")
                       ],
                     ),
                     const Divider(height: 30),
@@ -280,6 +423,17 @@ class _AddViewItemState extends State<AddViewItem> {
                       ],
                     ),
                     const Divider(height: 30),
+                    if (itemAddons.isNotEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Add-ons"),
+                          Text("₹${addonsTotal.toStringAsFixed(0)}"),
+                        ],
+                      ),
+
+                    if (itemAddons.isNotEmpty)
+                      const Divider(height: 30),
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
@@ -299,7 +453,8 @@ class _AddViewItemState extends State<AddViewItem> {
                             fontSize: 18,
                           ),
                         ),
-                        Text("₹${cartVM.totalPrice}",
+                        Text(
+                          "₹${(cartVM.totalPrice + addonsTotal).toStringAsFixed(0)}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -356,40 +511,43 @@ class _AddViewItemState extends State<AddViewItem> {
                   if (provider.addresses.isEmpty) {
                     return const SizedBox();
                   }
-                  return DropdownButtonFormField<AddressModel>(
-                    value: selectedAddress,
-                    hint: const Text("Choose Address"),
-
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(color: Colors.black, ),
-                      ),
-                    ),
-
-                    items: provider.addresses.map((e) {
-                      return DropdownMenuItem(
-                        value: e,
-                        child: Text(
-                          "${e.type} - ${e.address}",
-                          overflow: TextOverflow.ellipsis,
+                  return SizedBox(
+                    height: 90,
+                    child: DropdownButtonFormField<AddressModel>(
+                      value: selectedAddress,
+                      hint: const Text("Choose Address"),
+                    
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.black),
                         ),
-                      );
-                    }).toList(),
-
-                    onChanged: (value) {
-                      setState(() {
-                        selectedAddress = value;
-                      });
-                    },
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.black, ),
+                        ),
+                      ),
+                    
+                      items: provider.addresses.map((e) {
+                        return DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            "${e.type} - ${e.address}",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
+                    
+                      onChanged: (value) {
+                        setState(() {
+                          selectedAddress = value;
+                        });
+                      },
+                    ),
                   );
                 },
               ),
@@ -458,16 +616,20 @@ class _AddViewItemState extends State<AddViewItem> {
                           "Qty : ${item.quantity}\n"
                           "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n\n";
                     }
-                    if (selectedAddons.isNotEmpty) {
+                    if (itemAddons.isNotEmpty) {
                       message += "\n🧀 Add-ons\n";
-                      for (var addon in selectedAddons) {
-                        message +=
-                        "${addon.addonName} - ₹${addon.price}\n";
-                      }
+
+                      itemAddons.forEach((itemId, addons) {
+                        for (var addon in addons) {
+                          message += "${addon.addonName} - ₹${addon.price}\n";
+                        }
+                      });
+
                       message += "\n";
                     }
                     message +=
-                    "💰 Total : ₹${cartVM.totalPrice.toStringAsFixed(0)}";
+                        message +=
+                    "💰 Total : ₹${(cartVM.totalPrice + addonsTotal).toStringAsFixed(0)}";
                     const phone = "919696660579";
                     final Uri url = Uri.parse(
                       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",

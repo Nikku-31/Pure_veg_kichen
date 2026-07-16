@@ -27,10 +27,12 @@ class AddItemVM extends ChangeNotifier {
   Future<void> saveCart() async {
     final prefs = await SharedPreferences.getInstance();
 
+    final int userId = prefs.getInt("userId") ?? 0;
+
     final data = _items.map((e) => e.toJson()).toList();
 
     await prefs.setString(
-      "cart_items",
+      "cart_items_$userId",
       jsonEncode(data),
     );
   }
@@ -38,7 +40,9 @@ class AddItemVM extends ChangeNotifier {
   Future<void> loadCart() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final data = prefs.getString("cart_items");
+    final int userId = prefs.getInt("userId") ?? 0;
+
+    final data = prefs.getString("cart_items_$userId");
 
     if (data == null) return;
 
@@ -108,11 +112,17 @@ class AddItemVM extends ChangeNotifier {
 
 
   // Clear Cart
-  Future<void> clearCart() async {
+  Future<void> clearCart({
+    bool removeStorage = true}) async {
     _items.clear();
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("cart_items");
+    if (removeStorage) {
+      final prefs = await SharedPreferences.getInstance();
+
+      final int userId = prefs.getInt("userId") ?? 0;
+
+      await prefs.remove("cart_items_$userId");
+    }
 
     notifyListeners();
   }

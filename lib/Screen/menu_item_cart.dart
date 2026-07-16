@@ -30,36 +30,44 @@ class MenuItemCard extends StatelessWidget {
               child: Stack(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: SizedBox(
+                    borderRadius: BorderRadius.circular(10),
+                    child: (item.image.isEmpty)
+                        ? Container(
                       width: 120,
                       height: 150,
-                      child: item.image.isNotEmpty
-                          ? Image.network(
-                        "https://purevegkitchenindia.com/${item.image}",
-                        fit: BoxFit.cover,
-                      )
-                          : Container(
-                        color: Colors.grey.shade200,
-                        child: const Icon(
-                          Icons.fastfood,
-                          size: 40,
-                        ),
+                      alignment: Alignment.center,
+                      color: Colors.grey.shade200,
+                      child: const Text(
+                        "🍽️",
+                        style: TextStyle(fontSize: 35),
                       ),
+                    )
+                        : Image.network(
+                      "https://purevegkitchenindia.com/${item.image}",
+                      width: 120,
+                      height: 150,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 120,
+                          height: 150,
+                          alignment: Alignment.center,
+                          color: Colors.grey.shade200,
+                          child: const Text(
+                            "🍽️",
+                            style: TextStyle(fontSize: 35),
+                          ),
+                        );
+                      },
                     ),
                   ),
-
                   Positioned(
                     top: 6,
                     right: 6,
                     child: Consumer<AddItemVM>(
                       builder: (context, cartVM, child) {
-
                         final index = cartVM.getItemIndex(int.parse(item.id));
-
                         if (index == -1) {
-                          // ========= SAME OLD + BUTTON =========
-
                           return GestureDetector(
                             onTap: () async {
                               final variantVM =

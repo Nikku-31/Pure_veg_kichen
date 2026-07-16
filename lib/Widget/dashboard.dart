@@ -390,7 +390,6 @@ class _DashboardState extends State<Dashboard> {
             ),
       ],
       ),
-      // BOTTOM NAVIGATION
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         selectedItemColor: AppColors.primary,
@@ -422,7 +421,6 @@ class _DashboardState extends State<Dashboard> {
       clipBehavior: Clip.none,
       children: [
       Container(
-
       width: 110,
       height: 110,
         decoration: BoxDecoration(

@@ -392,10 +392,13 @@ class _ProfileState extends State<Profile> {
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                   ),
                                   onPressed: () async {
-                                    await context.read<AddItemVM>().clearCart();
+                                    await context.read<AddItemVM>().clearCart(
+                                      removeStorage: false,
+                                    );
                                     final prefs = await SharedPreferences.getInstance();
                                     await prefs.remove("isLogin");
                                     await prefs.remove("userId");
+
                                     await prefs.remove("userEmail");
                                     Navigator.pop(context);
                                     Navigator.pushAndRemoveUntil(
