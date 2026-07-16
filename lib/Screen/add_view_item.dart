@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/save_address.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../AppManager/Model/LocationM/address_model.dart';
 import '../AppManager/Model/OrderM/add_ons_model.dart';
@@ -97,6 +98,7 @@ class _AddViewItemState extends State<AddViewItem> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -186,11 +188,17 @@ class _AddViewItemState extends State<AddViewItem> {
                                     style: const TextStyle(color: Colors.grey),
                                   ),
                                   const SizedBox(height: 8),
-                                  Text("₹${item.price}",
-                                    style: const TextStyle(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "₹${item.price}",
+                                        style: const TextStyle(
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+
+                                    ],
                                   ),
                                 ],
                               ),
@@ -198,22 +206,25 @@ class _AddViewItemState extends State<AddViewItem> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text("₹${(item.price * item.quantity).toStringAsFixed(0)}",
+                                Text(
+                                  "₹${(item.price * item.quantity).toStringAsFixed(0)}",
                                   style: const TextStyle(
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+
                                 const SizedBox(height: 12),
+
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     InkWell(
                                       onTap: () => cartVM.decrease(index),
                                       child: const Icon(Icons.remove_circle_outline),
                                     ),
                                     Padding(
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
                                       child: Text(item.quantity.toString()),
                                     ),
                                     InkWell(
@@ -221,6 +232,130 @@ class _AddViewItemState extends State<AddViewItem> {
                                       child: const Icon(Icons.add_circle_outline),
                                     ),
                                   ],
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Consumer<AddonVM>(
+                                  builder: (context, addonVM, child) {
+                                    if (addonVM.addonAvailable[item.itemId] != true) {
+                                      return const SizedBox();
+                                    }
+
+                                    return SizedBox(
+                                      width: 120,
+                                      child: OutlinedButton.icon(
+                                        style: OutlinedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 6,
+                                          ),
+                                          minimumSize: const Size(0, 35),
+                                        ),
+                                        onPressed: () async {
+                                          final addonVM = context.read<AddonVM>();
+                                          await addonVM.getAddons(item.itemId);
+
+                                          final oldSelection = itemAddons[item.itemId] ?? [];
+
+                                          for (final addon in addonVM.addons) {
+                                            addon.isSelected = oldSelection.any(
+                                                  (e) => e.addonId == addon.addonId,
+                                            );
+                                          }
+
+                                          addonVM.selectedAddons = List.from(oldSelection);
+
+                                          if (!context.mounted) return;
+
+                                          await showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                backgroundColor: AppColors.background,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                title: const Text("Choose Add-ons"),
+                                                content: SizedBox(
+                                                  width: double.maxFinite,
+                                                  child: Consumer<AddonVM>(
+                                                    builder: (context, vm, child) {
+                                                      if (vm.isLoading) {
+                                                        return const AddonShimmer();
+                                                      }
+                                                      if (vm.addons.isEmpty) {
+                                                        return const Text("No Add-ons Available");
+                                                      }
+
+                                                      return ListView.builder(
+                                                        shrinkWrap: true,
+                                                        itemCount: vm.addons.length,
+                                                        itemBuilder: (context, index) {
+                                                          final addon = vm.addons[index];
+                                                          return CheckboxListTile(
+                                                            value: addon.isSelected,
+                                                            activeColor: AppColors.primary,
+                                                            checkColor: Colors.white,
+                                                            title: Text(addon.addonName),
+                                                            subtitle: Text("₹${addon.price}"),
+                                                            onChanged: (_) {
+                                                              vm.toggleAddon(addon);
+                                                            },
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () async {
+                                                      setState(() {
+                                                        itemAddons[item.itemId] = context
+                                                            .read<AddonVM>()
+                                                            .selectedAddons
+                                                            .map(
+                                                              (e) => AddonData(
+                                                            addonId: e.addonId,
+                                                            addonName: e.addonName,
+                                                            price: e.price,
+                                                            isSelected: true,
+                                                          ),
+                                                        )
+                                                            .toList();
+                                                      });
+
+                                                      await saveAddons();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text(
+                                                      "Done",
+                                                      style: TextStyle(
+                                                        color: AppColors.primary,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: const Icon(
+                                          Icons.edit_note,
+                                          size: 16,
+                                          color: AppColors.primary,
+                                        ),
+                                        label: const Text(
+                                          "Add-ons",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -242,136 +377,133 @@ class _AddViewItemState extends State<AddViewItem> {
                               ),
                             ],
                           ),
-
-                        const SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.add,
-                                  size: 18,
-                                  color: AppColors.primary,
-                                ),
-                                label: const Text(
-                                  "Add Items",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Consumer<AddonVM>(
-                              builder: (context, addonVM, child) {
-                                if (addonVM.addonAvailable[item.itemId] != true) {
-                                  return const SizedBox();
-                                }
-
-                                return Expanded(
-                                  child: OutlinedButton.icon(
-                                    onPressed: () async {
-                                      final addonVM = context.read<AddonVM>();
-                                      await addonVM.getAddons(item.itemId);
-
-                                      final oldSelection = itemAddons[item.itemId] ?? [];
-
-                                      for (final addon in addonVM.addons) {
-                                        addon.isSelected = oldSelection.any(
-                                              (e) => e.addonId == addon.addonId,
-                                        );
-                                      }
-
-                                      addonVM.selectedAddons = List.from(oldSelection);
-
-                                      if (!context.mounted) return;
-
-                                      await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            backgroundColor: AppColors.background,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(16),
-                                            ),
-                                            title: const Text("Choose Add-ons"),
-                                            content: SizedBox(
-                                              width: double.maxFinite,
-                                              child: Consumer<AddonVM>(
-                                                builder: (context, vm, child) {
-                                                  if (vm.isLoading) {
-                                                    return const Center(
-                                                      child: CircularProgressIndicator(),
-                                                    );
-                                                  }
-                                                  if (vm.addons.isEmpty) {
-                                                    return const Text("No Add-ons Available");
-                                                  }
-                                                  return ListView.builder(
-                                                    shrinkWrap: true,
-                                                    itemCount: vm.addons.length,
-                                                    itemBuilder: (context, index) {
-                                                      final addon = vm.addons[index];
-                                                      return CheckboxListTile(
-                                                        value: addon.isSelected,
-                                                        activeColor: AppColors.primary,
-                                                        checkColor: Colors.white,
-
-                                                        title: Text(addon.addonName),
-                                                        subtitle: Text("₹${addon.price}"),
-                                                        onChanged: (_) {
-                                                          vm.toggleAddon(addon);
-                                                        },
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () async {
-                                                  setState(() {
-                                                    itemAddons[item.itemId] = context
-                                                        .read<AddonVM>()
-                                                        .selectedAddons
-                                                        .map((e) => AddonData(
-                                                      addonId: e.addonId,
-                                                      addonName: e.addonName,
-                                                      price: e.price,
-                                                      isSelected: true,
-                                                    ))
-                                                        .toList();
-                                                  });
-                                                  await saveAddons();
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text("Done",
-                                                style: TextStyle(
-                                                  color: AppColors.primary
-                                                ),),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    icon: const Icon(
-                                      Icons.edit_note,
-                                      size: 18,
-                                      color: AppColors.primary,
-                                    ),
-                                    label: const Text(
-                                      "Add-ons",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                        // const SizedBox(height: 15),
+                        // Row(
+                        //   children: [
+                        //     // Expanded(
+                        //     //   child: OutlinedButton.icon(
+                        //     //     onPressed: () {
+                        //     //       Navigator.pop(context);
+                        //     //     },
+                        //     //     icon: const Icon(
+                        //     //       Icons.add,
+                        //     //       size: 18,
+                        //     //       color: AppColors.primary,
+                        //     //     ),
+                        //     //     label: const Text(
+                        //     //       "Add Items",
+                        //     //       style: TextStyle(color: Colors.black),
+                        //     //     ),
+                        //     //   ),
+                        //     // ),
+                        //     // const SizedBox(width: 10),
+                        //     // Consumer<AddonVM>(
+                        //     //   builder: (context, addonVM, child) {
+                        //     //     if (addonVM.addonAvailable[item.itemId] != true) {
+                        //     //       return const SizedBox();
+                        //     //     }
+                        //     //
+                        //     //     return Expanded(
+                        //     //       child: OutlinedButton.icon(
+                        //     //         onPressed: () async {
+                        //     //           final addonVM = context.read<AddonVM>();
+                        //     //           await addonVM.getAddons(item.itemId);
+                        //     //
+                        //     //           final oldSelection = itemAddons[item.itemId] ?? [];
+                        //     //
+                        //     //           for (final addon in addonVM.addons) {
+                        //     //             addon.isSelected = oldSelection.any(
+                        //     //                   (e) => e.addonId == addon.addonId,
+                        //     //             );
+                        //     //           }
+                        //     //
+                        //     //           addonVM.selectedAddons = List.from(oldSelection);
+                        //     //
+                        //     //           if (!context.mounted) return;
+                        //     //
+                        //     //           await showDialog(
+                        //     //             context: context,
+                        //     //             builder: (context) {
+                        //     //               return AlertDialog(
+                        //     //                 backgroundColor: AppColors.background,
+                        //     //                 shape: RoundedRectangleBorder(
+                        //     //                   borderRadius: BorderRadius.circular(16),
+                        //     //                 ),
+                        //     //                 title: const Text("Choose Add-ons"),
+                        //     //                 content: SizedBox(
+                        //     //                   width: double.maxFinite,
+                        //     //                   child: Consumer<AddonVM>(
+                        //     //                     builder: (context, vm, child) {
+                        //     //                       if (vm.isLoading) {
+                        //     //                         return const AddonShimmer();
+                        //     //                       }
+                        //     //                       if (vm.addons.isEmpty) {
+                        //     //                         return const Text("No Add-ons Available");
+                        //     //                       }
+                        //     //                       return ListView.builder(
+                        //     //                         shrinkWrap: true,
+                        //     //                         itemCount: vm.addons.length,
+                        //     //                         itemBuilder: (context, index) {
+                        //     //                           final addon = vm.addons[index];
+                        //     //                           return CheckboxListTile(
+                        //     //                             value: addon.isSelected,
+                        //     //                             activeColor: AppColors.primary,
+                        //     //                             checkColor: Colors.white,
+                        //     //
+                        //     //                             title: Text(addon.addonName),
+                        //     //                             subtitle: Text("₹${addon.price}"),
+                        //     //                             onChanged: (_) {
+                        //     //                               vm.toggleAddon(addon);
+                        //     //                             },
+                        //     //                           );
+                        //     //                         },
+                        //     //                       );
+                        //     //                     },
+                        //     //                   ),
+                        //     //                 ),
+                        //     //                 actions: [
+                        //     //                   TextButton(
+                        //     //                     onPressed: () async {
+                        //     //                       setState(() {
+                        //     //                         itemAddons[item.itemId] = context
+                        //     //                             .read<AddonVM>()
+                        //     //                             .selectedAddons
+                        //     //                             .map((e) => AddonData(
+                        //     //                           addonId: e.addonId,
+                        //     //                           addonName: e.addonName,
+                        //     //                           price: e.price,
+                        //     //                           isSelected: true,
+                        //     //                         ))
+                        //     //                             .toList();
+                        //     //                       });
+                        //     //                       await saveAddons();
+                        //     //                       Navigator.pop(context);
+                        //     //                     },
+                        //     //                     child: const Text("Done",
+                        //     //                     style: TextStyle(
+                        //     //                       color: AppColors.primary
+                        //     //                     ),),
+                        //     //                   ),
+                        //     //                 ],
+                        //     //               );
+                        //     //             },
+                        //     //           );
+                        //     //         },
+                        //     //         icon: const Icon(
+                        //     //           Icons.edit_note,
+                        //     //           size: 18,
+                        //     //           color: AppColors.primary,
+                        //     //         ),
+                        //     //         label: const Text(
+                        //     //           "Add-ons",
+                        //     //           style: TextStyle(color: Colors.black),
+                        //     //         ),
+                        //     //       ),
+                        //     //     );
+                        //     //   },
+                        //     // ),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
@@ -405,7 +537,7 @@ class _AddViewItemState extends State<AddViewItem> {
                       MainAxisAlignment.spaceBetween,
                       children: [
                         const Text("Item Total"),
-                        Text("₹${(cartVM.totalPrice + addonsTotal).toStringAsFixed(0)}")
+                        Text("₹${(cartVM.totalPrice ).toStringAsFixed(0)}")
                       ],
                     ),
                     const Divider(height: 30),
@@ -729,6 +861,46 @@ class _AddViewItemState extends State<AddViewItem> {
           },
         ),
       ),
+    );
+  }
+}
+
+class AddonShimmer extends StatelessWidget {
+  const AddonShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: ListTile(
+            leading: Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            title: Container(
+              height: 16,
+              color: Colors.white,
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Container(
+                height: 14,
+                width: 60,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

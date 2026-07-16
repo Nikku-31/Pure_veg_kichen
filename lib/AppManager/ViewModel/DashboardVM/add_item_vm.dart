@@ -4,6 +4,7 @@ import '../../Model/DashboardM/cart_item_model.dart';
 import 'dart:convert';
 
 class AddItemVM extends ChangeNotifier {
+  bool isLoading = false;
   final List<CartItemModel> _items = [];
 
   List<CartItemModel> get items => _items;
@@ -37,7 +38,11 @@ class AddItemVM extends ChangeNotifier {
     );
   }
 
+
+
   Future<void> loadCart() async {
+    isLoading = true;
+    notifyListeners();
     final prefs = await SharedPreferences.getInstance();
 
     final int userId = prefs.getInt("userId") ?? 0;
