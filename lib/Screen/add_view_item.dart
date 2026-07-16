@@ -113,11 +113,18 @@ class _AddViewItemState extends State<AddViewItem> {
       ),
       body: Consumer<AddItemVM>(
         builder: (context, cartVM, child) {
+
+          final addonVM = context.watch<AddonVM>();
+
+          final hasAddonOption = cartVM.items.any(
+                (item) => addonVM.addonAvailable[item.itemId] == true,
+          );
           if (cartVM.items.isEmpty) {
             return const Center(
               child: Text("No Item Added"),
             );
           }
+
           return ListView(
             padding: const EdgeInsets.all(12),
             children: [
@@ -127,257 +134,249 @@ class _AddViewItemState extends State<AddViewItem> {
                   color: Colors.grey.shade200,
                   margin: const EdgeInsets.only(bottom: 12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: (item.image.trim().isEmpty || item.image == "null")
-                                  ? Container(
-                                width: 120,
-                                height: 120,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Text("🍽️",
-                                  style: TextStyle(fontSize: 35),
-                                ),
-                              )
-                                  : Image.network(
-                                "https://purevegkitchenindia.com/${item.image}",
-                                width: 120,
-                                height: 120,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 70,
-                                    height: 70,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
+                        IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: (item.image.trim().isEmpty || item.image == "null")
+                                    ? Container(
+                                  alignment: Alignment.center,
+                                  color: Colors.grey.shade300,
+                                  child: const Text("🍽️",
+                                    style: TextStyle(fontSize: 35),
+                                  ),
+                                )
+                                    : Image.network(
+                                  "https://purevegkitchenindia.com/${item.image}",
+                                  width: 120,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 120,
                                       color: Colors.grey.shade200,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Text("🍽️",
-                                      style: TextStyle(fontSize: 35),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(item.itemName,
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(item.variantName,
-                                    style: const TextStyle(color: Colors.grey),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text("₹${item.price}",
-                                    style: const TextStyle(
-                                      color: AppColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text("₹${(item.price * item.quantity).toStringAsFixed(0)}",
-                                  style: const TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                      alignment: Alignment.center,
+                                      // decoration: BoxDecoration(
+                                      //
+                                      //   borderRadius: BorderRadius.circular(10),
+                                      // ),
+                                      child: const Text("🍽️",
+                                        style: TextStyle(fontSize: 35),
+                                      ),
+                                    );
+                                  },
                                 ),
-                                const SizedBox(height: 12),
-                                Row(
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    InkWell(
-                                      onTap: () => cartVM.decrease(index),
-                                      child: const Icon(Icons.remove_circle_outline),
+                                    Text(item.itemName,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                    Padding(
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 10),
-                                      child: Text(item.quantity.toString()),
+                                    const SizedBox(height: 5),
+                                    Text(item.variantName,
+                                      style: const TextStyle(color: Colors.grey),
                                     ),
-                                    InkWell(
-                                      onTap: () => cartVM.increase(index),
-                                      child: const Icon(Icons.add_circle_outline),
+                                    const SizedBox(height: 8),
+                                    Text("₹${item.price}",
+                                      style: const TextStyle(
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-
-                        if ((itemAddons[item.itemId] ?? []).isNotEmpty)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "Add : ${itemAddons[item.itemId]!.map((e) => e.addonName).join(", ")}",
-                                  style: const TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("₹${(item.price * item.quantity).toStringAsFixed(0)}",
+                                    style: const TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          final currentItem = cartVM.items[index];
+
+                                          // Agar ye last quantity hai to add-ons bhi remove kar do
+                                          if (currentItem.quantity == 1) {
+                                            itemAddons.remove(currentItem.itemId);
+                                            context.read<AddonVM>().clearSelection();
+                                            await saveAddons();
+                                          }
+
+                                          cartVM.decrease(index);
+
+                                          if (mounted) {
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: const Icon(Icons.remove_circle_outline),
+                                      ),
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(horizontal: 10),
+                                        child: Text(item.quantity.toString()),
+                                      ),
+                                      InkWell(
+                                        onTap: () => cartVM.increase(index),
+                                        child: const Icon(Icons.add_circle_outline),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                        ),
 
-                        const SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton.icon(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(
-                                  Icons.add,
-                                  size: 18,
-                                  color: AppColors.primary,
-                                ),
-                                label: const Text(
-                                  "Add Items",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Consumer<AddonVM>(
-                              builder: (context, addonVM, child) {
-                                if (addonVM.addonAvailable[item.itemId] != true) {
-                                  return const SizedBox();
-                                }
-
-                                return Expanded(
-                                  child: OutlinedButton.icon(
-                                    onPressed: () async {
-                                      final addonVM = context.read<AddonVM>();
-                                      await addonVM.getAddons(item.itemId);
-
-                                      final oldSelection = itemAddons[item.itemId] ?? [];
-
-                                      for (final addon in addonVM.addons) {
-                                        addon.isSelected = oldSelection.any(
-                                              (e) => e.addonId == addon.addonId,
-                                        );
-                                      }
-
-                                      addonVM.selectedAddons = List.from(oldSelection);
-
-                                      if (!context.mounted) return;
-
-                                      await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            backgroundColor: AppColors.background,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(16),
-                                            ),
-                                            title: const Text("Choose Add-ons"),
-                                            content: SizedBox(
-                                              width: double.maxFinite,
-                                              child: Consumer<AddonVM>(
-                                                builder: (context, vm, child) {
-                                                  if (vm.isLoading) {
-                                                    return const AddonShimmer();
-                                                  }
-                                                  if (vm.addons.isEmpty) {
-                                                    return const Text("No Add-ons Available");
-                                                  }
-                                                  return ListView.builder(
-                                                    shrinkWrap: true,
-                                                    itemCount: vm.addons.length,
-                                                    itemBuilder: (context, index) {
-                                                      final addon = vm.addons[index];
-                                                      return CheckboxListTile(
-                                                        value: addon.isSelected,
-                                                        activeColor: AppColors.primary,
-                                                        checkColor: Colors.white,
-
-                                                        title: Text(addon.addonName),
-                                                        subtitle: Text("₹${addon.price}"),
-                                                        onChanged: (_) {
-                                                          vm.toggleAddon(addon);
-                                                        },
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () async {
-                                                  setState(() {
-                                                    itemAddons[item.itemId] = context
-                                                        .read<AddonVM>()
-                                                        .selectedAddons
-                                                        .map((e) => AddonData(
-                                                      addonId: e.addonId,
-                                                      addonName: e.addonName,
-                                                      price: e.price,
-                                                      isSelected: true,
-                                                    ))
-                                                        .toList();
-                                                  });
-                                                  await saveAddons();
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text("Done",
-                                                style: TextStyle(
-                                                  color: AppColors.primary
-                                                ),),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    icon: const Icon(
-                                      Icons.edit_note,
-                                      size: 18,
+                        Consumer<AddonVM>(
+                          builder: (context, addonVM, child) {
+                            if (addonVM.addonAvailable[item.itemId] != true) {
+                              return const SizedBox();
+                            }
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: (itemAddons[item.itemId] ?? []).isNotEmpty
+                                      ? Text(
+                                    "Add : ${itemAddons[item.itemId]!.map((e) => e.addonName).join(", ")}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
                                       color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    label: const Text(
-                                      "Add-ons",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
+                                  )
+                                      : const SizedBox(),
+                                ),
+
+                                const SizedBox(width: 10),
+
+                                OutlinedButton.icon(
+                                  onPressed: () async {
+                                    final addonVM = context.read<AddonVM>();
+                                    await addonVM.getAddons(item.itemId);
+                                    addonVM.clearSelection();
+
+                                    final oldSelection = itemAddons[item.itemId] ?? [];
+
+                                    for (final addon in addonVM.addons) {
+                                      addon.isSelected = oldSelection.any(
+                                            (e) => e.addonId == addon.addonId,
+                                      );
+                                    }
+                                    addonVM.selectedAddons = List.from(oldSelection);
+                                    if (!context.mounted) return;
+                                    await showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          backgroundColor: AppColors.background,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          title: const Text("Choose Add-ons"),
+                                          content: SizedBox(
+                                            width: double.maxFinite,
+                                            child: Consumer<AddonVM>(
+                                              builder: (context, vm, child) {
+                                                if (vm.isLoading) {
+                                                  return const AddonShimmer();
+                                                }
+                                                if (vm.addons.isEmpty) {
+                                                  return const Text("No Add-ons Available");
+                                                }
+                                                return ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount: vm.addons.length,
+                                                  itemBuilder: (context, index) {
+                                                    final addon = vm.addons[index];
+                                                    return CheckboxListTile(
+                                                      value: addon.isSelected,
+                                                      activeColor: AppColors.primary,
+                                                      checkColor: Colors.white,
+                                                      title: Text(addon.addonName),
+                                                      subtitle: Text("₹${addon.price}"),
+                                                      onChanged: (_) {
+                                                        vm.toggleAddon(addon);
+                                                      },
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () async {
+                                                final vm = context.read<AddonVM>();
+
+                                                setState(() {
+                                                  if (vm.selectedAddons.isEmpty) {
+                                                    itemAddons.remove(item.itemId);
+                                                  } else {
+                                                    itemAddons[item.itemId] = vm.selectedAddons.map(
+                                                          (e) => AddonData(
+                                                        addonId: e.addonId,
+                                                        addonName: e.addonName,
+                                                        price: e.price,
+                                                        isSelected: true,
+                                                      ),
+                                                    ).toList();
+                                                  }
+                                                });
+
+                                                await saveAddons();
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text(
+                                                "Done",
+                                                style: TextStyle(color: AppColors.primary),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit_note,
+                                    size: 18,
+                                    color: AppColors.primary,
                                   ),
-                                );
-                              },
-                            ),
-                          ],
+                                  label: const Text(
+                                    "Add-ons",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),
                   ),
                 );
               }),
-              const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -423,7 +422,7 @@ class _AddViewItemState extends State<AddViewItem> {
                       ],
                     ),
                     const Divider(height: 30),
-                    if (itemAddons.isNotEmpty)
+                    if (hasAddonOption) ...[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -431,9 +430,8 @@ class _AddViewItemState extends State<AddViewItem> {
                           Text("₹${addonsTotal.toStringAsFixed(0)}"),
                         ],
                       ),
-
-                    if (itemAddons.isNotEmpty)
                       const Divider(height: 30),
+                    ],
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
@@ -697,7 +695,13 @@ class _AddViewItemState extends State<AddViewItem> {
                           )
                       );
                       await cartVM.clearCart();
+
+                      itemAddons.clear();
+                      context.read<AddonVM>().clearSelection();
+                      await saveAddons();
+
                       if (!context.mounted) return;
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(

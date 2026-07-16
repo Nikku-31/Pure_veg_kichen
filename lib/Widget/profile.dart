@@ -396,6 +396,8 @@ class _ProfileState extends State<Profile> {
                                       removeStorage: false,
                                     );
                                     final prefs = await SharedPreferences.getInstance();
+                                    final int userId = prefs.getInt("userId") ?? 0;
+                                    await prefs.remove("addons_$userId");
                                     await prefs.remove("isLogin");
                                     await prefs.remove("userId");
 
