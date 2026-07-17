@@ -121,12 +121,47 @@ class _AddViewItemState extends State<AddViewItem> {
                 (item) => addonVM.addonAvailable[item.itemId] == true,
           );
           if (cartVM.items.isEmpty) {
-            return const Center(
-              child: Text("Add item In your card",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold
-              ),),
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    SizedBox(
+                      height: 350,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/image/wishlist.png",
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                          ),
+                          Positioned(
+                            bottom: 40,
+                            left: 20,
+                            right: 20,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Add item in your card",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
             );
           }
 
