@@ -45,7 +45,6 @@ class WishlistScreen extends StatelessWidget {
                             width: double.infinity,
                             fit: BoxFit.contain,
                           ),
-
                           Positioned(
                             bottom: 15,
                             left: 20,

@@ -106,6 +106,7 @@ class _AddViewItemState extends State<AddViewItem> {
         iconTheme: IconThemeData(
           color: AppColors.background
         ),
+        centerTitle: true,
         title: Text("Add Item",
         style: TextStyle(
           color: AppColors.background
@@ -121,7 +122,11 @@ class _AddViewItemState extends State<AddViewItem> {
           );
           if (cartVM.items.isEmpty) {
             return const Center(
-              child: Text("No Item Added"),
+              child: Text("Add item In your card",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold
+              ),),
             );
           }
 
@@ -422,7 +427,7 @@ class _AddViewItemState extends State<AddViewItem> {
                       ],
                     ),
                     const Divider(height: 30),
-                    if (hasAddonOption) ...[
+                    if (itemAddons.isNotEmpty && addonsTotal > 0) ...[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

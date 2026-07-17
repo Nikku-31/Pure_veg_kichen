@@ -104,11 +104,10 @@ class _DashboardState extends State<Dashboard> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 5),
                             Text(
-                              "Ready to cook today?",
+                              "To Pure Veg kichen",
                               style: TextStyle(
-                                color: Colors.grey,
+                                color: AppColors.primary,
                                 fontSize: 18,
                               ),
                             ),
@@ -324,8 +323,11 @@ class _DashboardState extends State<Dashboard> {
               ),
             )
                 :  _selectedIndex == 1
-            ? const BulkOrder()
+                ? const AddViewItem()
                 : _selectedIndex == 2
+
+            ? const BulkOrder()
+                : _selectedIndex == 3
             ? const WishlistScreen()
                 : const Profile(),
           ),
@@ -401,6 +403,7 @@ class _DashboardState extends State<Dashboard> {
         },
         items: [
           const BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "Home",),
+          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.cube_box_fill), label: "Order",),
           const BottomNavigationBarItem(icon: Icon(CupertinoIcons.cart_fill), label: "Bulk order",),
           const BottomNavigationBarItem(icon: Icon(CupertinoIcons.heart_fill), label: "Saved",),
           if (_isLogin)
