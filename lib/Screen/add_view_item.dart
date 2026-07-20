@@ -14,6 +14,7 @@ import '../AppManager/ViewModel/OrderVM/my_order_vm.dart';
 import '../AppManager/ViewModel/OrderVM/place_order_vm.dart';
 import '../core/constants/app_colors.dart';
 import 'Widget/address_provider.dart';
+import 'coupon.dart';
 import 'my_order.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -417,6 +418,8 @@ class _AddViewItemState extends State<AddViewItem> {
                   ),
                 );
               }),
+              const CouponSection(),
+              const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(

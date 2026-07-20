@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/Screen/about_us.dart';
 import 'package:pure_veg/Screen/address_list_screen.dart';
+import 'package:pure_veg/Screen/coupon.dart';
 import 'package:pure_veg/Screen/my_order.dart';
 import 'package:pure_veg/Widget/login.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
@@ -343,6 +344,15 @@ class _ProfileState extends State<Profile> {
                 ),
                 child: Column(
                   children: [
+                    preferenceTile(
+                      icon: Icons.local_offer_outlined,
+                      title: "Coupon",
+                      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponScreen()));
+                      },
+                    ),
+                    const Divider(height: 1, indent: 56, endIndent: 16),
                     preferenceTile(
                       icon: Icons.info_outline,
                       title: "About us",
