@@ -8,13 +8,15 @@ import '../AppManager/Model/LocationM/address_model.dart';
 import '../AppManager/Model/OrderM/add_ons_model.dart';
 import '../AppManager/Model/OrderM/my_order_model.dart';
 import '../AppManager/Model/OrderM/place_order_model.dart';
+import '../AppManager/ViewModel/CouponVM/apply_coupon_vm.dart';
+import '../AppManager/ViewModel/CouponVM/get_coupon_byid_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/OrderVM/add_ons_vm.dart';
 import '../AppManager/ViewModel/OrderVM/my_order_vm.dart';
 import '../AppManager/ViewModel/OrderVM/place_order_vm.dart';
 import '../core/constants/app_colors.dart';
 import 'Widget/address_provider.dart';
-import 'coupon.dart';
+import 'coupon_by_item.dart';
 import 'my_order.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -46,6 +48,8 @@ class _AddViewItemState extends State<AddViewItem> {
 
       for (final item in cartVM.items) {
         addonVM.checkAddonAvailable(item.itemId);
+        context.read<GetCouponByIdVM>()
+            .getCouponsByItemId(item.itemId.toString());
       }
     });
   }
@@ -167,11 +171,18 @@ class _AddViewItemState extends State<AddViewItem> {
             children: [
               ...List.generate(cartVM.items.length, (index) {
                 final item = cartVM.items[index];
-                return Card(
-                  color: Colors.grey.shade200,
-                  margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.08),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
@@ -194,7 +205,7 @@ class _AddViewItemState extends State<AddViewItem> {
                                     : Image.network(
                                   "https://purevegkitchenindia.com/${item.image}",
                                   width: 120,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(
                                       width: 120,
@@ -438,7 +449,9 @@ class _AddViewItemState extends State<AddViewItem> {
                   ),
                 );
               }),
-              const CouponSection(),
+              CouponByItemSection(
+                itemId: cartVM.items.first.itemId.toString(),
+              ),
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -502,7 +515,35 @@ class _AddViewItemState extends State<AddViewItem> {
                         Text("₹0"),
                       ],
                     ),
+
                     const Divider(height: 20),
+                    Consumer<ApplyCouponVM>(
+                      builder: (context, couponVM, child) {
+                        if (!couponVM.isCouponApplied) {
+                          return const SizedBox();
+                        }
+                        return Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Coupon (${couponVM.appliedCouponCode})",
+                                ),
+                                Text(
+                                  "-₹${couponVM.discountAmount.toStringAsFixed(0)}",
+                                  style: const TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Divider(height: 20),
+                          ],
+                        );
+                      },
+                    ),
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
@@ -513,12 +554,22 @@ class _AddViewItemState extends State<AddViewItem> {
                             fontSize: 17,
                           ),
                         ),
-                        Text(
-                          "₹${(cartVM.totalPrice + addonsTotal).toStringAsFixed(0)}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
+                        Consumer<ApplyCouponVM>(
+                          builder: (context, couponVM, child) {
+
+                            final total =
+                            (cartVM.totalPrice +
+                                addonsTotal -
+                                couponVM.discountAmount);
+
+                            return Text(
+                              "₹${total.toStringAsFixed(0)}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -686,10 +737,16 @@ class _AddViewItemState extends State<AddViewItem> {
 
                       message += "\n";
                     }
+                    final couponVM = context.read<ApplyCouponVM>();
+
+                    final grandTotal =
+                        cartVM.totalPrice +
+                            addonsTotal -
+                            couponVM.discountAmount;
                     message +=
-                        message +=
-                    "💰 Total : ₹${(cartVM.totalPrice + addonsTotal).toStringAsFixed(0)}";
-                    const phone = "919696660579";
+                    "🎁 Coupon : ${couponVM.appliedCouponCode}\n"
+                        "💸 Discount : ₹${couponVM.discountAmount.toStringAsFixed(0)}\n"
+                        "💰 Total : ₹${grandTotal.toStringAsFixed(0)}"; const phone = "919696660579";
                     final Uri url = Uri.parse(
                       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
                     );

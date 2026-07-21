@@ -2,120 +2,163 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:pure_veg/core/constants/app_colors.dart';
-import '../AppManager/Model/CouponM/coupon_model.dart';
-import '../AppManager/ViewModel/CouponVM/coupon_vm.dart';
+import '../AppManager/Model/CouponM/get_coupon_byid_model.dart';
 import '../AppManager/ViewModel/CouponVM/apply_coupon_vm.dart';
 import '../AppManager/ViewModel/CouponVM/get_coupon_byid_vm.dart';
-class CouponSection extends StatelessWidget {
+class CouponByItemSection extends StatelessWidget {
   final String itemId;
-  const CouponSection({super.key,
+  const  CouponByItemSection({super.key,
     required this.itemId,});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Consumer<CouponViewModel>(
-            builder: (context, couponVM, child) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 2),
-                    child: Icon(
-                      Icons.local_offer,
-                      color: AppColors.primary,
-                      size: 22,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Open Coupon",
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        couponVM.coupons.isNotEmpty
-                            ? couponVM.coupons.first.couponName
-                            : "Coupons",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => CouponScreen(
-                    itemId: itemId,
-                  ),
-                ),
-              );
-            },
-            child: Text(
-              "See All",
-              style: GoogleFonts.poppins(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-              ),
+    return Consumer2<GetCouponByIdVM, ApplyCouponVM>(
+      builder: (context, couponVM, applyCouponVM, child) {
+
+        final applied = applyCouponVM.isCouponApplied;
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: 15),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.grey.shade400,
             ),
           ),
-        ],
-      ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              Icon(
+                Icons.local_offer,
+                color: AppColors.primary,
+                size: 26,
+              ),
+
+              const SizedBox(width: 10),
+
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+
+                    Text(
+                      applied ? "Coupon applied" : "Open Coupon",
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+
+                    const SizedBox(height: 4),
+
+                    Text(
+                      applied
+                          ? applyCouponVM.appliedCouponCode
+                          : couponVM.coupons.isNotEmpty
+                          ? couponVM.coupons.first.couponName
+                          : "Coupons",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+
+                    if (applied) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        "Coupon applied on this order",
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
+              ),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CouponByItemScreen(
+                            itemId: itemId,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "See All",
+                      style: GoogleFonts.poppins(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                  if (applied) ...[
+                    const SizedBox(height: 20),
+
+                    GestureDetector(
+                      onTap: () {
+                        applyCouponVM.removeCoupon();
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Coupon Removed"),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Remove",
+                        style: GoogleFonts.poppins(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ]
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
-class CouponScreen extends StatefulWidget {
-  final String? itemId;
-
-  const CouponScreen({
-    super.key,
-    this.itemId,
-  });
+class CouponByItemScreen extends StatefulWidget {
+  final String itemId;
+  const  CouponByItemScreen({super.key,
+  required this.itemId});
 
   @override
-  State<CouponScreen> createState() => _CouponScreenState();
+  State<CouponByItemScreen> createState() => _CouponByItemScreenState();
 }
 
-class _CouponScreenState extends State<CouponScreen> {
+class _CouponByItemScreenState extends State<CouponByItemScreen> {
   @override
   void initState() {
     super.initState();
-
-    Future.microtask(() async {
-      await context.read<CouponViewModel>().fetchCoupons();
-
-      if (widget.itemId != null) {
-        await context
-            .read<GetCouponByIdVM>()
-            .getCouponsByItemId(widget.itemId!);
-      }
+    print("Screen ItemId = ${widget.itemId}");
+    Future.microtask(() {
+      context
+          .read<GetCouponByIdVM>()
+          .getCouponsByItemId(widget.itemId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final couponVM = context.watch<CouponViewModel>();
-
+    final couponVM = context.watch<GetCouponByIdVM>();
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -131,10 +174,10 @@ class _CouponScreenState extends State<CouponScreen> {
             ? const Center(
           child: CircularProgressIndicator(),
         )
-            : couponVM.errorMessage != null
+            : couponVM.error != null
             ? Center(
           child: Text(
-            couponVM.errorMessage!,
+            couponVM.error!,
             style: const TextStyle(color: Colors.red),
           ),
         )
@@ -146,16 +189,7 @@ class _CouponScreenState extends State<CouponScreen> {
           padding: const EdgeInsets.all(16),
           itemCount: couponVM.coupons.length,
           itemBuilder: (context, index) {
-            Coupon coupon = couponVM.coupons[index];
-
-            final byItemVM = context.watch<GetCouponByIdVM>();
-
-            final canApply = byItemVM.coupons.any(
-                  (e) => e.couponCode == coupon.couponCode,
-            );
-
-            final isFromProfile = widget.itemId == null;
-
+            GetCouponById coupon = couponVM.coupons[index];
             return Container(
               margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
@@ -220,14 +254,10 @@ class _CouponScreenState extends State<CouponScreen> {
                                 ),
                               ),
                               SizedBox(
-                                height: 32,
+                                height: 30,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: isFromProfile
-                                        ? Colors.grey.shade400
-                                        : canApply
-                                        ? AppColors.primary
-                                        : Colors.grey.shade400,
+                                    backgroundColor: AppColors.primary,
                                     foregroundColor: Colors.white,
                                     elevation: 0,
                                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -235,12 +265,7 @@ class _CouponScreenState extends State<CouponScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  onPressed: isFromProfile
-                                      ? null
-                                      : canApply
-                                      ? () {
-                                    // ======= Tumhara Existing Apply Logic =======
-
+                                  onPressed: () {
                                     context.read<ApplyCouponVM>().applyCoupon(
                                       couponCode: coupon.couponCode,
                                       couponName: coupon.couponName,
@@ -250,23 +275,14 @@ class _CouponScreenState extends State<CouponScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          "Coupon ${coupon.couponCode} Applied",
+                                          "${coupon.couponCode} Applied Successfully",
                                         ),
                                       ),
                                     );
 
                                     Navigator.pop(context);
-
-                                    // ======= Existing Logic End =======
-                                  }
-                                      : null,
-                                  child: const Text(
-                                    "Apply",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
+                                  },
+                                  child: const Text("Apply"),
                                 ),
                               ),
                             ],
@@ -274,6 +290,7 @@ class _CouponScreenState extends State<CouponScreen> {
 
                           const SizedBox(height: 5),
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Expanded(
                                 child: Text(
@@ -284,14 +301,41 @@ class _CouponScreenState extends State<CouponScreen> {
                                   ),
                                 ),
                               ),
-                              Text(
-                                coupon.description.isEmpty
-                                    ? "No Description"
-                                    : coupon.description,
-                                style: GoogleFonts.poppins(
-                                  color: Colors.black,
-                                  fontSize: 13,
-                                ),
+
+                              Consumer<ApplyCouponVM>(
+                                builder: (context, applyCouponVM, child) {
+                                  if (applyCouponVM.isCouponApplied &&
+                                      applyCouponVM.appliedCouponCode == coupon.couponCode) {
+                                    return TextButton(
+                                      onPressed: () {
+                                        applyCouponVM.removeCoupon();
+
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Coupon Removed"),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Remove",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  return Text(
+                                    coupon.description.isEmpty
+                                        ? "No Description"
+                                        : coupon.description,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),

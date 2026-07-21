@@ -349,7 +349,9 @@ class _ProfileState extends State<Profile> {
                       title: "Coupon",
                       trailing: const Icon(Icons.chevron_right, color: Colors.grey),
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const CouponScreen(
+
+                        )));
                       },
                     ),
                     const Divider(height: 1, indent: 56, endIndent: 16),

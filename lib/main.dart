@@ -7,6 +7,7 @@ import 'AppManager/ViewModel/AccountVM/login_vm.dart';
 import 'AppManager/ViewModel/AccountVM/otp_vm.dart';
 import 'AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import 'AppManager/ViewModel/AccountVM/user_profile_vm.dart';
+import 'AppManager/ViewModel/CouponVM/apply_coupon_vm.dart';
 import 'AppManager/ViewModel/CouponVM/coupon_vm.dart';
 import 'AppManager/ViewModel/CouponVM/get_coupon_byid_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/add_item_vm.dart';
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AddonVM(),),
         ChangeNotifierProvider(create: (_) => CouponViewModel()),
         ChangeNotifierProvider(create: (_) => GetCouponByIdVM(),),
+        ChangeNotifierProvider(create: (_) => ApplyCouponVM(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

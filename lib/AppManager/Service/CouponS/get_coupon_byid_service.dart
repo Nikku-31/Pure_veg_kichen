@@ -13,11 +13,13 @@ class GetCouponByIdService {
     try {
       final response = await http.post(
         Uri.parse(url),
-        body: {
-          "item_id": itemId,
+        headers: {
+          "Content-Type":"application/json",
         },
+        body: jsonEncode({
+          "item_id": itemId,
+        }),
       );
-
       print("Coupon By Item API : $url");
       print("Request : item_id=$itemId");
       print("Status Code : ${response.statusCode}");
