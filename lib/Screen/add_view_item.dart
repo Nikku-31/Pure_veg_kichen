@@ -194,28 +194,34 @@ class _AddViewItemState extends State<AddViewItem> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: (item.image.trim().isEmpty || item.image == "null")
-                                    ? Container(
-                                  alignment: Alignment.center,
-                                  color: Colors.grey.shade300,
-                                  child: const Text("🍽️",
-                                    style: TextStyle(fontSize: 35),
-                                  ),
-                                )
-                                    : Image.network(
-                                  "https://purevegkitchenindia.com/${item.image}",
+                                child: SizedBox(
                                   width: 120,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      width: 120,
-                                      color: Colors.grey.shade200,
-                                      alignment: Alignment.center,
-                                      child: const Text("🍽️",
-                                        style: TextStyle(fontSize: 35),
-                                      ),
-                                    );
-                                  },
+                                  height:80,
+                                  child: (item.image.trim().isEmpty || item.image == "null")
+                                      ? Container(
+                                    color: Colors.grey.shade300,
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      "🍽️",
+                                      style: TextStyle(fontSize: 35),
+                                    ),
+                                  )
+                                      : Image.network(
+                                    "https://purevegkitchenindia.com/${item.image}",
+                                    width: 120,
+                                    height: 120,
+                                    fit: BoxFit.cover, // Card ke andar poori image fill hogi
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        color: Colors.grey.shade200,
+                                        alignment: Alignment.center,
+                                        child: const Text(
+                                          "🍽️",
+                                          style: TextStyle(fontSize: 35),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 12),

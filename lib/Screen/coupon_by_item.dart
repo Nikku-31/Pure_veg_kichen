@@ -60,109 +60,118 @@ class CouponByItemSection extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              DottedBorder(
-              color: AppColors.primary.withValues(alpha: 0.45),
-              strokeWidth: 1.2,
-              dashPattern: const [6, 4],
-              borderType: BorderType.RRect,
-              radius: const Radius.circular(12),
-              child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                    Container(
-                      width: 34,
-                      height: 34,
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade100,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.local_offer_outlined,
-                        color: AppColors.primary,
-                        size: 18,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                applied
-                                    ? applyCouponVM.appliedCouponCode
-                                    : couponVM.coupons.isNotEmpty
-                                    ? couponVM.coupons.first.couponCode
-                                    : "Coupons",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              if (applied)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green.shade100,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Text(
-                                    "Applied",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 10,
-                                      color: Colors.green.shade800,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 3),
-
-                          Text(
-                            applied
-                                ? "Coupon applied on this order"
-                                : "Tap See all to view available coupons",
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    if (applied)
-                      GestureDetector(
-                        onTap: () {
-                          applyCouponVM.removeCoupon();
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Coupon Removed"),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          "Remove",
-                          style: GoogleFonts.poppins(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                          ),
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=>
+                  CouponScreen(
+                    itemId: itemId,
+                  )));
+                },
+                child: DottedBorder(
+                color: AppColors.primary.withValues(alpha: 0.45),
+                strokeWidth: 1.2,
+                dashPattern: const [6, 4],
+                borderType: BorderType.RRect,
+                radius: const Radius.circular(12),
+                child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.local_offer_outlined,
+                          color: AppColors.primary,
+                          size: 18,
                         ),
                       ),
-                  ],
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  applied
+                                      ? applyCouponVM.appliedCouponCode
+                                      : couponVM.coupons.isNotEmpty
+                                      ? couponVM.coupons.first.couponCode
+                                      : "Coupons",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                if (applied)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade100,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      "Applied",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 10,
+                                        color: Colors.green.shade800,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 3),
+
+                            Text(
+                              applied
+                                  ? "Coupon applied on this order"
+                                  : "Tap See all to view available coupons",
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      if (applied)
+                        GestureDetector(
+                          onTap: () {
+                            applyCouponVM.removeCoupon();
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Coupon Removed"),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "Remove",
+                            style: GoogleFonts.poppins(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
+                ),
               ),
             ],
           ),
@@ -307,7 +316,6 @@ class _CouponByItemScreenState extends State<CouponByItemScreen> {
                                       couponName: coupon.couponName,
                                       discount: double.tryParse(coupon.maxDiscount) ?? 0,
                                     );
-
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
@@ -315,7 +323,6 @@ class _CouponByItemScreenState extends State<CouponByItemScreen> {
                                         ),
                                       ),
                                     );
-
                                     Navigator.pop(context);
                                   },
                                   child: const Text("Apply"),
@@ -323,7 +330,6 @@ class _CouponByItemScreenState extends State<CouponByItemScreen> {
                               ),
                             ],
                           ),
-
                           const SizedBox(height: 5),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,

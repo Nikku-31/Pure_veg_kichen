@@ -36,7 +36,7 @@ class WishlistScreen extends StatelessWidget {
                   children: [
 
                     SizedBox(
-                      height: 350,
+                      height: 290,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -89,11 +89,10 @@ class WishlistScreen extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 0.68,
+                mainAxisExtent: 240,
             ),
             itemBuilder: (context, index) {
               final item = items[index];
-
               return Card(
                 color: Colors.white,
                 elevation: 2,
@@ -103,94 +102,88 @@ class WishlistScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-
-                      /// Top Icons
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: GestureDetector(
-                          onTap: () async {
-                            await wishlistVM.removeFromWishlist(item.id);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Removed from Wishlist"),
+                      AspectRatio(
+                        aspectRatio: 1.3,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                height: 120,
+                                "https://purevegkitchenindia.com/${item.image}",
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) {
+                                  return Container(
+                                    color: Colors.grey.shade100,
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.fastfood,
+                                        size: 45,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                          child: const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                            size: 22,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      /// Image
-                      SizedBox(
-                        height: 120,
-                        width: double.infinity,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            "https://purevegkitchenindia.com/${item.image}",
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) {
-                              return Container(
-                                color: Colors.grey.shade100,
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.fastfood,
-                                    size: 45,
-                                    color: Colors.grey,
+                            ),
+                            Positioned(top: 6, right: 6,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await wishlistVM.removeFromWishlist(item.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Removed from Wishlist"),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.8),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: 20,
                                   ),
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-
-                      const SizedBox(height: 15),
-
-                      /// Name
                       Text(
                         item.name,
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.036,
                         ),
                       ),
-
-                      const SizedBox(height: 6),
-
-                      /// Description
+                      const SizedBox(height:3),
                       Text(
                         item.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 13,
+                          fontSize: MediaQuery.of(context).size.width * 0.030,
                         ),
                       ),
-
-                      const Spacer(),
-
-                      /// Price
                       Text(
                         "₹${item.price}",
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.bold,
-                          fontSize: 17,
+                          fontSize: MediaQuery.of(context).size.width * 0.038,
                         ),
                       ),
                     ],
