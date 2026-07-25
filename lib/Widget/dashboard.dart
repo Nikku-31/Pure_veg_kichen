@@ -14,6 +14,7 @@ import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_special_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
 import '../Screen/add_view_item.dart';
 import '../Screen/menu_item_cart.dart';
 import '../core/constants/app_colors.dart';
@@ -302,9 +303,7 @@ class _DashboardState extends State<Dashboard> {
                         );
                       },
                     ),
-
                     const SizedBox(height:5),
-                    /// Categories
                     const Text(
                       "Categories",
                       style: TextStyle(
@@ -367,7 +366,6 @@ class _DashboardState extends State<Dashboard> {
                       },
                     ),
                     const SizedBox(height:5),
-                    /// Trending
                     Row(
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
@@ -507,26 +505,61 @@ class _DashboardState extends State<Dashboard> {
             ),
       ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+      bottomNavigationBar: Consumer<WishlistVM>(
+        builder: (context, wishlistVM, child) {
+          // Dynamic Wishlist Item Count
+          final wishlistCount = wishlistVM.wishlist.length;
+
+          return BottomNavigationBar(
+            currentIndex: _selectedIndex,
+            selectedItemColor: AppColors.primary,
+            unselectedItemColor: Colors.grey,
+            onTap: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            items: [
+              const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.home),
+                label: "Home",
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.cube_box_fill),
+                label: "Order",
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.cart_fill),
+                label: "Bulk order",
+              ),
+
+              /// --- DYNAMIC WISHLIST BADGE ICON ---
+              BottomNavigationBarItem(
+                icon: Badge(
+                  // Agar list empty hai to red badge auto-hide ho jayega
+                  isLabelVisible: wishlistCount > 0,
+                  backgroundColor: AppColors.primary,
+                  label: Text(
+                    '$wishlistCount',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Icon(CupertinoIcons.heart_fill),
+                ),
+                label: "Saved",
+              ),
+
+              if (_isLogin)
+                const BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.person),
+                  label: "Profile",
+                ),
+            ],
+          );
         },
-        items: [
-          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: "Home",),
-          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.cube_box_fill), label: "Order",),
-          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.cart_fill), label: "Bulk order",),
-          const BottomNavigationBarItem(icon: Icon(CupertinoIcons.heart_fill), label: "Saved",),
-          if (_isLogin)
-            const BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.person),
-              label: "Profile",
-            ),
-        ],
       ),
     );
   }
