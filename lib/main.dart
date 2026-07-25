@@ -12,6 +12,7 @@ import 'AppManager/ViewModel/CouponVM/coupon_vm.dart';
 import 'AppManager/ViewModel/CouponVM/get_coupon_byid_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/categories_vm.dart';
+import 'AppManager/ViewModel/DashboardVM/get_special_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import 'AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CouponViewModel()),
         ChangeNotifierProvider(create: (_) => GetCouponByIdVM(),),
         ChangeNotifierProvider(create: (_) => ApplyCouponVM(),),
+        ChangeNotifierProvider(create: (_) => GetSpecialVM(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

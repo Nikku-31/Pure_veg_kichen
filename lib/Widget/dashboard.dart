@@ -1,3 +1,5 @@
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../AppManager/ViewModel/AccountVM/profile_image_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/categories_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/get_special_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/menu_item_vm.dart';
 import '../Screen/add_view_item.dart';
 import '../Screen/menu_item_cart.dart';
@@ -24,6 +27,11 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final TextEditingController _searchController = TextEditingController();
 
+  final List<String> bannerImages = [
+    "assets/image/bulk.png",
+    "assets/image/login.png",
+    "assets/image/signup.jpg",
+  ];
   @override
   void dispose() {
     _searchController.dispose();
@@ -41,6 +49,7 @@ class _DashboardState extends State<Dashboard> {
       context.read<CategoriesVM>().fetchCategories();
       context.read<ProfileImageVM>().loadImage();
       context.read<MenuItemVM>().fetchMenuItems();
+      context.read<GetSpecialVM>().fetchSpecialItems();
     });
 
   }
@@ -100,7 +109,7 @@ class _DashboardState extends State<Dashboard> {
                             Text(
                               "Welcome! 👋",
                               style: TextStyle(
-                                fontSize: 28,
+                                fontSize: 25,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -120,7 +129,7 @@ class _DashboardState extends State<Dashboard> {
                           child: Consumer<ProfileImageVM>(
                             builder: (context, imageVM, child) {
                               return CircleAvatar(
-                                radius: 35,
+                                radius: 30,
                                 backgroundColor: AppColors.primary,
                                 backgroundImage: imageVM.image != null
                                     ? FileImage(imageVM.image!)
@@ -129,7 +138,7 @@ class _DashboardState extends State<Dashboard> {
                                     ? const Icon(
                                   CupertinoIcons.person_fill,
                                   color: Colors.white,
-                                  size: 35,
+                                  size: 30,
                                 )
                                     : null,
                               );
@@ -139,10 +148,11 @@ class _DashboardState extends State<Dashboard> {
                       ],
 
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     /// Search
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      height: 40,
+                      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 10),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100, // ya Colors.grey.shade100
                         borderRadius: BorderRadius.circular(15),
@@ -152,7 +162,6 @@ class _DashboardState extends State<Dashboard> {
                         onChanged: (value) async {
                           final vm = context.read<MenuItemVM>();
                           if (value.trim().isNotEmpty) {
-                            // Search hamesha all items par hoga
                             await vm.fetchMenuItems();
                             vm.searchMenuItems(value);
                             setState(() {
@@ -185,15 +194,125 @@ class _DashboardState extends State<Dashboard> {
                       ),
                     ),
                     const SizedBox(height: 10),
+                    Consumer<GetSpecialVM>(
+                      builder: (context, vm, child) {
+
+                        if (vm.isLoading) {
+                          return const SizedBox(
+                            height: 130,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+
+                        return CarouselSlider(
+                          options: CarouselOptions(
+                            height: 130,
+                            viewportFraction: 1,
+                            autoPlay: true,
+                            autoPlayInterval: const Duration(seconds: 3),
+                          ),
+                          items: vm.specials.map((item) {
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(18),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+
+                                    /// Banner Image
+                                    Image.network(
+                                      item.image,
+                                      fit: BoxFit.cover,
+                                    ),
+
+                                    /// Dark Gradient
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                          colors: [
+                                            Colors.black.withOpacity(.65),
+                                            Colors.black.withOpacity(.15),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+
+                                    /// Text
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 18,
+                                        vertical: 16,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 5,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: Text(
+                                              item.tagLabel,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ),
+
+                                          const Spacer(),
+
+                                          Text(
+                                            item.itemName,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Starting ₹${item.price}",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        );
+                      },
+                    ),
+
+                    const SizedBox(height:5),
                     /// Categories
                     const Text(
                       "Categories",
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height:5),
                     Consumer<CategoriesVM>(
                       builder: (context, vm, child) {
                         if (vm.isLoading) {
@@ -247,7 +366,7 @@ class _DashboardState extends State<Dashboard> {
                         );
                       },
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height:5),
                     /// Trending
                     Row(
                       mainAxisAlignment:
@@ -256,8 +375,8 @@ class _DashboardState extends State<Dashboard> {
                         const Text(
                           " Trending",
                           style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         GestureDetector(
@@ -285,7 +404,7 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
                     Consumer<MenuItemVM>(
                       builder: (context, vm, child) {
                         print("Loading : ${vm.isLoading}");
@@ -325,17 +444,13 @@ class _DashboardState extends State<Dashboard> {
                 :  _selectedIndex == 1
                 ? const AddViewItem()
                 : _selectedIndex == 2
-
             ? const BulkOrder()
                 : _selectedIndex == 3
             ? const WishlistScreen()
                 : const Profile(),
           ),
           if (_selectedIndex == 0)
-            Positioned(
-              left: 16,
-              right: 16,
-              bottom: 16,
+            Positioned(left: 16, right: 16, bottom: 16,
               child: Consumer<AddItemVM>(
                 builder: (context, cartVM, child) {
                   if (cartVM.items.isEmpty) {
