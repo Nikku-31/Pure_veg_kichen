@@ -113,8 +113,9 @@ class _OrderPreviewState extends State<OrderPreview> {
               if (widget.orderItems.isNotEmpty)
                 ...widget.orderItems.map((e) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.only(bottom: 10),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Icon(
                           Icons.restaurant,
@@ -123,14 +124,24 @@ class _OrderPreviewState extends State<OrderPreview> {
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text("${e.item} (${e.variant})"),
-                        ),
-                        Text(
-                          "x${e.qty}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                e.item,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                "Quantity : ${e.qty} ${e.unit}",
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   );
@@ -173,22 +184,20 @@ class _OrderPreviewState extends State<OrderPreview> {
 
     String message = "";
 
-    message += "🌿 Bulk Order\n\n";
+    message += "🌿 Bulk Order\n";
     message += "Name : ${widget.nameController.text}\n";
     message += "Phone : ${widget.phoneController.text}\n";
     message += "PIN : ${widget.pinController.text}\n";
     message += "Area : ${widget.areaController.text}\n";
     message += "Address : ${widget.addressController.text}\n";
-    message += "Members : ${widget.members.toInt()}\n\n";
-
+    message += "Members : ${widget.members.toInt()}\n";
     message += "Items\n";
 
     for (var item in widget.orderItems) {
-      message += "• ${item.item} (${item.variant}) x ${item.qty}\n";
+      message +=
+      "• ${item.item}\n   Quantity : ${item.qty} ${item.unit}\n";
     }
-
     const phone = "919696660579";
-
     final Uri url = Uri.parse(
       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
     );

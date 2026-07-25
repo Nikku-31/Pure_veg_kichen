@@ -18,6 +18,7 @@ class OrderItem {
   String category;
   String item;
   String variant;
+  String unit;
   int qty;
 
   OrderItem({
@@ -26,6 +27,7 @@ class OrderItem {
     required this.category,
     required this.item,
     required this.variant,
+    required this.unit,
     this.qty = 1,
   });
 }
@@ -45,9 +47,21 @@ class _BulkOrderState extends State<BulkOrder> {
   final TextEditingController pinController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
   String? selectedCategoryId;
   String? selectedItemId;
   String? selectedVariant;
+  String? selectedUnit;
+
+  final List<String> units = [
+    "Pieces",
+    "Plate(s)",
+    "Kg",
+    "Gram",
+    "Litre",
+    "ML",
+    "❓ Not Sure — Ask Owner",
+  ];
 
   MenuItemModel? selectedMenuItem;
   List<OrderItem> orderItems = [];
@@ -454,6 +468,7 @@ class _BulkOrderState extends State<BulkOrder> {
 
                           return DropdownButtonFormField<String>(
                             value: selectedCategoryId,
+                            dropdownColor: Colors.white,
                             decoration: inputDecoration(
                               "Category",
                               Icons.restaurant_menu,
@@ -490,6 +505,7 @@ class _BulkOrderState extends State<BulkOrder> {
 
                           return DropdownButtonFormField<String>(
                             value: selectedItemId,
+                            dropdownColor: Colors.white,
                             decoration: inputDecoration(
                               "Item",
                               Icons.fastfood,
@@ -526,35 +542,36 @@ class _BulkOrderState extends State<BulkOrder> {
                       ),
 
                       const SizedBox(height: 10),
-                      Consumer<GetVariantsVM>(
-                        builder: (context, variantVM, child) {
-
-                          if (variantVM.isLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          return DropdownButtonFormField<String>(
-                            value: selectedVariant,
-                            decoration: inputDecoration(
-                              "Variant",
-                              Icons.layers,
-                            ),
-                            items: variantVM.variants.map((variant) {
-                              return DropdownMenuItem<String>(
-                                value: variant.value,
-                                child: Text(
-                                  "${variant.label} (${variant.price})",
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedVariant = value;
-                              });
-                            },
+                      TextFormField(
+                        controller: quantityController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: inputDecoration(
+                          "Quantity",
+                          Icons.shopping_cart,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      DropdownButtonFormField<String>(
+                        value: selectedUnit,
+                        dropdownColor: Colors.white,
+                        decoration: inputDecoration(
+                          "Unit",
+                          Icons.inventory_2_outlined,
+                        ),
+                        hint: const Text("Select Unit"),
+                        items: units.map((unit) {
+                          return DropdownMenuItem<String>(
+                            value: unit,
+                            child: Text(unit),
                           );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedUnit = value;
+                          });
                         },
                       ),
                       const SizedBox(height: 10),
@@ -568,33 +585,28 @@ class _BulkOrderState extends State<BulkOrder> {
                           onPressed: () {
                             if (selectedCategoryId == null ||
                                 selectedMenuItem == null ||
-                                selectedVariant == null) {
+                                quantityController.text.isEmpty ||
+                                selectedUnit == null) {
                               return;
                             }
-
-                            final variant = context
-                                .read<GetVariantsVM>()
-                                .variants
-                                .firstWhere(
-                                  (e) => e.value == selectedVariant,
-                            );
-
                             setState(() {
                               orderItems.add(
                                 OrderItem(
                                   itemId: int.parse(selectedMenuItem!.id),
-                                  variantId: variant.id,
+                                  variantId: 0,
                                   category: selectedCategoryId!,
                                   item: selectedMenuItem!.name,
-                                  variant: variant.label,
-                                  qty: 1,
+                                  variant: "",
+                                  unit: selectedUnit!,
+                                  qty: int.parse(quantityController.text),
                                 ),
                               );
 
                               selectedCategoryId = null;
                               selectedItemId = null;
-                              selectedVariant = null;
                               selectedMenuItem = null;
+                              selectedUnit = null;
+                              quantityController.clear();
                             });
                           },
                           icon: const Icon(Icons.add,color: Colors.white),
@@ -626,7 +638,7 @@ class _BulkOrderState extends State<BulkOrder> {
                               color: AppColors.background,
                               child: ListTile(
                                 title: Text(item.item),
-                                subtitle: Text(item.variant),
+                                subtitle: Text("Quantity : ${item.qty} ${item.unit}"),
                                 leading: CircleAvatar(
                                   backgroundColor: Colors.orange.shade100,
                                   child: const Icon(Icons.restaurant),
@@ -706,8 +718,6 @@ class _BulkOrderState extends State<BulkOrder> {
                       if (!_formKey.currentState!.validate()) {
                         return;
                       }
-
-                      // At least one item selected hona chahiye
                       if (orderItems.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -810,13 +820,35 @@ class _BulkOrderState extends State<BulkOrder> {
       ) {
     return InputDecoration(
       labelText: text,
-      prefixIcon: Icon(icon),
+      labelStyle: const TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w200,
+      ),
+      floatingLabelStyle: const TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w300,
+      ),
+      prefixIcon: Icon(
+        icon,
+        color: Colors.black54,
+      ),
       filled: true,
       fillColor: Colors.grey.shade100,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,
       ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide.none,
+      ),
+      // focusedBorder: OutlineInputBorder(
+      //   borderRadius: BorderRadius.circular(14),
+      //   borderSide:  BorderSide(
+      //     color: Colors.grey.shade100,
+      //     width: 1.5,
+      //   ),
+      // ),
     );
 }
   Future<void> getCurrentLocation() async {

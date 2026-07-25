@@ -25,7 +25,15 @@ class GetCouponByIdVM extends ChangeNotifier {
       await _service.getCouponsByItemId(itemId);
 
       if (response.status) {
-        coupons = response.data;
+        for (final coupon in response.data) {
+          final alreadyExists = coupons.any(
+                (e) => e.couponCode == coupon.couponCode,
+          );
+
+          if (!alreadyExists) {
+            coupons.add(coupon);
+          }
+        }
       } else {
         error = response.message;
       }

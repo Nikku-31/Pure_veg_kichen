@@ -715,13 +715,13 @@ class _AddViewItemState extends State<AddViewItem> {
                   if (success) {
                     String message = "🛒 *New Order*\n\n";
                     message +=
-                    "📍 Address:\n"
+                    " Address:\n"
                         "${selectedAddress!.address}\n"
                         "${selectedAddress!.addressDetails}\n"
                         "${selectedAddress!.receiverName} - ${selectedAddress!.receiverPhone}\n\n";
                     for (var item in cartVM.items) {
                       message +=
-                      "🍽 ${item.itemName}\n"
+                      " ${item.itemName}\n"
                           "Variant : ${item.variantName}\n"
                           "Qty : ${item.quantity}\n"
                           "Price : ₹${(item.price * item.quantity).toStringAsFixed(0)}\n\n";
@@ -744,9 +744,9 @@ class _AddViewItemState extends State<AddViewItem> {
                             addonsTotal -
                             couponVM.discountAmount;
                     message +=
-                    "🎁 Coupon : ${couponVM.appliedCouponCode}\n"
-                        "💸 Discount : ₹${couponVM.discountAmount.toStringAsFixed(0)}\n"
-                        "💰 Total : ₹${grandTotal.toStringAsFixed(0)}"; const phone = "919696660579";
+                    " Coupon : ${couponVM.appliedCouponCode}\n"
+                        " Discount : ₹${couponVM.discountAmount.toStringAsFixed(0)}\n"
+                        "Total : ₹${grandTotal.toStringAsFixed(0)}"; const phone = "919696660579";
                     final Uri url = Uri.parse(
                       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
                     );

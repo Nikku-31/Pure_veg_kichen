@@ -6,6 +6,7 @@ import '../AppManager/Model/CouponM/coupon_model.dart';
 import '../AppManager/ViewModel/CouponVM/coupon_vm.dart';
 import '../AppManager/ViewModel/CouponVM/apply_coupon_vm.dart';
 import '../AppManager/ViewModel/CouponVM/get_coupon_byid_vm.dart';
+import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 class CouponSection extends StatelessWidget {
   final String itemId;
   const CouponSection({super.key,
@@ -103,11 +104,14 @@ class _CouponScreenState extends State<CouponScreen> {
 
     Future.microtask(() async {
       await context.read<CouponViewModel>().fetchCoupons();
-
       if (widget.itemId != null) {
-        await context
-            .read<GetCouponByIdVM>()
-            .getCouponsByItemId(widget.itemId!);
+        final cartVM = context.read<AddItemVM>();
+
+        for (final item in cartVM.items) {
+          context
+              .read<GetCouponByIdVM>()
+              .getCouponsByItemId(item.itemId.toString());
+        }
       }
     });
   }
@@ -149,6 +153,11 @@ class _CouponScreenState extends State<CouponScreen> {
             Coupon coupon = couponVM.coupons[index];
 
             final byItemVM = context.watch<GetCouponByIdVM>();
+            final cartVM = context.read<AddItemVM>();
+
+            final cartItemIds = cartVM.items
+                .map((e) => e.itemId.toString())
+                .toList();
 
             final canApply = byItemVM.coupons.any(
                   (e) => e.couponCode == coupon.couponCode,
