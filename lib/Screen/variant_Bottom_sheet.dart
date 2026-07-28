@@ -112,7 +112,6 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            /// Header
             Container(
               padding: const EdgeInsets.all(18),
               decoration: const BoxDecoration(
@@ -275,7 +274,6 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                             fontSize: 22,
                           ),
                         ),
-
                         InkWell(
                           onTap: () {
                             setState(() {
