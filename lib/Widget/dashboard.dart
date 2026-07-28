@@ -572,8 +572,8 @@ class _DashboardState extends State<Dashboard> {
       clipBehavior: Clip.none,
       children: [
       Container(
-      width: 110,
-      height: 110,
+      width: 100,
+      height: 90,
         decoration: BoxDecoration(
           color: isSelected ? Colors.grey.shade300 : Colors.white,
           border: Border.all(

@@ -27,6 +27,9 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
   int quantity = 1;
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
     final vm = Provider.of<GetVariantsVM>(context);
     if (vm.variants.isEmpty) {
       return SafeArea(
@@ -45,8 +48,8 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                 children: [
                   Expanded(
                     child: Text(widget.itemName,
-                      style: const TextStyle(
-                        fontSize: 18,
+                      style: TextStyle(
+                        fontSize: w * 0.045,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -60,9 +63,9 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                 color: Colors.grey,
               ),
               const SizedBox(height: 15),
-              const Text("No Variants Available",
+               Text("No Variants Available",
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: w * 0.045,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -113,7 +116,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(18),
+              padding: EdgeInsets.all(w * 0.045),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(color: Color(0xffEEEEEE)),
@@ -122,20 +125,20 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
               child: Row(
                 children: [
                   Container(
-                    height: 60,
-                    width: 60,
+                    height: w * 0.15,
+                    width: w * 0.15,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(Icons.fastfood),
                   ),
-                  const SizedBox(width: 15),
+                  SizedBox(width: w * 0.04),
                   Expanded(
                     child: Text(
                       widget.itemName,
-                      style: const TextStyle(
-                        fontSize: 18,
+                      style: TextStyle(
+                        fontSize: w * 0.045,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -145,23 +148,23 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
             ),
             Container(
               color: const Color(0xffF5F5F7),
-              padding: const EdgeInsets.all(15),
+              padding: EdgeInsets.all(w * 0.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Quantity",
+                   Text("Quantity",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: w * 0.045,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const Text("Select any 1",
+                  Text("Select any 1",
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: w * 0.035,
                       color: Colors.grey,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: h * 0.008),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -184,19 +187,21 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                             });
                           },
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: w * 0.03,
+                              vertical: h * 0.012,
+                            ),
                             child: Row(
                               children: [
-                                const SizedBox(width: 15),
+                                SizedBox(width: w * 0.04),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
                                     children: [
                                       Text(variant.label,
-                                        style: const TextStyle(
-                                          fontSize: 15,
+                                        style: TextStyle(
+                                          fontSize: w * 0.038,
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
@@ -215,9 +220,9 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                                   ),
                                 ),
                                 Text("₹${variant.price}",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 15,
+                                    fontSize: w * 0.038,
                                   ),
                                 ),
                                 const SizedBox(width: 10),
@@ -242,12 +247,12 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(15),
+              padding: EdgeInsets.all(w * 0.04),
               child: Row(
                 children: [
                   Container(
-                    height: 50,
-                    width: 140,
+                    height: h * 0.065,
+                    width: w * 0.34,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(color: Colors.grey.shade300),
@@ -269,9 +274,9 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                           ),
                         ),
                         Text(quantity.toString(),
-                          style: const TextStyle(
+                          style:TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 22,
+                            fontSize: w * 0.055,
                           ),
                         ),
                         InkWell(
@@ -288,10 +293,10 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 15),
+                  SizedBox(width: w * 0.04),
                   Expanded(
                     child: SizedBox(
-                      height: 50,
+                      height: h * 0.065,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xff16A765),
@@ -328,8 +333,8 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                         },
                         child: Text(
                           "Add Item | ₹${vm.variants[selectedIndex].price}",
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: w * 0.045,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
