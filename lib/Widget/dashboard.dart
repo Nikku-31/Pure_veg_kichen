@@ -86,7 +86,9 @@ class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
     return Scaffold(
       backgroundColor:Colors.white,
       body: Stack(
@@ -96,7 +98,12 @@ class _DashboardState extends State<Dashboard> {
             child: _selectedIndex == 0
                 ? SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 90),
+                padding: EdgeInsets.fromLTRB(
+                  w * 0.04,
+                  h * 0.02,
+                  w * 0.04,
+                  h * 0.11,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -106,11 +113,11 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children:  [
                             Text(
                               "Welcome! 👋",
                               style: TextStyle(
-                                fontSize: 25,
+                                fontSize: w * 0.065,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -118,7 +125,7 @@ class _DashboardState extends State<Dashboard> {
                               "To Pure Veg kichen",
                               style: TextStyle(
                                 color: AppColors.primary,
-                                fontSize: 18,
+                                fontSize: w * 0.045,
                               ),
                             ),
                           ],
@@ -130,16 +137,16 @@ class _DashboardState extends State<Dashboard> {
                           child: Consumer<ProfileImageVM>(
                             builder: (context, imageVM, child) {
                               return CircleAvatar(
-                                radius: 30,
+                                radius: w * 0.075,
                                 backgroundColor: AppColors.primary,
                                 backgroundImage: imageVM.image != null
                                     ? FileImage(imageVM.image!)
                                     : null,
                                 child: imageVM.image == null
-                                    ? const Icon(
+                                    ?  Icon(
                                   CupertinoIcons.person_fill,
                                   color: Colors.white,
-                                  size: 30,
+                                  size: w * 0.075,
                                 )
                                     : null,
                               );
@@ -152,8 +159,11 @@ class _DashboardState extends State<Dashboard> {
                     const SizedBox(height: 10),
                     /// Search
                     Container(
-                      height: 40,
-                      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 10),
+                      height: h * 0.055,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: w * 0.04,
+                        vertical: h * 0.012,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100, // ya Colors.grey.shade100
                         borderRadius: BorderRadius.circular(15),
@@ -199,8 +209,8 @@ class _DashboardState extends State<Dashboard> {
                       builder: (context, vm, child) {
 
                         if (vm.isLoading) {
-                          return const SizedBox(
-                            height: 130,
+                          return  SizedBox(
+                            height: h * 0.18,
                             child: Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -209,7 +219,7 @@ class _DashboardState extends State<Dashboard> {
 
                         return CarouselSlider(
                           options: CarouselOptions(
-                            height: 130,
+                            height: h * 0.18,
                             viewportFraction: 1,
                             autoPlay: true,
                             autoPlayInterval: const Duration(seconds: 3),
@@ -218,10 +228,10 @@ class _DashboardState extends State<Dashboard> {
                             return Container(
                               margin: const EdgeInsets.symmetric(horizontal: 2),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18),
+                                borderRadius: BorderRadius.circular(w * 0.045),
                               ),
                               child: ClipRRect(
-                                borderRadius: BorderRadius.circular(18),
+                                borderRadius: BorderRadius.circular(w * 0.045),
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
@@ -248,17 +258,17 @@ class _DashboardState extends State<Dashboard> {
 
                                     /// Text
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 18,
-                                        vertical: 16,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: w * 0.04,
+                                        vertical: h * 0.012,
                                       ),
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 5,
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: w * 0.03,
+                                              vertical: h * 0.006,
                                             ),
                                             decoration: BoxDecoration(
                                               color: Colors.red,
@@ -266,10 +276,10 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                             child: Text(
                                               item.tagLabel,
-                                              style: const TextStyle(
+                                              style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 12,
+                                                fontSize: w * 0.03,
                                               ),
                                             ),
                                           ),
@@ -278,18 +288,18 @@ class _DashboardState extends State<Dashboard> {
 
                                           Text(
                                             item.itemName,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 20,
+                                              fontSize: w * 0.05,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             "Starting ₹${item.price}",
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 14,
+                                              fontSize: w * 0.036,
                                             ),
                                           ),
                                         ],
@@ -304,10 +314,10 @@ class _DashboardState extends State<Dashboard> {
                       },
                     ),
                     const SizedBox(height:5),
-                    const Text(
+                     Text(
                       "Categories",
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: w * 0.05,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -317,7 +327,6 @@ class _DashboardState extends State<Dashboard> {
                         if (vm.isLoading) {
                           return const CategoryShimmer();
                         }
-
                         return SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -325,13 +334,11 @@ class _DashboardState extends State<Dashboard> {
                               vm.categories.length,
                                   (index) {
                                 final category = vm.categories[index];
-
                                 return Padding(
-                                  padding: const EdgeInsets.only(right: 12),
+                                  padding: EdgeInsets.only(right: w * 0.03),
                                   child: GestureDetector(
                                     onTap: () {
                                       if (selectedCategoryIndex == index) {
-                                        // Same category dubara click hui -> Unselect
                                         setState(() {
                                           selectedCategoryIndex = -1;
                                           isCategorySelected = false;
@@ -340,7 +347,6 @@ class _DashboardState extends State<Dashboard> {
 
                                         context.read<MenuItemVM>().fetchMenuItems();
                                       } else {
-                                        // Nayi category select hui
                                         setState(() {
                                           selectedCategoryIndex = index;
                                           isCategorySelected = true;
@@ -370,10 +376,10 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           " Trending",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: w * 0.05,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -414,13 +420,13 @@ class _DashboardState extends State<Dashboard> {
                             ? vm.filteredMenuItems
                             : vm.filteredMenuItems.take(6).toList();
                         if (items.isEmpty) {
-                          return const Center(
+                          return  Center(
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 30),
                               child: Text(
                                 "No Item Found",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: w * 0.045,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.grey,
                                 ),
@@ -448,7 +454,10 @@ class _DashboardState extends State<Dashboard> {
                 : const Profile(),
           ),
           if (_selectedIndex == 0)
-            Positioned(left: 16, right: 16, bottom: 16,
+            Positioned(
+              left: w * 0.04,
+              right: w * 0.04,
+              bottom: h * 0.02,
               child: Consumer<AddItemVM>(
                 builder: (context, cartVM, child) {
                   if (cartVM.items.isEmpty) {
@@ -464,37 +473,37 @@ class _DashboardState extends State<Dashboard> {
                       );
                     },
                     child: Container(
-                      height: 60,
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      height: h * 0.075,
+                      padding: EdgeInsets.symmetric(horizontal: w * 0.045),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(w * 0.04),
                       ),
                       child: Row(
                         children: [
                           Expanded(
                             child: Text(
                               "${cartVM.totalItem} Item | ₹${cartVM.totalPrice}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 17,
+                                fontSize: w * 0.042,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
-                          const Text(
+                          Text(
                             "View Item",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: w * 0.04,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Icon(
+                           Icon(
                             Icons.arrow_forward_ios,
                             color: Colors.white,
-                            size: 18,
+                            size: w * 0.045,
                           ),
                         ],
                       ),
@@ -568,12 +577,15 @@ class _DashboardState extends State<Dashboard> {
       String title,
       bool isSelected,
       ) {
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
     return Stack(
       clipBehavior: Clip.none,
       children: [
       Container(
-      width: 100,
-      height: 90,
+        width: w * 0.22,
+        height: h * 0.10,
         decoration: BoxDecoration(
           color: isSelected ? Colors.grey.shade300 : Colors.white,
           border: Border.all(
@@ -590,9 +602,10 @@ class _DashboardState extends State<Dashboard> {
         children: [
           Text(
             emoji,
-            style: const TextStyle(fontSize: 28),
+            style: TextStyle(
+              fontSize: w * 0.07,),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: h * 0.006),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Text(
@@ -600,9 +613,9 @@ class _DashboardState extends State<Dashboard> {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style:TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                fontSize: w * 0.032,
               ),
             ),
           ),
@@ -618,22 +631,26 @@ class _DashboardState extends State<Dashboard> {
     required String price,
     required String image,
   }) {
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
     return Container(
-      padding: const EdgeInsets.all(15),
-      margin: const EdgeInsets.only(bottom: 15),
+
+      padding: EdgeInsets.all(w * 0.04),
+      margin: EdgeInsets.only(bottom: h * 0.02),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(w * 0.05),
       ),
       child: Row(
         children: [
           image.isNotEmpty
               ? ClipRRect(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(w * 0.025),
             child: Image.network(
               "https://purevegkitchenindia.com/$image",
-              width: 95,
-              height: 110,
+              width: w * 0.24,
+              height: h * 0.14,
               fit: BoxFit.cover,
             ),
           )
@@ -654,8 +671,8 @@ class _DashboardState extends State<Dashboard> {
                         title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: w * 0.045,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -663,10 +680,10 @@ class _DashboardState extends State<Dashboard> {
                     const SizedBox(width: 10),
                     Text(
                       "₹ $price",
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: w * 0.04,
                       ),
                     ),
                   ],
@@ -775,8 +792,11 @@ class CategoryShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final w = size.width;
+    final h = size.height;
     return SizedBox(
-      height: 110,
+      height: MediaQuery.of(context).size.height * 0.11,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: 5,
@@ -786,10 +806,10 @@ class CategoryShimmer extends StatelessWidget {
             baseColor: Colors.grey.shade300,
             highlightColor: Colors.grey.shade100,
             child: Container(
-              width: 110,
+              width: MediaQuery.of(context).size.width * 0.26,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(w * 0.04),
               ),
             ),
           );
