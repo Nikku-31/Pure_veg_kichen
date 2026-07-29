@@ -22,7 +22,7 @@ class CategoriesModel {
 class Category {
   final int id;
   final String name;
-  final String icon;
+  final String image;
   final int sortOrder;
   final int itemCount;
   final int isActive;
@@ -30,7 +30,7 @@ class Category {
   Category({
     required this.id,
     required this.name,
-    required this.icon,
+    required this.image,
     required this.sortOrder,
     required this.itemCount,
     required this.isActive,
@@ -40,7 +40,7 @@ class Category {
     return Category(
       id: json["id"] ?? 0,
       name: json["name"] ?? "",
-      icon: json["icon"] ?? "",
+      image: json["image"] ?? "",
       sortOrder: json["sort_order"] ?? 0,
       itemCount: json["item_count"] ?? 0,
       isActive: json["is_active"] ?? 0,

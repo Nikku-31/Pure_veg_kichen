@@ -103,6 +103,9 @@ class _AddViewItemState extends State<AddViewItem> {
   }
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -130,7 +133,7 @@ class _AddViewItemState extends State<AddViewItem> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: 300,
+                      height: 380,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -167,15 +170,15 @@ class _AddViewItemState extends State<AddViewItem> {
           }
 
           return ListView(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(w * 0.03),
             children: [
               ...List.generate(cartVM.items.length, (index) {
                 final item = cartVM.items[index];
                 return Container(
-                  margin: const EdgeInsets.only(bottom: 14),
+                  margin: EdgeInsets.only(bottom: h * 0.014),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(w * 0.05),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.08),
@@ -185,7 +188,7 @@ class _AddViewItemState extends State<AddViewItem> {
                     ],
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(w * 0.03),
                     child: Column(
                       children: [
                         IntrinsicHeight(
@@ -193,10 +196,10 @@ class _AddViewItemState extends State<AddViewItem> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(w * 0.025),
                                 child: SizedBox(
-                                  width: 120,
-                                  height:80,
+                                  width: w * 0.20,
+                                  height: 70,
                                   child: (item.image.trim().isEmpty || item.image == "null")
                                       ? Container(
                                     color: Colors.grey.shade300,
@@ -208,9 +211,9 @@ class _AddViewItemState extends State<AddViewItem> {
                                   )
                                       : Image.network(
                                     "https://purevegkitchenindia.com/${item.image}",
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover, // Card ke andar poori image fill hogi
+                                    width: w * 0.20,
+                                    height: 70,
+                                    fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
                                       return Container(
                                         color: Colors.grey.shade200,
@@ -230,8 +233,8 @@ class _AddViewItemState extends State<AddViewItem> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(item.itemName,
-                                      style: const TextStyle(
-                                        fontSize: 15,
+                                      style: TextStyle(
+                                        fontSize: w * 0.038,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -275,40 +278,40 @@ class _AddViewItemState extends State<AddViewItem> {
                                           }
                                         },
                                         child: Container(
-                                            width: 20,
-                                            height: 20,
+                                            width: w * 0.055,
+                                            height: w * 0.055,
                                             decoration: BoxDecoration(
                                               color: AppColors.primary.withOpacity(0.8),
                                               borderRadius: BorderRadius.circular(6),
                                             ),
-                                            child: const Icon(
+                                            child: Icon(
                                               Icons.remove,
                                               color: Colors.white,
-                                              size: 15,)),
+                                              size: w * 0.035,)),
                                       ),
                                       Padding(
                                         padding:
                                         const EdgeInsets.symmetric(horizontal: 10),
                                         child: Text(
                                             item.quantity.toString(),
-                                          style: const TextStyle(
-                                            fontSize: 16,
+                                          style: TextStyle(
+                                            fontSize: w * 0.04,
                                             fontWeight: FontWeight.w600,
                                           ),),
                                       ),
                                       InkWell(
                                         onTap: () => cartVM.increase(index),
                                         child: Container(
-                                          width: 20,
-                                          height: 20,
+                                          width: w * 0.055,
+                                          height: w * 0.055,
                                           decoration: BoxDecoration(
                                             color: AppColors.primary.withOpacity(0.8),
                                             borderRadius: BorderRadius.circular(6),
                                           ),
-                                          child: const Icon(
+                                          child: Icon(
                                             Icons.add,
                                             color: Colors.white,
-                                            size: 15,),
+                                            size: w * 0.035,),
                                         ),
                                       ),
                                     ],
@@ -341,7 +344,7 @@ class _AddViewItemState extends State<AddViewItem> {
                                 ),
                                 const SizedBox(width: 10),
                                 SizedBox(
-                                  height: 25,
+                                  height: h * 0.032,
                                   child: OutlinedButton.icon(
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
@@ -459,10 +462,10 @@ class _AddViewItemState extends State<AddViewItem> {
                 itemId: cartVM.items.first.itemId.toString(),
               ),
               Container(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(w * 0.03),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
+                  borderRadius: BorderRadius.circular(w * 0.045),
                 ),
                 child: Column(
                   children: [
@@ -471,9 +474,9 @@ class _AddViewItemState extends State<AddViewItem> {
                         const Icon(Icons.receipt_long,
                             color: AppColors.primary),
                         const SizedBox(width: 10),
-                        const Text("Bill Details",
+                         Text("Bill Details",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: w * 0.045,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -554,10 +557,10 @@ class _AddViewItemState extends State<AddViewItem> {
                       mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Total Pay",
+                         Text("Total Pay",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 17,
+                            fontSize: w * 0.043,
                           ),
                         ),
                         Consumer<ApplyCouponVM>(
@@ -570,9 +573,9 @@ class _AddViewItemState extends State<AddViewItem> {
 
                             return Text(
                               "₹${total.toStringAsFixed(0)}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: w * 0.038,
                               ),
                             );
                           },
@@ -595,7 +598,7 @@ class _AddViewItemState extends State<AddViewItem> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
+                          minimumSize: Size(double.infinity, h * 0.065),
                         ),
                         onPressed: () async {
                           await Navigator.push(
@@ -628,7 +631,7 @@ class _AddViewItemState extends State<AddViewItem> {
                     return const SizedBox();
                   }
                   return SizedBox(
-                    height: 90,
+                    height: h * 0.11,
                     child: DropdownButtonFormField<AddressModel>(
                       value: selectedAddress,
                       hint: const Text("Choose Address"),
@@ -678,13 +681,13 @@ class _AddViewItemState extends State<AddViewItem> {
               return const SizedBox();
             }
             return Container(
-              padding: const EdgeInsets.all(16),
-              height: 80,
+              padding: EdgeInsets.all(w * 0.04),
+              height: h * 0.10,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(w * 0.03),
                   ),
                 ),
                 onPressed: () async {
@@ -845,10 +848,10 @@ class _AddViewItemState extends State<AddViewItem> {
                 icon: const Icon(Icons.chat,
                   color: Colors.white,
                 ),
-                label: const Text("Order on WhatsApp",
+                label:  Text("Order on WhatsApp",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: w * 0.045,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

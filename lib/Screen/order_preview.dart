@@ -92,7 +92,7 @@ class _OrderPreviewState extends State<OrderPreview> {
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
 
-              const Divider(height: 35),
+              const Divider(height:20),
 
               const Text(
                 "Selected Items",
@@ -147,14 +147,14 @@ class _OrderPreviewState extends State<OrderPreview> {
                   );
                 }),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 5),
 
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 13),
                   ),
                   onPressed: () async {
                     await sendWhatsApp();

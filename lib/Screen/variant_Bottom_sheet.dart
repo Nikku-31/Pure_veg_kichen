@@ -323,7 +323,7 @@ class _VariantBottomSheetState extends State<VariantBottomSheet> {
                               itemId: int.parse(widget.itemId),
                               itemName: widget.itemName,
                               variantId: selected.id,
-                              variantName: selected.label,
+                              variantName: selected.value,
                               price: double.parse(selected.price),
                               image: widget.image,
                               quantity: quantity,

@@ -70,17 +70,18 @@ class _BulkOrderState extends State<BulkOrder> {
   LatLng? selectedLocation;
   GoogleMapController? mapController;
   bool isLoadingLocation = false;
-
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CategoriesVM>().fetchCategories();
     });
   }
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
     return Scaffold(
       backgroundColor: const Color(0xffF7FAF8),
       appBar: AppBar(
@@ -97,16 +98,16 @@ class _BulkOrderState extends State<BulkOrder> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(18),
+          padding: EdgeInsets.all(w * 0.040),
           child: Form(
             key: _formKey,
             child: Column(
               children: [
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(22),
+                  padding: EdgeInsets.all(w * 0.055),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(w * 0.06),
                     gradient: const LinearGradient(
                       colors: [
                         Color(0xff1B4332),
@@ -118,22 +119,21 @@ class _BulkOrderState extends State<BulkOrder> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Image + Heading
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(80),
+                            borderRadius: BorderRadius.circular(w * 0.20),
                             child: Image.asset(
                               "assets/image/bulk.png",
-                              width: 120,
-                              height: 120,
+                              width: w * 0.17,
+                              height: w * 0.17,
                               fit: BoxFit.cover,
                             ),
                           ),
-                          const SizedBox(width: 20),
+                          SizedBox(width: w * 0.05),
 
-                          const Expanded(
+                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -142,16 +142,16 @@ class _BulkOrderState extends State<BulkOrder> {
                                   style: TextStyle(
                                     color: Colors.orangeAccent,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 15,
+                                    fontSize: w * 0.038,
                                   ),
                                 ),
-                                SizedBox(height: 15),
+                                SizedBox(height: h * 0.005),
                                 Text(
                                   "Feeding a crowd? Order a full Veg Thali Spread",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                                    fontSize: w * 0.035,
                                   ),
                                 ),
                               ],
@@ -159,29 +159,26 @@ class _BulkOrderState extends State<BulkOrder> {
                           ),
                         ],
                       ),
-
-                      const SizedBox(height: 5),
-
-                      // Bottom Description
-                      const Text(
+                      SizedBox(height: h * 0.004),
+                       Text(
                         "Fresh home-style food for birthdays,parties and office events.",
                         style: TextStyle(
                           color: AppColors.background,
-                          fontSize: 15,
+                          fontSize: w * 0.035,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: h * 0.002),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Bulk Order",
                     style: TextStyle(
                       color: Colors.green.shade900,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                      fontSize: w * 0.050,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -194,12 +191,12 @@ class _BulkOrderState extends State<BulkOrder> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: h * 0.010),
                 Container(
-                  padding: const EdgeInsets.all(18),
+                  padding: EdgeInsets.all(w * 0.040),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(w * 0.050),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.shade200,
@@ -212,11 +209,11 @@ class _BulkOrderState extends State<BulkOrder> {
                       Row(
                         children: [
                           Container(
-                            height: 38,
-                            width: 38,
+                            height: w * 0.070,
+                            width: w * 0.070,
                             decoration: BoxDecoration(
                               color: const Color(0xff1B4332),
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(w * 0.03),
                             ),
                             child: const Center(
                               child: Text("1",
@@ -227,22 +224,22 @@ class _BulkOrderState extends State<BulkOrder> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 15),
-                          const Column(
+                          SizedBox(width: w * 0.04),
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "Your Details",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 17,
+                                  fontSize: w * 0.035,
                                 ),
                               ),
                               Text(
                                 "Enter your information",
                                 style: TextStyle(
                                   color: Colors.grey,
-                                  fontSize: 12,
+                                  fontSize: w * 0.025,
                                 ),
                               ),
                             ],
@@ -262,7 +259,7 @@ class _BulkOrderState extends State<BulkOrder> {
                         icon: Icons.phone,
                         keyboard: TextInputType.number,
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height:10),
                       Row(
                         children: [
                           Expanded(
@@ -294,9 +291,7 @@ class _BulkOrderState extends State<BulkOrder> {
                               },
                             ),
                           ),
-
-                          const SizedBox(width: 12),
-
+                          SizedBox(width: w * 0.02),
                           Expanded(
                             child: buildTextField(
                               controller: areaController,
@@ -313,19 +308,18 @@ class _BulkOrderState extends State<BulkOrder> {
                           if (!vm.isLoading) {
                             return const SizedBox();
                           }
-
-                          return const Padding(
+                          return  Padding(
                             padding: EdgeInsets.only(top: 8),
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width: 18,
-                                  height: 18,
+                                  width: w * 0.045,
+                                  height: w * 0.040,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                   ),
                                 ),
-                                SizedBox(width: 10),
+                                SizedBox(width:8),
                                 Text("Fetching delivery area..."),
                               ],
                             ),
@@ -337,13 +331,13 @@ class _BulkOrderState extends State<BulkOrder> {
                         controller: addressController,
                         label: "Address",
                         icon: Icons.home,
-                        maxLines: 3,
+                        maxLines: 2,
                       ),
                       const SizedBox(height: 10),
                       if (selectedLocation != null)
                         Padding(
                           padding: const EdgeInsets.only(top: 15,),
-                          child: SizedBox(height: 220,
+                          child: SizedBox(height: h * 0.28,
                             child: GoogleMap(
                               initialCameraPosition:
                               CameraPosition(
@@ -370,7 +364,7 @@ class _BulkOrderState extends State<BulkOrder> {
                             Icons.groups,
                             color: Colors.green,
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(width: w * 0.025),
                           const Text(
                             "Number of Members",
                             style: TextStyle(
@@ -380,9 +374,9 @@ class _BulkOrderState extends State<BulkOrder> {
                           const Spacer(),
                           Text(
                             members.toInt().toString(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 22,
+                              fontSize: w * 0.045,
                               color: Colors.orange,
                             ),
                           )
@@ -393,7 +387,7 @@ class _BulkOrderState extends State<BulkOrder> {
                         min: 20,
                         max: 100,
                         divisions: 80,
-                        activeColor: Colors.green,
+                        activeColor:AppColors.primary,
                         onChanged: (value) {
                           setState(() {
                             members = value;
@@ -403,12 +397,12 @@ class _BulkOrderState extends State<BulkOrder> {
                     ],
                   ),
                 ),
-                const SizedBox(height:10),
+                const SizedBox(height:8),
                 Container(
-                  padding: const EdgeInsets.all(18),
+                  padding: EdgeInsets.all(w * 0.045),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(w * 0.05),
                     boxShadow: [
                       BoxShadow(color: Colors.grey.shade200,
                         blurRadius: 8,
@@ -420,11 +414,11 @@ class _BulkOrderState extends State<BulkOrder> {
                       Row(
                         children: [
                           Container(
-                            height: 38,
-                            width: 38,
+                            height: w * 0.070,
+                            width: w * 0.070,
                             decoration: BoxDecoration(
                               color: const Color(0xff1B4332),
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(w * 0.03),
                             ),
                             child: const Center(
                               child: Text(
@@ -435,28 +429,28 @@ class _BulkOrderState extends State<BulkOrder> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 15),
-                          const Column(
+                          SizedBox(width: w * 0.02),
+                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "Pick Your Dishes",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 17),
+                                  fontSize: w * 0.035,),
                               ),
                               SizedBox(height: 3),
                               Text(
                                 "Select category, item & variant",
                                 style: TextStyle(
                                     color: Colors.grey,
-                                    fontSize: 12),
+                                  fontSize: w * 0.025,),
                               )
                             ],
                           )
                         ],
                       ),
-                      const SizedBox(height:15),
+                      const SizedBox(height:8),
                       Consumer<CategoriesVM>(
                         builder: (context, vm, child) {
 
@@ -502,7 +496,6 @@ class _BulkOrderState extends State<BulkOrder> {
                               child: CircularProgressIndicator(),
                             );
                           }
-
                           return DropdownButtonFormField<String>(
                             value: selectedItemId,
                             dropdownColor: Colors.white,
@@ -532,7 +525,6 @@ class _BulkOrderState extends State<BulkOrder> {
                                 selectedMenuItem = item;
                                 selectedVariant = null;
                               });
-
                               await context.read<GetVariantsVM>().getVariants(
                                 int.parse(item.id),
                               );
@@ -540,8 +532,7 @@ class _BulkOrderState extends State<BulkOrder> {
                           );
                         },
                       ),
-
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
                       TextFormField(
                         controller: quantityController,
                         keyboardType: TextInputType.number,
@@ -574,13 +565,13 @@ class _BulkOrderState extends State<BulkOrder> {
                           });
                         },
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height:5),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor:Colors.orange,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: h * 0.013),
                           ),
                           onPressed: () {
                             if (selectedCategoryId == null ||
@@ -601,7 +592,6 @@ class _BulkOrderState extends State<BulkOrder> {
                                   qty: int.parse(quantityController.text),
                                 ),
                               );
-
                               selectedCategoryId = null;
                               selectedItemId = null;
                               selectedMenuItem = null;
@@ -610,17 +600,20 @@ class _BulkOrderState extends State<BulkOrder> {
                             });
                           },
                           icon: const Icon(Icons.add,color: Colors.white),
-                          label: const Text(
+                          label:Text(
                             "Add Item",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: w * 0.03,
+                            ),
+                          )
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       if(orderItems.isEmpty)
-                        const Center(
+                         Center(
                           child: Padding(
-                            padding: EdgeInsets.all(20),
+                            padding: EdgeInsets.all(w * 0.05),
                             child: Text(
                               "No Item Added",
                               style: TextStyle(color: Colors.grey),
@@ -640,8 +633,9 @@ class _BulkOrderState extends State<BulkOrder> {
                                 title: Text(item.item),
                                 subtitle: Text("Quantity : ${item.qty} ${item.unit}"),
                                 leading: CircleAvatar(
-                                  backgroundColor: Colors.orange.shade100,
-                                  child: const Icon(Icons.restaurant),
+                                  backgroundColor: Colors.grey.shade200,
+                                  child: const Icon(Icons.restaurant,
+                                  color: AppColors.primary,),
                                 ),
                                 trailing: FittedBox(
                                   fit: BoxFit.scaleDown,
@@ -650,7 +644,7 @@ class _BulkOrderState extends State<BulkOrder> {
                                     children: [
                                       IconButton(
                                         constraints: const BoxConstraints(),
-                                        padding: const EdgeInsets.all(4),
+                                        padding: EdgeInsets.all(w * 0.01),
                                         visualDensity: VisualDensity.compact,
                                         onPressed: () {
                                           if (item.qty > 1) {
@@ -670,7 +664,7 @@ class _BulkOrderState extends State<BulkOrder> {
                                       ),
                                       IconButton(
                                         constraints: const BoxConstraints(),
-                                        padding: const EdgeInsets.all(4),
+                                        padding: EdgeInsets.all(w * 0.01),
                                         visualDensity: VisualDensity.compact,
                                         onPressed: () {
                                           setState(() {
@@ -681,7 +675,7 @@ class _BulkOrderState extends State<BulkOrder> {
                                       ),
                                       IconButton(
                                         constraints: const BoxConstraints(),
-                                        padding: const EdgeInsets.all(4),
+                                        padding: EdgeInsets.all(w * 0.01),
                                         visualDensity: VisualDensity.compact,
                                         onPressed: () {
                                           setState(() {
@@ -703,18 +697,15 @@ class _BulkOrderState extends State<BulkOrder> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 25),
-
+                const SizedBox(height:8),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: h * 0.013),
                     ),
                     onPressed: () {
-
-                      // Form validation
                       if (!_formKey.currentState!.validate()) {
                         return;
                       }
@@ -726,8 +717,6 @@ class _BulkOrderState extends State<BulkOrder> {
                         );
                         return;
                       }
-
-                      // Sab sahi hai to next page open hoga
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -743,11 +732,11 @@ class _BulkOrderState extends State<BulkOrder> {
                         ),
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       "Next",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: w * 0.04,
                       ),
                     ),
                   ),
@@ -799,11 +788,14 @@ class _BulkOrderState extends State<BulkOrder> {
             return "Enter valid 10 digit mobile number";
           }
         }
-
         return null;
       },
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: const TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
         prefixIcon: Icon(icon),
         filled: true,
         fillColor: Colors.grey.shade100,
@@ -820,10 +812,6 @@ class _BulkOrderState extends State<BulkOrder> {
       ) {
     return InputDecoration(
       labelText: text,
-      labelStyle: const TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.w200,
-      ),
       floatingLabelStyle: const TextStyle(
         color: Colors.black,
         fontWeight: FontWeight.w300,
@@ -842,13 +830,6 @@ class _BulkOrderState extends State<BulkOrder> {
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide.none,
       ),
-      // focusedBorder: OutlineInputBorder(
-      //   borderRadius: BorderRadius.circular(14),
-      //   borderSide:  BorderSide(
-      //     color: Colors.grey.shade100,
-      //     width: 1.5,
-      //   ),
-      // ),
     );
 }
   Future<void> getCurrentLocation() async {

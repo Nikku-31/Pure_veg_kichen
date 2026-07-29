@@ -117,7 +117,7 @@ class _DashboardState extends State<Dashboard> {
                             Text(
                               "Welcome! 👋",
                               style: TextStyle(
-                                fontSize: w * 0.065,
+                                fontSize: w * 0.050,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -125,7 +125,7 @@ class _DashboardState extends State<Dashboard> {
                               "To Pure Veg kichen",
                               style: TextStyle(
                                 color: AppColors.primary,
-                                fontSize: w * 0.045,
+                                fontSize: w * 0.035,
                               ),
                             ),
                           ],
@@ -137,7 +137,7 @@ class _DashboardState extends State<Dashboard> {
                           child: Consumer<ProfileImageVM>(
                             builder: (context, imageVM, child) {
                               return CircleAvatar(
-                                radius: w * 0.075,
+                                radius: w * 0.065,
                                 backgroundColor: AppColors.primary,
                                 backgroundImage: imageVM.image != null
                                     ? FileImage(imageVM.image!)
@@ -146,7 +146,7 @@ class _DashboardState extends State<Dashboard> {
                                     ?  Icon(
                                   CupertinoIcons.person_fill,
                                   color: Colors.white,
-                                  size: w * 0.075,
+                                  size: w * 0.065,
                                 )
                                     : null,
                               );
@@ -156,10 +156,9 @@ class _DashboardState extends State<Dashboard> {
                       ],
 
                     ),
-                    const SizedBox(height: 10),
-                    /// Search
+                    const SizedBox(height: 5),
                     Container(
-                      height: h * 0.055,
+                      height: h * 0.045,
                       padding: EdgeInsets.symmetric(
                         horizontal: w * 0.04,
                         vertical: h * 0.012,
@@ -177,10 +176,9 @@ class _DashboardState extends State<Dashboard> {
                             vm.searchMenuItems(value);
                             setState(() {
                               isCategorySelected = true;
-                              selectedCategoryIndex = -1; // Category highlight hata do
+                              selectedCategoryIndex = -1;
                             });
                           } else {
-                            // Search clear hone par normal state
                             await vm.fetchMenuItems();
 
                             setState(() {
@@ -204,13 +202,13 @@ class _DashboardState extends State<Dashboard> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     Consumer<GetSpecialVM>(
                       builder: (context, vm, child) {
 
                         if (vm.isLoading) {
                           return  SizedBox(
-                            height: h * 0.18,
+                            height: h * 0.15,
                             child: Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -235,14 +233,10 @@ class _DashboardState extends State<Dashboard> {
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
-
-                                    /// Banner Image
                                     Image.network(
                                       item.image,
                                       fit: BoxFit.cover,
                                     ),
-
-                                    /// Dark Gradient
                                     Container(
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
@@ -255,8 +249,6 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                       ),
                                     ),
-
-                                    /// Text
                                     Padding(
                                       padding: EdgeInsets.symmetric(
                                         horizontal: w * 0.04,
@@ -283,9 +275,7 @@ class _DashboardState extends State<Dashboard> {
                                               ),
                                             ),
                                           ),
-
                                           const Spacer(),
-
                                           Text(
                                             item.itemName,
                                             style: TextStyle(
@@ -313,11 +303,11 @@ class _DashboardState extends State<Dashboard> {
                         );
                       },
                     ),
-                    const SizedBox(height:5),
+                    const SizedBox(height:2),
                      Text(
                       "Categories",
                       style: TextStyle(
-                        fontSize: w * 0.05,
+                        fontSize: w * 0.045,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -335,7 +325,7 @@ class _DashboardState extends State<Dashboard> {
                                   (index) {
                                 final category = vm.categories[index];
                                 return Padding(
-                                  padding: EdgeInsets.only(right: w * 0.03),
+                                  padding: EdgeInsets.only(right: w * 0.01),
                                   child: GestureDetector(
                                     onTap: () {
                                       if (selectedCategoryIndex == index) {
@@ -344,7 +334,6 @@ class _DashboardState extends State<Dashboard> {
                                           isCategorySelected = false;
                                           _searchController.clear();
                                         });
-
                                         context.read<MenuItemVM>().fetchMenuItems();
                                       } else {
                                         setState(() {
@@ -352,14 +341,13 @@ class _DashboardState extends State<Dashboard> {
                                           isCategorySelected = true;
                                           _searchController.clear();
                                         });
-
                                         context.read<MenuItemVM>().fetchMenuItems(
                                           categoryId: category.id.toString(),
                                         );
                                       }
                                     },
                                     child: categoryCard(
-                                      category.icon.isEmpty ? "🍽️" : category.icon,
+                                      category.image,
                                       category.name,
                                       selectedCategoryIndex == index,
                                     ),
@@ -371,15 +359,14 @@ class _DashboardState extends State<Dashboard> {
                         );
                       },
                     ),
-                    const SizedBox(height:5),
+                    const SizedBox(height:2),
                     Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           " Trending",
                           style: TextStyle(
-                            fontSize: w * 0.05,
+                            fontSize: w * 0.045,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -473,7 +460,7 @@ class _DashboardState extends State<Dashboard> {
                       );
                     },
                     child: Container(
-                      height: h * 0.075,
+                      height: h * 0.050,
                       padding: EdgeInsets.symmetric(horizontal: w * 0.045),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
@@ -486,7 +473,7 @@ class _DashboardState extends State<Dashboard> {
                               "${cartVM.totalItem} Item | ₹${cartVM.totalPrice}",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: w * 0.042,
+                                fontSize: w * 0.035,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -495,7 +482,7 @@ class _DashboardState extends State<Dashboard> {
                             "View Item",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: w * 0.04,
+                              fontSize: w * 0.03,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -503,7 +490,7 @@ class _DashboardState extends State<Dashboard> {
                            Icon(
                             Icons.arrow_forward_ios,
                             color: Colors.white,
-                            size: w * 0.045,
+                            size: w * 0.035,
                           ),
                         ],
                       ),
@@ -541,8 +528,6 @@ class _DashboardState extends State<Dashboard> {
                 icon: Icon(CupertinoIcons.cart_fill),
                 label: "Bulk order",
               ),
-
-              /// --- DYNAMIC WISHLIST BADGE ICON ---
               BottomNavigationBarItem(
                 icon: Badge(
                   // Agar list empty hai to red badge auto-hide ho jayega
@@ -573,56 +558,69 @@ class _DashboardState extends State<Dashboard> {
     );
   }
   Widget categoryCard(
-      String emoji,
+      String image,
       String title,
       bool isSelected,
       ) {
-    final size = MediaQuery.of(context).size;
-    final h = size.height;
-    final w = size.width;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-      Container(
-        width: w * 0.22,
-        height: h * 0.10,
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.grey.shade300 : Colors.white,
-          border: Border.all(
-            color: isSelected
-                ? AppColors.primary
-                : Colors.grey.shade300,
-            width: isSelected ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(15),
-        ),
+    final w = MediaQuery.of(context).size.width;
+
+    return SizedBox(
+      width: w * 0.20,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            emoji,
-            style: TextStyle(
-              fontSize: w * 0.07,),
-          ),
-          SizedBox(height: h * 0.006),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style:TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: w * 0.032,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: w * 0.17,
+            height: w * 0.14,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected
+                    ? AppColors.primary
+                    : Colors.grey.shade300,
+                width: isSelected ? 2.5 : 1,
               ),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.15),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: Image.network(
+                image,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.fastfood,
+                    color: AppColors.primary,
+                    size: 28,
+                  );
+                },
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 8),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: w * 0.028,
+              fontWeight: FontWeight.w600,
+              color: isSelected
+                  ? AppColors.primary
+                  : Colors.black87,
             ),
           ),
         ],
       ),
-      ),
-      ],
     );
   }
   Widget trendingCard({
@@ -786,10 +784,8 @@ class TrendingShimmer extends StatelessWidget {
     );
   }
 }
-
 class CategoryShimmer extends StatelessWidget {
   const CategoryShimmer({super.key});
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

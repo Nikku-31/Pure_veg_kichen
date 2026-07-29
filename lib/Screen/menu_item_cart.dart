@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../AppManager/Model/DashboardM/cart_item_model.dart';
 import '../AppManager/Model/DashboardM/menu_item_model.dart';
 import '../AppManager/ViewModel/DashboardVM/add_item_vm.dart';
 import '../AppManager/ViewModel/DashboardVM/get_variants_vm.dart';
@@ -14,9 +15,10 @@ class MenuItemCard extends StatelessWidget {
     super.key,
     required this.item,
   });
-
   @override
   Widget build(BuildContext context) {
+    print("Item : ${item.name}");
+    print("Variant Count : ${item.variants.length}");
     return Card(
       color: AppColors.background,
       margin: const EdgeInsets.only(bottom: 12),
@@ -62,55 +64,124 @@ class MenuItemCard extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    top: 6,
+                    bottom: 6,
                     right: 6,
                     child: Consumer<AddItemVM>(
                       builder: (context, cartVM, child) {
                         final index = cartVM.getItemIndex(int.parse(item.id));
+                        final variantCount = item.variants.length;
                         if (index == -1) {
+                          if (variantCount <= 1) {
+                            return GestureDetector(
+                              onTap: () {
+                                final hasVariant = item.variants.isNotEmpty;
+                                cartVM.addItem(
+                                  CartItemModel(
+                                    itemId: int.parse(item.id),
+                                    itemName: item.name,
+                                    variantName: hasVariant
+                                        ? item.variants.first.value
+                                        : item.name,
+                                    variantId: hasVariant
+                                        ? int.parse(item.variants.first.id)
+                                        : 0,
+                                    price: hasVariant
+                                        ? double.parse(item.variants.first.price)
+                                        : double.parse(item.price),
+                                    image: item.image,
+                                    quantity: 1,
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 60,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color:AppColors.primary,
+                                    width: 1.3,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  "ADD",
+                                  style: TextStyle(
+                                    color:AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              )
+                            );
+                          }
                           return GestureDetector(
                             onTap: () async {
                               final variantVM =
                               Provider.of<GetVariantsVM>(context, listen: false);
-
-                              final itemId = int.tryParse(item.id);
-
-                              if (itemId == null) return;
-
-                              await variantVM.getVariants(itemId);
-
+                              await variantVM.getVariants(int.parse(item.id));
                               if (!context.mounted) return;
-
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20),
-                                  ),
-                                ),
                                 builder: (_) => VariantBottomSheet(
                                   itemId: item.id,
                                   itemName: item.name,
                                   image: item.image,
                                   addons: item.addons,
-                                ),);
+                                ),
+                              );
                             },
                             child: Container(
+                              width: 60,
+                              height: 40,
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(8),
+                                color: Colors.white,
+                                border: Border.all(
+                                  color:AppColors.primary,
+                                  width: 1.3,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 1),
+                                  ),
+                                ],
                               ),
-                              padding: const EdgeInsets.all(4),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.black,
-                                size: 20,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "ADD",
+                                    style: TextStyle(
+                                      color:AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  Text(
+                                    "$variantCount options",
+                                    style: const TextStyle(
+                                      fontSize: 9,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );
                         }
-
                         return Container(
                           height: 30,
                           padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -131,7 +202,6 @@ class MenuItemCard extends StatelessWidget {
                                   size: 18,
                                 ),
                               ),
-
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 6),
                                 child: Text(
@@ -142,7 +212,6 @@ class MenuItemCard extends StatelessWidget {
                                   ),
                                 ),
                               ),
-
                               GestureDetector(
                                 onTap: () {
                                   cartVM.increase(index);

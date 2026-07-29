@@ -276,12 +276,12 @@ class _LoginState extends State<Login> {
                           // ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const Signup(),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (_) => const Signup(),
+                              //   ),
+                              // );
                             },
                             child: Text(
                               "Terms and condition",
