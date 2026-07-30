@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../AppManager/ViewModel/DashboardVM/wishlist_vm.dart';
 import '../core/constants/app_colors.dart';
 
@@ -9,9 +8,7 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final size = MediaQuery
-          .of(context)
-          .size;
+      final size = MediaQuery.of(context).size;
       final h = size.height;
       final w = size.width;
       return Scaffold(
@@ -28,11 +25,9 @@ class WishlistScreen extends StatelessWidget {
             ),
           ),
         ),
-
         body: Consumer<WishlistVM>(
           builder: (context, wishlistVM, child) {
             final items = wishlistVM.wishlist;
-
             if (items.isEmpty) {
               return Center(
                 child: Padding(
@@ -40,9 +35,8 @@ class WishlistScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
                       SizedBox(
-                        height: h * 0.36,
+                        height: h * 0.30,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
@@ -52,7 +46,7 @@ class WishlistScreen extends StatelessWidget {
                               fit: BoxFit.contain,
                             ),
                             Positioned(
-                              bottom: h * 0.02,
+                              bottom: h * 0.001,
                               left: w * 0.05,
                               right: w * 0.05,
                               child: Column(
@@ -65,9 +59,7 @@ class WishlistScreen extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-
                                   const SizedBox(height: 10),
-
                                   Text(
                                     "Save your favorite food here",
                                     textAlign: TextAlign.center,
@@ -82,14 +74,13 @@ class WishlistScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
                     ],
                   ),
                 ),
               );
             }
             return GridView.builder(
-              padding: EdgeInsets.all(w * 0.03),
+              padding: EdgeInsets.all(w * 0.02),
               itemCount: items.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -118,9 +109,8 @@ class WishlistScreen extends StatelessWidget {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(w * 0.02),
                                 child: Image.network(
-                                  height: h * 0.15,
-                                  "https://purevegkitchenindia.com/${item
-                                      .image}",
+                                  height: h * 0.13,
+                                  "https://purevegkitchenindia.com/${item.image}",
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                   errorBuilder: (_, __, ___) {
@@ -140,8 +130,7 @@ class WishlistScreen extends StatelessWidget {
                               Positioned(top: h * 0.008, right: w * 0.015,
                                 child: GestureDetector(
                                   onTap: () async {
-                                    await wishlistVM.removeFromWishlist(
-                                        item.id);
+                                    await wishlistVM.removeFromWishlist(item.id);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text("Removed from Wishlist"),
@@ -172,10 +161,7 @@ class WishlistScreen extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.036,
+                            fontSize: MediaQuery.of(context).size.width * 0.036,
                           ),
                         ),
                         SizedBox(height: h * 0.004),
@@ -186,10 +172,7 @@ class WishlistScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.grey,
-                            fontSize: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.030,
+                            fontSize: MediaQuery.of(context).size.width * 0.030,
                           ),
                         ),
                         Text(
@@ -197,10 +180,7 @@ class WishlistScreen extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.red,
                             fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.038,
+                            fontSize: MediaQuery.of(context).size.width * 0.038,
                           ),
                         ),
                       ],

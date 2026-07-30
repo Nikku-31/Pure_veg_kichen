@@ -359,7 +359,7 @@ class _DashboardState extends State<Dashboard> {
                         );
                       },
                     ),
-                    const SizedBox(height:2),
+                    const SizedBox(height:8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -565,7 +565,7 @@ class _DashboardState extends State<Dashboard> {
     final w = MediaQuery.of(context).size.width;
 
     return SizedBox(
-      width: w * 0.20,
+      width: w * 0.21,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -140,6 +140,9 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final h = size.height;
+    final w = size.width;
     final vm = Provider.of<UserProfileVM>(context);
     final user = vm.user;
     if (vm.isLoading) {
@@ -151,12 +154,12 @@ class _ProfileState extends State<Profile> {
         backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(
             color: Colors.white),
-        title: const Text(
+        title:Text(
           "My Profile",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w600,
-            fontSize: 20,
+            fontSize: w * 0.05,
           ),
         ),
         centerTitle: true,
@@ -193,7 +196,11 @@ class _ProfileState extends State<Profile> {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.only(bottom: 20, left: 10, right: 20, top: 20),
+                padding: EdgeInsets.only(bottom: h * 0.025,
+                  left: w * 0.03,
+                  right: w * 0.05,
+                  top: h * 0.025,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: const BorderRadius.only(
@@ -219,8 +226,8 @@ class _ProfileState extends State<Profile> {
                       Consumer<ProfileImageVM>(
                         builder: (context, imageVM, child) {
                           return Container(
-                            width: 80,
-                            height: 80,
+                            width: w * 0.20,
+                            height: w * 0.20,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(color: AppColors.primary.withOpacity(0.2), width: 3),
@@ -249,8 +256,8 @@ class _ProfileState extends State<Profile> {
                           children: [
                             Text(
                               user?.name ?? "User Name",
-                              style: const TextStyle(
-                                fontSize: 20,
+                              style:  TextStyle(
+                                fontSize: w * 0.05,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xff0B1B4D),
                               ),
@@ -259,7 +266,7 @@ class _ProfileState extends State<Profile> {
                             Text(
                               user?.email ?? "email@example.com",
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: w * 0.035,
                                 color: Colors.grey.shade600,
                               ),
                               maxLines: 1,
@@ -272,51 +279,52 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // Quick Actions Section
-              const Padding(
+              const SizedBox(height: 10),
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   "Quick Action",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
+                    fontSize: w * 0.045,
                     color: Color(0xff0B1B4D),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 5),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GridView.count(
+                padding: EdgeInsets.symmetric(horizontal: w * 0.05),
+                child: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 1.4,
-                  children: [
-                    quickActionCard(
+                  itemCount: 2,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: w * 0.04,
+                    mainAxisSpacing: h * 0.015,
+                    mainAxisExtent: h * 0.10,),
+                  itemBuilder: (context,index){
+                    return index == 0
+                        ? quickActionCard(
+                      context: context,
                       icon: CupertinoIcons.cube_box_fill,
                       title: "My Order",
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const MyOrderPage()));
                       },
-                    ),
-                    quickActionCard(
+                    )
+                        : quickActionCard(
+                      context: context,
                       icon: CupertinoIcons.location_solid,
                       title: "Save Address",
                       onTap: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const AddressListScreen()));
                       },
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
-              const SizedBox(height: 28),
-
-              // Preferences Section
+              const SizedBox(height:8),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
@@ -328,12 +336,12 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
+                margin: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.02),
@@ -363,7 +371,7 @@ class _ProfileState extends State<Profile> {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutUs()));
                       },
                     ),
-                    const Divider(height: 1, indent: 56, endIndent: 16),
+                    const Divider(height: 1, indent: 45, endIndent: 13),
                     preferenceTile(
                       icon: Icons.support_agent,
                       title: "Help & Support",
@@ -441,10 +449,12 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget quickActionCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     VoidCallback? onTap,
   }) {
+    final w = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -466,24 +476,24 @@ class _ProfileState extends State<Profile> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
-                  size: 28,
+                  size: 18,
                   color: AppColors.primary,
                 ),
               ),
-              const SizedBox(height: 12),
+
+              const SizedBox(height: 4),
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xff0B1B4D),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -637,14 +647,13 @@ class ProfileShimmer extends StatelessWidget {
                 itemCount: 2,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.4,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 2.0,
                 ),
                 itemBuilder: (_, __) => shimmerBox(radius: BorderRadius.circular(20)),
               ),
             ),
-            const SizedBox(height: 28),
             Padding(
               padding: const EdgeInsets.only(left: 20),
               child: Align(
