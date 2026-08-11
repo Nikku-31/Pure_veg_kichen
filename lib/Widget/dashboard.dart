@@ -205,7 +205,6 @@ class _DashboardState extends State<Dashboard> {
                     const SizedBox(height: 8),
                     Consumer<GetSpecialVM>(
                       builder: (context, vm, child) {
-
                         if (vm.isLoading) {
                           return  SizedBox(
                             height: h * 0.15,
@@ -293,6 +292,34 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                           ),
                                         ],
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: h * 0.015,
+                                      right: w * 0.04,
+                                      child: ElevatedButton(
+                                        onPressed: () {},
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.background,
+                                          foregroundColor: AppColors.primary,
+                                          elevation: 2,
+                                          minimumSize: Size(0, h * 0.035),
+                                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: w * 0.04,
+                                            vertical: 0,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(18),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "Order Now",
+                                          style: TextStyle(
+                                            fontSize: w * 0.03,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],
